@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CobiHw.App/CobiHw.App.csproj" />
+    <Project Path="src/CobiHw.ConsoleTest/CobiHw.ConsoleTest.csproj" />
+    <Project Path="src/CobiHw.Core/CobiHw.Core.csproj" />
+  </Folder>
+</Solution>
