@@ -78,7 +78,7 @@ internal static class Report
     private static string Disks(DiskSnapshot disk) =>
         disk.Disks.Count == 0
             ? "—"
-            : string.Join("   ", disk.Disks.Select(d => $"{DiskName(d)}: {d.ActivePercent:0}%"));
+            : string.Join("   ", disk.Disks.Select(d => $"{DiskName(d)}{(d.IsSystem ? " [Windows]" : string.Empty)}: {d.ActivePercent:0}%"));
 
     private static string DiskName(DiskActivity disk) =>
         disk.Letters.Length == 0 ? $"Disco {disk.Number}" : $"Disco {disk.Number} ({disk.Letters})";

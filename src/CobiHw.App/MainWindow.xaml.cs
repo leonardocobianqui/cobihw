@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using CobiHw.App.Interop;
 using CobiHw.App.Settings;
 
@@ -12,26 +13,20 @@ public partial class MainWindow : Window
 {
     private const double SnapDistance = 20;
 
+    private static readonly TimeSpan KeyCheckInterval = TimeSpan.FromMilliseconds(100);
+
+    private readonly DispatcherTimer _keyTimer = new() { Interval = KeyCheckInterval };
     private bool _keepAtBottom;
-    private bool _snapToEdges;
-    private DockedEdges _dockedEdges;
+    private bool _clickThrough;
+    private InteractionKey _interactionKey;
+    private bool _passingThrough;
 
     public MainWindow()
     {
         InitializeComponent();
         SourceInitialized += OnSourceInitialized;
         Loaded += OnLoaded;
-        SizeChanged += OnSizeChanged;
-    }
-
-    [Flags]
-    private enum DockedEdges
-    {
-        None = 0,
-        Left = 1,
-        Top = 2,
-        Right = 4,
-        Bottom = 8,
+        _keyTimer.Tick += (_, _) => UpdatePassThrough();
     }
 
     public event EventHandler? DragCompleted;
@@ -40,15 +35,7 @@ public partial class MainWindow : Window
 
     public bool IsPositionLocked { get; set; }
 
-    public bool SnapToEdges
-    {
-        get => _snapToEdges;
-        set
-        {
-            _snapToEdges = value;
-            UpdateDockedEdges();
-        }
-    }
+    public bool SnapToEdges { get; set; }
 
     public void RestorePosition(double? left, double? top)
     {
@@ -74,26 +61,58 @@ public partial class MainWindow : Window
         }
     }
 
+    public void ApplyClickThrough(bool enabled, InteractionKey interactionKey)
+    {
+        _clickThrough = enabled;
+        _interactionKey = interactionKey;
+
+        if (enabled)
+        {
+            _keyTimer.Start();
+        }
+        else
+        {
+            _keyTimer.Stop();
+        }
+
+        UpdatePassThrough();
+    }
+
     private void OnSourceInitialized(object? sender, EventArgs e)
     {
         HwndSource.FromHwnd(Handle)?.AddHook(WindowProc);
+        UpdatePassThrough();
     }
+
+    private void UpdatePassThrough()
+    {
+        nint handle = Handle;
+        if (handle == 0)
+        {
+            return;
+        }
+
+        bool holding = ClickThroughRule.IsHolding(_interactionKey, IsKeyDown);
+        bool passThrough = _clickThrough && !holding;
+
+        if (passThrough == _passingThrough || (passThrough && IsKeyDown(User32.VkLeftButton)))
+        {
+            return;
+        }
+
+        nint style = User32.GetWindowLongPtr(handle, User32.GwlExStyle);
+        style = passThrough ? style | User32.WsExTransparent : style & ~User32.WsExTransparent;
+        User32.SetWindowLongPtr(handle, User32.GwlExStyle, style);
+        _passingThrough = passThrough;
+    }
+
+    private static bool IsKeyDown(int key) => (User32.GetAsyncKeyState(key) & 0x8000) != 0;
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (User32.MonitorFromWindow(Handle, User32.MonitorDefaultToNull) == 0)
         {
             CenterOnPrimaryWorkArea();
-        }
-
-        UpdateDockedEdges();
-    }
-
-    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        if (_snapToEdges)
-        {
-            KeepInsideWorkArea();
         }
     }
 
@@ -116,21 +135,30 @@ public partial class MainWindow : Window
         }
 
         DragMove();
-        UpdateDockedEdges();
         DragCompleted?.Invoke(this, EventArgs.Empty);
     }
 
     private nint WindowProc(nint hwnd, int message, nint wParam, nint lParam, ref bool handled)
     {
-        if (message == User32.WmWindowPosChanging && _keepAtBottom)
+        if (message == User32.WmWindowPosChanging)
         {
             var position = Marshal.PtrToStructure<User32.WindowPos>(lParam);
-            position.HwndInsertAfter = User32.HwndBottom;
-            position.Flags &= ~User32.SwpNoZOrder;
-            Marshal.StructureToPtr(position, lParam, fDeleteOld: false);
+            bool changed = FitInsideWorkArea(hwnd, ref position);
+
+            if (_keepAtBottom)
+            {
+                position.HwndInsertAfter = User32.HwndBottom;
+                position.Flags &= ~User32.SwpNoZOrder;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                Marshal.StructureToPtr(position, lParam, fDeleteOld: false);
+            }
         }
 
-        if (message == User32.WmMoving && _snapToEdges)
+        if (message == User32.WmMoving && SnapToEdges)
         {
             SnapMovingRect(lParam);
             handled = true;
@@ -176,73 +204,39 @@ public partial class MainWindow : Window
         Marshal.StructureToPtr(rect, rectPointer, fDeleteOld: false);
     }
 
-    private void UpdateDockedEdges()
+    private static bool FitInsideWorkArea(nint hwnd, ref User32.WindowPos position)
     {
-        _dockedEdges = DockedEdges.None;
-
-        if (!_snapToEdges || !User32.GetWindowRect(Handle, out User32.Rect window) || !TryGetWorkArea(window, out User32.Rect workArea))
+        if ((position.Flags & User32.SwpNoSize) != 0 || !User32.GetWindowRect(hwnd, out User32.Rect window))
         {
-            return;
+            return false;
         }
 
-        if (window.Left == workArea.Left)
+        var current = new PixelRect(window.Left, window.Top, window.Right, window.Bottom);
+        if (position.Width == current.Width && position.Height == current.Height)
         {
-            _dockedEdges |= DockedEdges.Left;
+            return false;
         }
 
-        if (window.Top == workArea.Top)
+        bool keepsPosition = (position.Flags & User32.SwpNoMove) != 0;
+        int x = keepsPosition ? current.Left : position.X;
+        int y = keepsPosition ? current.Top : position.Y;
+        var requested = new PixelRect(x, y, x + position.Width, y + position.Height);
+
+        if (!TryGetWorkArea(new User32.Rect { Left = requested.Left, Top = requested.Top, Right = requested.Right, Bottom = requested.Bottom }, out User32.Rect work))
         {
-            _dockedEdges |= DockedEdges.Top;
+            return false;
         }
 
-        if (window.Right == workArea.Right)
+        PixelRect placed = WindowFit.Place(current, requested, new PixelRect(work.Left, work.Top, work.Right, work.Bottom));
+        if (placed.Left == x && placed.Top == y)
         {
-            _dockedEdges |= DockedEdges.Right;
+            return false;
         }
 
-        if (window.Bottom == workArea.Bottom)
-        {
-            _dockedEdges |= DockedEdges.Bottom;
-        }
-    }
-
-    private void KeepInsideWorkArea()
-    {
-        if (!User32.GetWindowRect(Handle, out User32.Rect window) || !TryGetWorkArea(window, out User32.Rect workArea))
-        {
-            return;
-        }
-
-        int width = window.Right - window.Left;
-        int height = window.Bottom - window.Top;
-        int x = window.Left;
-        int y = window.Top;
-
-        if (_dockedEdges.HasFlag(DockedEdges.Right) || window.Right > workArea.Right)
-        {
-            x = workArea.Right - width;
-        }
-
-        if (_dockedEdges.HasFlag(DockedEdges.Left) || x < workArea.Left)
-        {
-            x = workArea.Left;
-        }
-
-        if (_dockedEdges.HasFlag(DockedEdges.Bottom) || window.Bottom > workArea.Bottom)
-        {
-            y = workArea.Bottom - height;
-        }
-
-        if (_dockedEdges.HasFlag(DockedEdges.Top) || y < workArea.Top)
-        {
-            y = workArea.Top;
-        }
-
-        if (x != window.Left || y != window.Top)
-        {
-            User32.SetWindowPos(Handle, 0, x, y, 0, 0,
-                User32.SwpNoSize | User32.SwpNoZOrder | User32.SwpNoActivate);
-        }
+        position.X = placed.Left;
+        position.Y = placed.Top;
+        position.Flags &= ~User32.SwpNoMove;
+        return true;
     }
 
     private static bool TryGetWorkArea(User32.Rect windowRect, out User32.Rect workArea)

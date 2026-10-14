@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Metric_Cpu" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="Metric_Gpu" xml:space="preserve">
+    <value>GPU</value>
+  </data>
+  <data name="Metric_Memory" xml:space="preserve">
+    <value>RAM</value>
+  </data>
+  <data name="Metric_Disk" xml:space="preserve">
+    <value>Disco</value>
+  </data>
+  <data name="Metric_Network" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Widget_Disks" xml:space="preserve">
+    <value>Discos</value>
+  </data>
+  <data name="Widget_Speed" xml:space="preserve">
+    <value>Velocidad</value>
+  </data>
+  <data name="Widget_Test" xml:space="preserve">
+    <value>Prueba</value>
+  </data>
+  <data name="Format_Ping" xml:space="preserve">
+    <value>Ping {0}</value>
+  </data>
+  <data name="Format_PingDetail" xml:space="preserve">
+    <value>Ping {0} ({1})</value>
+  </data>
+  <data name="Format_LiveTest" xml:space="preserve">
+    <value>Prueba {0}</value>
+  </data>
+  <data name="Format_Session" xml:space="preserve">
+    <value>Sesión   ↓ {0}   ↑ {1}</value>
+  </data>
+  <data name="Format_DiskNumber" xml:space="preserve">
+    <value>Disco {0}</value>
+  </data>
+  <data name="Disk_SystemNotFound" xml:space="preserve">
+    <value>de Windows (no encontrado)</value>
+  </data>
+  <data name="Format_DiskNotFound" xml:space="preserve">
+    <value>{0} (no encontrado)</value>
+  </data>
+  <data name="Format_Gigahertz" xml:space="preserve">
+    <value>{0:0.00} GHz</value>
+  </data>
+  <data name="Format_UsedOfTotal" xml:space="preserve">
+    <value>{0:0.0} / {1:0.0} GB</value>
+  </data>
+  <data name="Format_Bandwidth" xml:space="preserve">
+    <value>{0:0.0} Mbps</value>
+  </data>
+  <data name="Format_NetworkRate" xml:space="preserve">
+    <value>{0:0.00} Mbps</value>
+  </data>
+  <data name="Format_Milliseconds" xml:space="preserve">
+    <value>{0:0} ms</value>
+  </data>
+  <data name="Format_Size" xml:space="preserve">
+    <value>{0:0.##} {1}</value>
+  </data>
+  <data name="Unit_Bytes" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="Unit_Kilobytes" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="Unit_Megabytes" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="Unit_Gigabytes" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="Unit_Terabytes" xml:space="preserve">
+    <value>TB</value>
+  </data>
+  <data name="SpeedTest_Title" xml:space="preserve">
+    <value>Prueba de velocidad</value>
+  </data>
+  <data name="SpeedTest_NoneYet" xml:space="preserve">
+    <value>Todavía no hay ninguna prueba</value>
+  </data>
+  <data name="SpeedTest_NoneYetStatus" xml:space="preserve">
+    <value>Todavía no hay ninguna prueba.</value>
+  </data>
+  <data name="SpeedTest_HowTo" xml:space="preserve">
+    <value>Menú del icono › Probar la velocidad de internet</value>
+  </data>
+  <data name="Format_SpeedTestLatency" xml:space="preserve">
+    <value>Latencia {0} · jitter {1}</value>
+  </data>
+  <data name="Format_MeasuredAt" xml:space="preserve">
+    <value>{0} · Cloudflare</value>
+  </data>
+  <data name="Format_LastTest" xml:space="preserve">
+    <value>Última prueba ({0}): {1} · {2}</value>
+  </data>
+  <data name="SpeedTest_Starting" xml:space="preserve">
+    <value>Iniciando...</value>
+  </data>
+  <data name="SpeedTest_Cancelled" xml:space="preserve">
+    <value>Prueba cancelada.</value>
+  </data>
+  <data name="Format_LatencyLive" xml:space="preserve">
+    <value>Latencia {0}</value>
+  </data>
+  <data name="Stage_Latency" xml:space="preserve">
+    <value>Midiendo la latencia...</value>
+  </data>
+  <data name="Stage_Download" xml:space="preserve">
+    <value>Midiendo la descarga...</value>
+  </data>
+  <data name="Stage_Upload" xml:space="preserve">
+    <value>Midiendo la subida...</value>
+  </data>
+  <data name="Format_TestFailed" xml:space="preserve">
+    <value>La prueba falló {0}: {1}.</value>
+  </data>
+  <data name="SpeedTest_FailedNoMeasurement" xml:space="preserve">
+    <value>La prueba falló porque ninguna medición fue válida.</value>
+  </data>
+  <data name="Step_Latency" xml:space="preserve">
+    <value>en la medición de latencia</value>
+  </data>
+  <data name="Format_StepDownload" xml:space="preserve">
+    <value>en la descarga de {0}</value>
+  </data>
+  <data name="Format_StepUpload" xml:space="preserve">
+    <value>en la subida de {0}</value>
+  </data>
+  <data name="Format_ReasonRefused" xml:space="preserve">
+    <value>el servidor rechazó la solicitud ({0})</value>
+  </data>
+  <data name="Format_ReasonServerError" xml:space="preserve">
+    <value>el servidor respondió con un error ({0})</value>
+  </data>
+  <data name="Format_ReasonUnreachable" xml:space="preserve">
+    <value>no se pudo contactar con el servidor ({0})</value>
+  </data>
+  <data name="Format_ReasonConnectionLost" xml:space="preserve">
+    <value>la conexión se cortó durante la transferencia ({0})</value>
+  </data>
+  <data name="Reason_Timeout" xml:space="preserve">
+    <value>el servidor tardó demasiado en responder</value>
+  </data>
+  <data name="Tray_AlwaysOnTop" xml:space="preserve">
+    <value>Siempre visible</value>
+  </data>
+  <data name="Tray_Desktop" xml:space="preserve">
+    <value>En el escritorio</value>
+  </data>
+  <data name="Tray_Layout" xml:space="preserve">
+    <value>Vista</value>
+  </data>
+  <data name="Layout_Full" xml:space="preserve">
+    <value>Completa</value>
+  </data>
+  <data name="Layout_Horizontal" xml:space="preserve">
+    <value>Compacta horizontal</value>
+  </data>
+  <data name="Layout_Vertical" xml:space="preserve">
+    <value>Compacta vertical</value>
+  </data>
+  <data name="Tray_SnapToEdges" xml:space="preserve">
+    <value>Ajustar a los bordes</value>
+  </data>
+  <data name="Tray_LockPosition" xml:space="preserve">
+    <value>Bloquear posición</value>
+  </data>
+  <data name="Tray_StartWithWindows" xml:space="preserve">
+    <value>Iniciar con Windows</value>
+  </data>
+  <data name="Tray_Settings" xml:space="preserve">
+    <value>Configuración...</value>
+  </data>
+  <data name="Tray_SpeedTest" xml:space="preserve">
+    <value>Probar la velocidad de internet</value>
+  </data>
+  <data name="Tray_SpeedTestRunning" xml:space="preserve">
+    <value>Probando la velocidad...</value>
+  </data>
+  <data name="Tray_ResetNetwork" xml:space="preserve">
+    <value>Reiniciar contador de red</value>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="App_UnexpectedError" xml:space="preserve">
+    <value>cobihw: error inesperado</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Configuración de cobihw</value>
+  </data>
+  <data name="Settings_ChooseColor" xml:space="preserve">
+    <value>Elegir...</value>
+  </data>
+  <data name="Settings_RestoreDefaults" xml:space="preserve">
+    <value>Restablecer</value>
+  </data>
+  <data name="Settings_Close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="Settings_Apply" xml:space="preserve">
+    <value>Aplicar</value>
+  </data>
+  <data name="Tab_Display" xml:space="preserve">
+    <value>Visualización</value>
+  </data>
+  <data name="Display_ShowInWidget" xml:space="preserve">
+    <value>Mostrar en el widget:</value>
+  </data>
+  <data name="Display_DragHint" xml:space="preserve">
+    <value>Arrastra las filas para cambiar el orden. Se aplica a las tres vistas y a los detalles.</value>
+  </data>
+  <data name="Display_SelectOne" xml:space="preserve">
+    <value>Marca al menos un elemento.</value>
+  </data>
+  <data name="Display_MonitoredDisk" xml:space="preserve">
+    <value>Disco supervisado:</value>
+  </data>
+  <data name="Display_DetailedTooltip" xml:space="preserve">
+    <value>Mostrar detalles al pasar el ratón</value>
+  </data>
+  <data name="Display_DetailsHint" xml:space="preserve">
+    <value>Los detalles muestran todos los elementos, incluidos los ocultos.</value>
+  </data>
+  <data name="Disk_Windows" xml:space="preserve">
+    <value>Disco de Windows</value>
+  </data>
+  <data name="Format_DiskWindows" xml:space="preserve">
+    <value>Disco de Windows — Disco {0}</value>
+  </data>
+  <data name="Format_DiskOptionNotFound" xml:space="preserve">
+    <value>Disco {0} (no encontrado)</value>
+  </data>
+  <data name="Tab_Appearance" xml:space="preserve">
+    <value>Apariencia</value>
+  </data>
+  <data name="Appearance_Language" xml:space="preserve">
+    <value>Idioma:</value>
+  </data>
+  <data name="Language_Automatic" xml:space="preserve">
+    <value>Automático (idioma de Windows)</value>
+  </data>
+  <data name="Appearance_Background" xml:space="preserve">
+    <value>Fondo</value>
+  </data>
+  <data name="Appearance_BackgroundColor" xml:space="preserve">
+    <value>Color de fondo</value>
+  </data>
+  <data name="Appearance_Transparency" xml:space="preserve">
+    <value>Transparencia del fondo:</value>
+  </data>
+  <data name="Appearance_TransparencyHint" xml:space="preserve">
+    <value>Solo el fondo se vuelve transparente; los textos y las barras siguen sólidos.</value>
+  </data>
+  <data name="Appearance_Text" xml:space="preserve">
+    <value>Texto</value>
+  </data>
+  <data name="Appearance_TextColor" xml:space="preserve">
+    <value>Color del texto</value>
+  </data>
+  <data name="Appearance_Weight" xml:space="preserve">
+    <value>Grosor:</value>
+  </data>
+  <data name="Appearance_LabelsHint" xml:space="preserve">
+    <value>Las etiquetas (CPU, RAM...) usan el color del texto un poco más tenue.</value>
+  </data>
+  <data name="Weight_Light" xml:space="preserve">
+    <value>Fina</value>
+  </data>
+  <data name="Weight_Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="Weight_Medium" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="Weight_SemiBold" xml:space="preserve">
+    <value>Seminegrita</value>
+  </data>
+  <data name="Weight_Bold" xml:space="preserve">
+    <value>Negrita</value>
+  </data>
+  <data name="Tab_Network" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Network_Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="Network_Address" xml:space="preserve">
+    <value>Dirección (IP o nombre):</value>
+  </data>
+  <data name="Network_AddressError" xml:space="preserve">
+    <value>Usa una IP (p. ej., 8.8.8.8) o un nombre (p. ej., dns.google).</value>
+  </data>
+  <data name="Network_PingHint" xml:space="preserve">
+    <value>8.8.8.8 es Google (predeterminado). 1.1.1.1 es Cloudflare, la misma red de la prueba de velocidad.</value>
+  </data>
+  <data name="Network_TestNow" xml:space="preserve">
+    <value>Probar ahora</value>
+  </data>
+  <data name="Network_CancelTest" xml:space="preserve">
+    <value>Cancelar prueba</value>
+  </data>
+  <data name="Network_DataHint" xml:space="preserve">
+    <value>Usa los servidores de Cloudflare. Consume unos 200 MB en una conexión de 100 Mbps y 700 MB en una de 1 Gbps, y ralentiza internet hasta 30 segundos.</value>
+  </data>
+  <data name="Tab_Colors" xml:space="preserve">
+    <value>Colores</value>
+  </data>
+  <data name="Colors_Enabled" xml:space="preserve">
+    <value>Colorear según el uso</value>
+  </data>
+  <data name="Colors_ThresholdsHeader" xml:space="preserve">
+    <value>El color cambia cuando el uso llega a (%):</value>
+  </data>
+  <data name="Level_Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="Level_Warning" xml:space="preserve">
+    <value>Atención</value>
+  </data>
+  <data name="Level_Critical" xml:space="preserve">
+    <value>Crítico</value>
+  </data>
+  <data name="Colors_BelowHint" xml:space="preserve">
+    <value>Por debajo de "Atención", se usa el color "Normal".</value>
+  </data>
+  <data name="Colors_LevelColors" xml:space="preserve">
+    <value>Color de cada nivel:</value>
+  </data>
+  <data name="Format_ThresholdRangeError" xml:space="preserve">
+    <value>Usa números enteros de {0} a {1}.</value>
+  </data>
+  <data name="Threshold_OrderError" xml:space="preserve">
+    <value>Atención debe empezar antes que Crítico.</value>
+  </data>
+  <data name="Tray_ClickThrough" xml:space="preserve">
+    <value>Dejar pasar los clics</value>
+  </data>
+  <data name="Display_ClickThrough" xml:space="preserve">
+    <value>Dejar que los clics atraviesen el widget</value>
+  </data>
+  <data name="Display_InteractionKey" xml:space="preserve">
+    <value>Mantén pulsado para interactuar (arrastrar, detalles):</value>
+  </data>
+  <data name="Display_ClickThroughHint" xml:space="preserve">
+    <value>Mientras está activado, el widget ignora el ratón. Mantén pulsada la tecla de arriba para moverlo o ver los detalles, o desactívalo en el menú del icono.</value>
+  </data>
+  <data name="Key_None" xml:space="preserve">
+    <value>Ninguna (solo el menú del icono)</value>
+  </data>
+</root>

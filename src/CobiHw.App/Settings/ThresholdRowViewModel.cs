@@ -1,18 +1,22 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CobiHw.App.Localization;
+using CobiHw.App.Resources;
 
 namespace CobiHw.App.Settings;
 
 public sealed partial class ThresholdRowViewModel : ObservableObject
 {
-    public ThresholdRowViewModel(string name, UsageThresholds thresholds)
+    private readonly MetricItem _item;
+
+    public ThresholdRowViewModel(MetricItem item, UsageThresholds thresholds)
     {
-        Name = name;
+        _item = item;
         Reset(thresholds);
     }
 
-    public string Name { get; }
+    public string Name => MetricRowViewModel.NameOf(_item);
 
     [ObservableProperty] private string _warningText = string.Empty;
     [ObservableProperty] private string _criticalText = string.Empty;
@@ -25,8 +29,14 @@ public sealed partial class ThresholdRowViewModel : ObservableObject
 
     public void Reset(UsageThresholds thresholds)
     {
-        WarningText = thresholds.Warning.ToString(CultureInfo.CurrentCulture);
-        CriticalText = thresholds.Critical.ToString(CultureInfo.CurrentCulture);
+        WarningText = thresholds.Warning.ToString(Localizer.Instance.Culture);
+        CriticalText = thresholds.Critical.ToString(Localizer.Instance.Culture);
+    }
+
+    public void RefreshTexts()
+    {
+        OnPropertyChanged(nameof(Name));
+        Validate();
     }
 
     public UsageThresholds ToThresholds() =>
@@ -50,13 +60,13 @@ public sealed partial class ThresholdRowViewModel : ObservableObject
 
         if (!TryParsePercent(WarningText, out int warning) || !TryParsePercent(CriticalText, out int critical))
         {
-            error = $"Use números inteiros de {UsageThresholds.Minimum} a {UsageThresholds.Maximum}.";
+            error = Localizer.Format(Strings.Format_ThresholdRangeError, UsageThresholds.Minimum, UsageThresholds.Maximum);
             return false;
         }
 
         if (warning >= critical)
         {
-            error = "O amarelo precisa começar antes do vermelho.";
+            error = Strings.Threshold_OrderError;
             return false;
         }
 
@@ -66,6 +76,6 @@ public sealed partial class ThresholdRowViewModel : ObservableObject
     }
 
     private static bool TryParsePercent(string text, out int value) =>
-        int.TryParse(text, NumberStyles.Integer, CultureInfo.CurrentCulture, out value) &&
+        int.TryParse(text, NumberStyles.Integer, Localizer.Instance.Culture, out value) &&
         value is >= UsageThresholds.Minimum and <= UsageThresholds.Maximum;
 }

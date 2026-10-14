@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Metric_Cpu" xml:space="preserve">
+    <value>ЦП</value>
+  </data>
+  <data name="Metric_Gpu" xml:space="preserve">
+    <value>ГП</value>
+  </data>
+  <data name="Metric_Memory" xml:space="preserve">
+    <value>ОЗУ</value>
+  </data>
+  <data name="Metric_Disk" xml:space="preserve">
+    <value>Диск</value>
+  </data>
+  <data name="Metric_Network" xml:space="preserve">
+    <value>Сеть</value>
+  </data>
+  <data name="Widget_Disks" xml:space="preserve">
+    <value>Диски</value>
+  </data>
+  <data name="Widget_Speed" xml:space="preserve">
+    <value>Скорость</value>
+  </data>
+  <data name="Widget_Test" xml:space="preserve">
+    <value>Тест</value>
+  </data>
+  <data name="Format_Ping" xml:space="preserve">
+    <value>Пинг {0}</value>
+  </data>
+  <data name="Format_PingDetail" xml:space="preserve">
+    <value>Пинг {0} ({1})</value>
+  </data>
+  <data name="Format_LiveTest" xml:space="preserve">
+    <value>Тест {0}</value>
+  </data>
+  <data name="Format_Session" xml:space="preserve">
+    <value>Сеанс   ↓ {0}   ↑ {1}</value>
+  </data>
+  <data name="Format_DiskNumber" xml:space="preserve">
+    <value>Диск {0}</value>
+  </data>
+  <data name="Disk_SystemNotFound" xml:space="preserve">
+    <value>(диск Windows не найден)</value>
+  </data>
+  <data name="Format_DiskNotFound" xml:space="preserve">
+    <value>{0} (не найден)</value>
+  </data>
+  <data name="Format_Gigahertz" xml:space="preserve">
+    <value>{0:0.00} ГГц</value>
+  </data>
+  <data name="Format_UsedOfTotal" xml:space="preserve">
+    <value>{0:0.0} / {1:0.0} ГБ</value>
+  </data>
+  <data name="Format_Bandwidth" xml:space="preserve">
+    <value>{0:0.0} Мбит/с</value>
+  </data>
+  <data name="Format_NetworkRate" xml:space="preserve">
+    <value>{0:0.00} Мбит/с</value>
+  </data>
+  <data name="Format_Milliseconds" xml:space="preserve">
+    <value>{0:0} мс</value>
+  </data>
+  <data name="Format_Size" xml:space="preserve">
+    <value>{0:0.##} {1}</value>
+  </data>
+  <data name="Unit_Bytes" xml:space="preserve">
+    <value>Б</value>
+  </data>
+  <data name="Unit_Kilobytes" xml:space="preserve">
+    <value>КБ</value>
+  </data>
+  <data name="Unit_Megabytes" xml:space="preserve">
+    <value>МБ</value>
+  </data>
+  <data name="Unit_Gigabytes" xml:space="preserve">
+    <value>ГБ</value>
+  </data>
+  <data name="Unit_Terabytes" xml:space="preserve">
+    <value>ТБ</value>
+  </data>
+  <data name="SpeedTest_Title" xml:space="preserve">
+    <value>Тест скорости</value>
+  </data>
+  <data name="SpeedTest_NoneYet" xml:space="preserve">
+    <value>Тест ещё не проводился</value>
+  </data>
+  <data name="SpeedTest_NoneYetStatus" xml:space="preserve">
+    <value>Тест ещё не проводился.</value>
+  </data>
+  <data name="SpeedTest_HowTo" xml:space="preserve">
+    <value>Меню значка › Проверить скорость интернета</value>
+  </data>
+  <data name="Format_SpeedTestLatency" xml:space="preserve">
+    <value>Задержка {0} · джиттер {1}</value>
+  </data>
+  <data name="Format_MeasuredAt" xml:space="preserve">
+    <value>{0} · Cloudflare</value>
+  </data>
+  <data name="Format_LastTest" xml:space="preserve">
+    <value>Последний тест ({0}): {1} · {2}</value>
+  </data>
+  <data name="SpeedTest_Starting" xml:space="preserve">
+    <value>Запуск...</value>
+  </data>
+  <data name="SpeedTest_Cancelled" xml:space="preserve">
+    <value>Тест отменён.</value>
+  </data>
+  <data name="Format_LatencyLive" xml:space="preserve">
+    <value>Задержка {0}</value>
+  </data>
+  <data name="Stage_Latency" xml:space="preserve">
+    <value>Измерение задержки...</value>
+  </data>
+  <data name="Stage_Download" xml:space="preserve">
+    <value>Измерение загрузки...</value>
+  </data>
+  <data name="Stage_Upload" xml:space="preserve">
+    <value>Измерение отдачи...</value>
+  </data>
+  <data name="Format_TestFailed" xml:space="preserve">
+    <value>Тест не удался {0}: {1}.</value>
+  </data>
+  <data name="SpeedTest_FailedNoMeasurement" xml:space="preserve">
+    <value>Тест не удался: ни одно измерение не было корректным.</value>
+  </data>
+  <data name="Step_Latency" xml:space="preserve">
+    <value>при измерении задержки</value>
+  </data>
+  <data name="Format_StepDownload" xml:space="preserve">
+    <value>при загрузке {0}</value>
+  </data>
+  <data name="Format_StepUpload" xml:space="preserve">
+    <value>при отдаче {0}</value>
+  </data>
+  <data name="Format_ReasonRefused" xml:space="preserve">
+    <value>сервер отклонил запрос ({0})</value>
+  </data>
+  <data name="Format_ReasonServerError" xml:space="preserve">
+    <value>сервер вернул ошибку ({0})</value>
+  </data>
+  <data name="Format_ReasonUnreachable" xml:space="preserve">
+    <value>не удалось связаться с сервером ({0})</value>
+  </data>
+  <data name="Format_ReasonConnectionLost" xml:space="preserve">
+    <value>соединение прервалось во время передачи ({0})</value>
+  </data>
+  <data name="Reason_Timeout" xml:space="preserve">
+    <value>сервер слишком долго не отвечал</value>
+  </data>
+  <data name="Tray_AlwaysOnTop" xml:space="preserve">
+    <value>Поверх всех окон</value>
+  </data>
+  <data name="Tray_Desktop" xml:space="preserve">
+    <value>На рабочем столе</value>
+  </data>
+  <data name="Tray_Layout" xml:space="preserve">
+    <value>Вид</value>
+  </data>
+  <data name="Layout_Full" xml:space="preserve">
+    <value>Полный</value>
+  </data>
+  <data name="Layout_Horizontal" xml:space="preserve">
+    <value>Компактный горизонтальный</value>
+  </data>
+  <data name="Layout_Vertical" xml:space="preserve">
+    <value>Компактный вертикальный</value>
+  </data>
+  <data name="Tray_SnapToEdges" xml:space="preserve">
+    <value>Прилипать к краям</value>
+  </data>
+  <data name="Tray_LockPosition" xml:space="preserve">
+    <value>Закрепить положение</value>
+  </data>
+  <data name="Tray_StartWithWindows" xml:space="preserve">
+    <value>Запускать вместе с Windows</value>
+  </data>
+  <data name="Tray_Settings" xml:space="preserve">
+    <value>Настройки...</value>
+  </data>
+  <data name="Tray_SpeedTest" xml:space="preserve">
+    <value>Проверить скорость интернета</value>
+  </data>
+  <data name="Tray_SpeedTestRunning" xml:space="preserve">
+    <value>Проверка скорости...</value>
+  </data>
+  <data name="Tray_ResetNetwork" xml:space="preserve">
+    <value>Сбросить счётчик сети</value>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="App_UnexpectedError" xml:space="preserve">
+    <value>cobihw: непредвиденная ошибка</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Настройки cobihw</value>
+  </data>
+  <data name="Settings_ChooseColor" xml:space="preserve">
+    <value>Выбрать...</value>
+  </data>
+  <data name="Settings_RestoreDefaults" xml:space="preserve">
+    <value>По умолчанию</value>
+  </data>
+  <data name="Settings_Close" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="Settings_Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="Tab_Display" xml:space="preserve">
+    <value>Отображение</value>
+  </data>
+  <data name="Display_ShowInWidget" xml:space="preserve">
+    <value>Показывать в виджете:</value>
+  </data>
+  <data name="Display_DragHint" xml:space="preserve">
+    <value>Перетаскивайте строки, чтобы изменить порядок. Применяется ко всем трём видам и к подробностям.</value>
+  </data>
+  <data name="Display_SelectOne" xml:space="preserve">
+    <value>Выберите хотя бы один элемент.</value>
+  </data>
+  <data name="Display_MonitoredDisk" xml:space="preserve">
+    <value>Отслеживаемый диск:</value>
+  </data>
+  <data name="Display_DetailedTooltip" xml:space="preserve">
+    <value>Показывать подробности при наведении</value>
+  </data>
+  <data name="Display_DetailsHint" xml:space="preserve">
+    <value>В подробностях показаны все элементы, включая скрытые.</value>
+  </data>
+  <data name="Disk_Windows" xml:space="preserve">
+    <value>Диск Windows</value>
+  </data>
+  <data name="Format_DiskWindows" xml:space="preserve">
+    <value>Диск Windows — Диск {0}</value>
+  </data>
+  <data name="Format_DiskOptionNotFound" xml:space="preserve">
+    <value>Диск {0} (не найден)</value>
+  </data>
+  <data name="Tab_Appearance" xml:space="preserve">
+    <value>Внешний вид</value>
+  </data>
+  <data name="Appearance_Language" xml:space="preserve">
+    <value>Язык:</value>
+  </data>
+  <data name="Language_Automatic" xml:space="preserve">
+    <value>Автоматически (язык Windows)</value>
+  </data>
+  <data name="Appearance_Background" xml:space="preserve">
+    <value>Фон</value>
+  </data>
+  <data name="Appearance_BackgroundColor" xml:space="preserve">
+    <value>Цвет фона</value>
+  </data>
+  <data name="Appearance_Transparency" xml:space="preserve">
+    <value>Прозрачность фона:</value>
+  </data>
+  <data name="Appearance_TransparencyHint" xml:space="preserve">
+    <value>Прозрачным становится только фон; текст и полосы остаются непрозрачными.</value>
+  </data>
+  <data name="Appearance_Text" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="Appearance_TextColor" xml:space="preserve">
+    <value>Цвет текста</value>
+  </data>
+  <data name="Appearance_Weight" xml:space="preserve">
+    <value>Толщина:</value>
+  </data>
+  <data name="Appearance_LabelsHint" xml:space="preserve">
+    <value>Подписи (ЦП, ОЗУ...) используют цвет текста чуть бледнее.</value>
+  </data>
+  <data name="Weight_Light" xml:space="preserve">
+    <value>Тонкий</value>
+  </data>
+  <data name="Weight_Normal" xml:space="preserve">
+    <value>Обычный</value>
+  </data>
+  <data name="Weight_Medium" xml:space="preserve">
+    <value>Средний</value>
+  </data>
+  <data name="Weight_SemiBold" xml:space="preserve">
+    <value>Полужирный</value>
+  </data>
+  <data name="Weight_Bold" xml:space="preserve">
+    <value>Жирный</value>
+  </data>
+  <data name="Tab_Network" xml:space="preserve">
+    <value>Сеть</value>
+  </data>
+  <data name="Network_Ping" xml:space="preserve">
+    <value>Пинг</value>
+  </data>
+  <data name="Network_Address" xml:space="preserve">
+    <value>Адрес (IP или имя):</value>
+  </data>
+  <data name="Network_AddressError" xml:space="preserve">
+    <value>Укажите IP (например, 8.8.8.8) или имя (например, dns.google).</value>
+  </data>
+  <data name="Network_PingHint" xml:space="preserve">
+    <value>8.8.8.8 — это Google (по умолчанию). 1.1.1.1 — Cloudflare, та же сеть, что и у теста скорости.</value>
+  </data>
+  <data name="Network_TestNow" xml:space="preserve">
+    <value>Проверить</value>
+  </data>
+  <data name="Network_CancelTest" xml:space="preserve">
+    <value>Отменить тест</value>
+  </data>
+  <data name="Network_DataHint" xml:space="preserve">
+    <value>Использует серверы Cloudflare. Расходует около 200 МБ при подключении 100 Мбит/с и 700 МБ при 1 Гбит/с и замедляет интернет до 30 секунд.</value>
+  </data>
+  <data name="Tab_Colors" xml:space="preserve">
+    <value>Цвета</value>
+  </data>
+  <data name="Colors_Enabled" xml:space="preserve">
+    <value>Окрашивать по нагрузке</value>
+  </data>
+  <data name="Colors_ThresholdsHeader" xml:space="preserve">
+    <value>Цвет меняется, когда нагрузка достигает (%):</value>
+  </data>
+  <data name="Level_Normal" xml:space="preserve">
+    <value>Норма</value>
+  </data>
+  <data name="Level_Warning" xml:space="preserve">
+    <value>Внимание</value>
+  </data>
+  <data name="Level_Critical" xml:space="preserve">
+    <value>Критично</value>
+  </data>
+  <data name="Colors_BelowHint" xml:space="preserve">
+    <value>Ниже «Внимание» используется цвет «Норма».</value>
+  </data>
+  <data name="Colors_LevelColors" xml:space="preserve">
+    <value>Цвет каждого уровня:</value>
+  </data>
+  <data name="Format_ThresholdRangeError" xml:space="preserve">
+    <value>Используйте целые числа от {0} до {1}.</value>
+  </data>
+  <data name="Threshold_OrderError" xml:space="preserve">
+    <value>«Внимание» должно начинаться раньше, чем «Критично».</value>
+  </data>
+  <data name="Tray_ClickThrough" xml:space="preserve">
+    <value>Пропускать клики</value>
+  </data>
+  <data name="Display_ClickThrough" xml:space="preserve">
+    <value>Пропускать клики сквозь виджет</value>
+  </data>
+  <data name="Display_InteractionKey" xml:space="preserve">
+    <value>Удерживайте для взаимодействия (перемещение, подробности):</value>
+  </data>
+  <data name="Display_ClickThroughHint" xml:space="preserve">
+    <value>Пока включено, виджет игнорирует мышь. Удерживайте клавишу выше, чтобы переместить его или увидеть подробности, или отключите в меню значка.</value>
+  </data>
+  <data name="Key_None" xml:space="preserve">
+    <value>Нет (только через меню значка)</value>
+  </data>
+</root>

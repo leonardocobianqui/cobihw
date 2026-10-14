@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Metric_Cpu" xml:space="preserve">
+    <value>CPU</value>
+    <comment>Nome curto do processador</comment>
+  </data>
+  <data name="Metric_Gpu" xml:space="preserve">
+    <value>GPU</value>
+    <comment>Nome curto da placa de vídeo</comment>
+  </data>
+  <data name="Metric_Memory" xml:space="preserve">
+    <value>RAM</value>
+    <comment>Nome curto da memória RAM</comment>
+  </data>
+  <data name="Metric_Disk" xml:space="preserve">
+    <value>Disk</value>
+    <comment>Item disco</comment>
+  </data>
+  <data name="Metric_Network" xml:space="preserve">
+    <value>Network</value>
+    <comment>Item rede</comment>
+  </data>
+  <data name="Widget_Disks" xml:space="preserve">
+    <value>Disks</value>
+    <comment>Grupo de discos no detalhamento</comment>
+  </data>
+  <data name="Widget_Speed" xml:space="preserve">
+    <value>Speed</value>
+    <comment>Grupo do teste de velocidade no detalhamento</comment>
+  </data>
+  <data name="Widget_Test" xml:space="preserve">
+    <value>Test</value>
+    <comment>Rótulo do teste em andamento na visualização vertical</comment>
+  </data>
+  <data name="Format_Ping" xml:space="preserve">
+    <value>Ping {0}</value>
+    <comment>{0} = tempo, ex.: 23 ms</comment>
+  </data>
+  <data name="Format_PingDetail" xml:space="preserve">
+    <value>Ping {0} ({1})</value>
+    <comment>{0} = tempo; {1} = endereço</comment>
+  </data>
+  <data name="Format_LiveTest" xml:space="preserve">
+    <value>Test {0}</value>
+    <comment>{0} = velocidade ao vivo, ex.: ↓ 245,3 Mbps</comment>
+  </data>
+  <data name="Format_Session" xml:space="preserve">
+    <value>Session   ↓ {0}   ↑ {1}</value>
+    <comment>{0} = recebido; {1} = enviado desde que ligou</comment>
+  </data>
+  <data name="Format_DiskNumber" xml:space="preserve">
+    <value>Disk {0}</value>
+    <comment>{0} = número e letras, ex.: 1 (D:)</comment>
+  </data>
+  <data name="Disk_SystemNotFound" xml:space="preserve">
+    <value>(Windows disk not found)</value>
+    <comment>Mostrado ao lado do rótulo do disco</comment>
+  </data>
+  <data name="Format_DiskNotFound" xml:space="preserve">
+    <value>{0} (not found)</value>
+    <comment>{0} = número do disco; mostrado ao lado do rótulo do disco</comment>
+  </data>
+  <data name="Format_Gigahertz" xml:space="preserve">
+    <value>{0:0.00} GHz</value>
+    <comment>{0} = frequência</comment>
+  </data>
+  <data name="Format_UsedOfTotal" xml:space="preserve">
+    <value>{0:0.0} / {1:0.0} GB</value>
+    <comment>{0} = usado; {1} = total, em GB</comment>
+  </data>
+  <data name="Format_Bandwidth" xml:space="preserve">
+    <value>{0:0.0} Mbps</value>
+    <comment>Resultado do teste de velocidade</comment>
+  </data>
+  <data name="Format_NetworkRate" xml:space="preserve">
+    <value>{0:0.00} Mbps</value>
+    <comment>Tráfego atual da rede</comment>
+  </data>
+  <data name="Format_Milliseconds" xml:space="preserve">
+    <value>{0:0} ms</value>
+    <comment>Tempo em milissegundos</comment>
+  </data>
+  <data name="Format_Size" xml:space="preserve">
+    <value>{0:0.##} {1}</value>
+    <comment>{0} = número; {1} = unidade</comment>
+  </data>
+  <data name="Unit_Bytes" xml:space="preserve">
+    <value>B</value>
+    <comment>Unidade</comment>
+  </data>
+  <data name="Unit_Kilobytes" xml:space="preserve">
+    <value>KB</value>
+    <comment>Unidade</comment>
+  </data>
+  <data name="Unit_Megabytes" xml:space="preserve">
+    <value>MB</value>
+    <comment>Unidade</comment>
+  </data>
+  <data name="Unit_Gigabytes" xml:space="preserve">
+    <value>GB</value>
+    <comment>Unidade</comment>
+  </data>
+  <data name="Unit_Terabytes" xml:space="preserve">
+    <value>TB</value>
+    <comment>Unidade</comment>
+  </data>
+  <data name="SpeedTest_Title" xml:space="preserve">
+    <value>Speed test</value>
+    <comment>Título das notificações e da seção na aba Rede</comment>
+  </data>
+  <data name="SpeedTest_NoneYet" xml:space="preserve">
+    <value>No test yet</value>
+    <comment>Detalhamento, sem nenhum teste</comment>
+  </data>
+  <data name="SpeedTest_NoneYetStatus" xml:space="preserve">
+    <value>No test yet.</value>
+    <comment>Linha de status, sem nenhum teste</comment>
+  </data>
+  <data name="SpeedTest_HowTo" xml:space="preserve">
+    <value>Tray icon menu › Test internet speed</value>
+    <comment>Onde encontrar o teste</comment>
+  </data>
+  <data name="Format_SpeedTestLatency" xml:space="preserve">
+    <value>Latency {0} · jitter {1}</value>
+    <comment>{0} = latência; {1} = jitter</comment>
+  </data>
+  <data name="Format_MeasuredAt" xml:space="preserve">
+    <value>{0} · Cloudflare</value>
+    <comment>{0} = data e hora do teste</comment>
+  </data>
+  <data name="Format_LastTest" xml:space="preserve">
+    <value>Last test ({0}): {1} · {2}</value>
+    <comment>{0} = data; {1} = velocidades; {2} = latência</comment>
+  </data>
+  <data name="SpeedTest_Starting" xml:space="preserve">
+    <value>Starting...</value>
+    <comment>Antes da primeira medição</comment>
+  </data>
+  <data name="SpeedTest_Cancelled" xml:space="preserve">
+    <value>Test cancelled.</value>
+    <comment>Teste cancelado pelo usuário</comment>
+  </data>
+  <data name="Format_LatencyLive" xml:space="preserve">
+    <value>Latency {0}</value>
+    <comment>{0} = latência medida agora</comment>
+  </data>
+  <data name="Stage_Latency" xml:space="preserve">
+    <value>Measuring latency...</value>
+    <comment>Etapa em andamento</comment>
+  </data>
+  <data name="Stage_Download" xml:space="preserve">
+    <value>Measuring download...</value>
+    <comment>Etapa em andamento</comment>
+  </data>
+  <data name="Stage_Upload" xml:space="preserve">
+    <value>Measuring upload...</value>
+    <comment>Etapa em andamento</comment>
+  </data>
+  <data name="Format_TestFailed" xml:space="preserve">
+    <value>The test failed {0}: {1}.</value>
+    <comment>{0} = etapa (Step_*); {1} = motivo (Reason_*)</comment>
+  </data>
+  <data name="SpeedTest_FailedNoMeasurement" xml:space="preserve">
+    <value>The test failed because no measurement was valid.</value>
+    <comment>Nenhuma medição válida</comment>
+  </data>
+  <data name="Step_Latency" xml:space="preserve">
+    <value>during the latency measurement</value>
+    <comment>Completa Format_TestFailed</comment>
+  </data>
+  <data name="Format_StepDownload" xml:space="preserve">
+    <value>during the {0} download</value>
+    <comment>{0} = tamanho, ex.: 50 MB; completa Format_TestFailed</comment>
+  </data>
+  <data name="Format_StepUpload" xml:space="preserve">
+    <value>during the {0} upload</value>
+    <comment>{0} = tamanho; completa Format_TestFailed</comment>
+  </data>
+  <data name="Format_ReasonRefused" xml:space="preserve">
+    <value>the server refused the request ({0})</value>
+    <comment>{0} = código HTTP, ex.: 403 Forbidden</comment>
+  </data>
+  <data name="Format_ReasonServerError" xml:space="preserve">
+    <value>the server returned an error ({0})</value>
+    <comment>{0} = código HTTP</comment>
+  </data>
+  <data name="Format_ReasonUnreachable" xml:space="preserve">
+    <value>could not reach the server ({0})</value>
+    <comment>{0} = detalhe técnico do Windows</comment>
+  </data>
+  <data name="Format_ReasonConnectionLost" xml:space="preserve">
+    <value>the connection dropped during the transfer ({0})</value>
+    <comment>{0} = detalhe técnico do Windows</comment>
+  </data>
+  <data name="Reason_Timeout" xml:space="preserve">
+    <value>the server took too long to respond</value>
+    <comment>Motivo</comment>
+  </data>
+  <data name="Tray_AlwaysOnTop" xml:space="preserve">
+    <value>Always on top</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_Desktop" xml:space="preserve">
+    <value>On the desktop</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_Layout" xml:space="preserve">
+    <value>View</value>
+    <comment>Menu do ícone: submenu das visualizações</comment>
+  </data>
+  <data name="Layout_Full" xml:space="preserve">
+    <value>Full</value>
+    <comment>Visualização</comment>
+  </data>
+  <data name="Layout_Horizontal" xml:space="preserve">
+    <value>Compact horizontal</value>
+    <comment>Visualização</comment>
+  </data>
+  <data name="Layout_Vertical" xml:space="preserve">
+    <value>Compact vertical</value>
+    <comment>Visualização</comment>
+  </data>
+  <data name="Tray_SnapToEdges" xml:space="preserve">
+    <value>Snap to edges</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_LockPosition" xml:space="preserve">
+    <value>Lock position</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_StartWithWindows" xml:space="preserve">
+    <value>Start with Windows</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_Settings" xml:space="preserve">
+    <value>Settings...</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_SpeedTest" xml:space="preserve">
+    <value>Test internet speed</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_SpeedTestRunning" xml:space="preserve">
+    <value>Testing speed...</value>
+    <comment>Menu do ícone, durante o teste</comment>
+  </data>
+  <data name="Tray_ResetNetwork" xml:space="preserve">
+    <value>Reset network counter</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>Exit</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="App_UnexpectedError" xml:space="preserve">
+    <value>cobihw: unexpected error</value>
+    <comment>Título da janela de erro inesperado</comment>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>cobihw settings</value>
+    <comment>Título da janela</comment>
+  </data>
+  <data name="Settings_ChooseColor" xml:space="preserve">
+    <value>Choose...</value>
+    <comment>Botão que abre o seletor de cores</comment>
+  </data>
+  <data name="Settings_RestoreDefaults" xml:space="preserve">
+    <value>Restore defaults</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Settings_Close" xml:space="preserve">
+    <value>Close</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Settings_Apply" xml:space="preserve">
+    <value>Apply</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Tab_Display" xml:space="preserve">
+    <value>Display</value>
+    <comment>Aba</comment>
+  </data>
+  <data name="Display_ShowInWidget" xml:space="preserve">
+    <value>Show in the widget:</value>
+    <comment>Título da lista de itens</comment>
+  </data>
+  <data name="Display_DragHint" xml:space="preserve">
+    <value>Drag the rows to change the order. Applies to all three views and to the details.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Display_SelectOne" xml:space="preserve">
+    <value>Select at least one item.</value>
+    <comment>Erro</comment>
+  </data>
+  <data name="Display_MonitoredDisk" xml:space="preserve">
+    <value>Monitored disk:</value>
+    <comment>Título da caixa de discos</comment>
+  </data>
+  <data name="Display_DetailedTooltip" xml:space="preserve">
+    <value>Show details on mouse hover</value>
+    <comment>Caixa de marcar</comment>
+  </data>
+  <data name="Display_DetailsHint" xml:space="preserve">
+    <value>The details show every item, including the hidden ones.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Disk_Windows" xml:space="preserve">
+    <value>Windows disk</value>
+    <comment>Opção de disco, sem identificar qual</comment>
+  </data>
+  <data name="Format_DiskWindows" xml:space="preserve">
+    <value>Windows disk — Disk {0}</value>
+    <comment>{0} = número e letras do disco do Windows</comment>
+  </data>
+  <data name="Format_DiskOptionNotFound" xml:space="preserve">
+    <value>Disk {0} (not found)</value>
+    <comment>{0} = número do disco salvo que sumiu</comment>
+  </data>
+  <data name="Tab_Appearance" xml:space="preserve">
+    <value>Appearance</value>
+    <comment>Aba</comment>
+  </data>
+  <data name="Appearance_Language" xml:space="preserve">
+    <value>Language:</value>
+    <comment>Título da caixa de idioma</comment>
+  </data>
+  <data name="Language_Automatic" xml:space="preserve">
+    <value>Automatic (Windows language)</value>
+    <comment>Opção de idioma</comment>
+  </data>
+  <data name="Appearance_Background" xml:space="preserve">
+    <value>Background</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Appearance_BackgroundColor" xml:space="preserve">
+    <value>Background color</value>
+    <comment>Cor escolhível</comment>
+  </data>
+  <data name="Appearance_Transparency" xml:space="preserve">
+    <value>Background transparency:</value>
+    <comment>Rótulo do controle deslizante</comment>
+  </data>
+  <data name="Appearance_TransparencyHint" xml:space="preserve">
+    <value>Only the background becomes transparent; text and bars stay solid.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Appearance_Text" xml:space="preserve">
+    <value>Text</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Appearance_TextColor" xml:space="preserve">
+    <value>Text color</value>
+    <comment>Cor escolhível</comment>
+  </data>
+  <data name="Appearance_Weight" xml:space="preserve">
+    <value>Weight:</value>
+    <comment>Título da caixa de espessura</comment>
+  </data>
+  <data name="Appearance_LabelsHint" xml:space="preserve">
+    <value>Labels (CPU, RAM...) use a slightly dimmer text color.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Weight_Light" xml:space="preserve">
+    <value>Light</value>
+    <comment>Espessura</comment>
+  </data>
+  <data name="Weight_Normal" xml:space="preserve">
+    <value>Normal</value>
+    <comment>Espessura</comment>
+  </data>
+  <data name="Weight_Medium" xml:space="preserve">
+    <value>Medium</value>
+    <comment>Espessura</comment>
+  </data>
+  <data name="Weight_SemiBold" xml:space="preserve">
+    <value>Semibold</value>
+    <comment>Espessura</comment>
+  </data>
+  <data name="Weight_Bold" xml:space="preserve">
+    <value>Bold</value>
+    <comment>Espessura</comment>
+  </data>
+  <data name="Tab_Network" xml:space="preserve">
+    <value>Network</value>
+    <comment>Aba</comment>
+  </data>
+  <data name="Network_Ping" xml:space="preserve">
+    <value>Ping</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Network_Address" xml:space="preserve">
+    <value>Address (IP or name):</value>
+    <comment>Rótulo da caixa do ping</comment>
+  </data>
+  <data name="Network_AddressError" xml:space="preserve">
+    <value>Use an IP (e.g. 8.8.8.8) or a name (e.g. dns.google).</value>
+    <comment>Erro</comment>
+  </data>
+  <data name="Network_PingHint" xml:space="preserve">
+    <value>8.8.8.8 is Google (default). 1.1.1.1 is Cloudflare, the same network as the speed test.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Network_TestNow" xml:space="preserve">
+    <value>Test now</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Network_CancelTest" xml:space="preserve">
+    <value>Cancel test</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Network_DataHint" xml:space="preserve">
+    <value>Uses Cloudflare servers. Uses about 200 MB on a 100 Mbps connection and 700 MB on a 1 Gbps one, and slows the internet down for up to 30 seconds.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Tab_Colors" xml:space="preserve">
+    <value>Colors</value>
+    <comment>Aba</comment>
+  </data>
+  <data name="Colors_Enabled" xml:space="preserve">
+    <value>Color by usage</value>
+    <comment>Caixa de marcar</comment>
+  </data>
+  <data name="Colors_ThresholdsHeader" xml:space="preserve">
+    <value>The color changes when usage reaches (%):</value>
+    <comment>Título dos limites</comment>
+  </data>
+  <data name="Level_Normal" xml:space="preserve">
+    <value>Normal</value>
+    <comment>Nível de uso</comment>
+  </data>
+  <data name="Level_Warning" xml:space="preserve">
+    <value>Warning</value>
+    <comment>Nível de uso</comment>
+  </data>
+  <data name="Level_Critical" xml:space="preserve">
+    <value>Critical</value>
+    <comment>Nível de uso</comment>
+  </data>
+  <data name="Colors_BelowHint" xml:space="preserve">
+    <value>Below "Warning", the "Normal" color is used.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Colors_LevelColors" xml:space="preserve">
+    <value>Color of each level:</value>
+    <comment>Título da lista de cores</comment>
+  </data>
+  <data name="Format_ThresholdRangeError" xml:space="preserve">
+    <value>Use whole numbers from {0} to {1}.</value>
+    <comment>{0} = mínimo; {1} = máximo</comment>
+  </data>
+  <data name="Threshold_OrderError" xml:space="preserve">
+    <value>Warning must start before Critical.</value>
+    <comment>Erro</comment>
+  </data>
+  <data name="Tray_ClickThrough" xml:space="preserve">
+    <value>Click through</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="Display_ClickThrough" xml:space="preserve">
+    <value>Let clicks pass through the widget</value>
+    <comment>Caixa de marcar</comment>
+  </data>
+  <data name="Display_InteractionKey" xml:space="preserve">
+    <value>Hold to interact (drag, details):</value>
+    <comment>Título da caixa de tecla</comment>
+  </data>
+  <data name="Display_ClickThroughHint" xml:space="preserve">
+    <value>While it's on, the widget ignores the mouse. Hold the key above to move it or see the details, or turn it off in the tray icon menu.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Key_None" xml:space="preserve">
+    <value>None (tray icon menu only)</value>
+    <comment>Opção de tecla</comment>
+  </data>
+</root>

@@ -1,3 +1,5 @@
+using CobiHw.App.Localization;
+using CobiHw.App.Resources;
 using CobiHw.Core;
 
 namespace CobiHw.App;
@@ -10,40 +12,53 @@ internal static class DisplayFormat
 
     private static readonly string[] Trademarks = ["(R)", "(TM)", "®", "™"];
     private static readonly string[] GenericWords = ["Intel", "AMD", "NVIDIA", "CPU", "Processor"];
-    private static readonly string[] SizeUnits = ["B", "KB", "MB", "GB", "TB"];
 
     public static PercentText PercentParts(double? value) =>
-        value is null ? new PercentText(Unavailable, string.Empty) : new PercentText($"{value.Value:0}", "%");
+        value is null ? new PercentText(Unavailable, string.Empty) : new PercentText(Localizer.Format("{0:0}", value.Value), "%");
 
     public static string Percent(double? value) => PercentParts(value).Text;
 
     public static string Gigahertz(double? value) =>
-        value is null ? Unavailable : $"{value.Value:0.00} GHz";
+        value is null ? Unavailable : Localizer.Format(Strings.Format_Gigahertz, value.Value);
 
     public static string UsedOfTotal(ulong? usedBytes, ulong? totalBytes) =>
         usedBytes is null || totalBytes is null
             ? Unavailable
-            : $"{usedBytes.Value / BytesPerGigabyte:0.0} / {totalBytes.Value / BytesPerGigabyte:0.0} GB";
+            : Localizer.Format(Strings.Format_UsedOfTotal, usedBytes.Value / BytesPerGigabyte, totalBytes.Value / BytesPerGigabyte);
+
+    public static string Bandwidth(double bitsPerSecond) =>
+        Localizer.Format(Strings.Format_Bandwidth, bitsPerSecond / 1_000_000);
+
+    public static string Milliseconds(double? value) =>
+        value is null ? Unavailable : Localizer.Format(Strings.Format_Milliseconds, value.Value);
 
     public static string MegabitsPerSecond(double? bytesPerSecond) =>
-        bytesPerSecond is null ? Unavailable : $"{bytesPerSecond.Value * 8 / 1_000_000:0.00} Mbps";
+        bytesPerSecond is null ? Unavailable : Localizer.Format(Strings.Format_NetworkRate, bytesPerSecond.Value * 8 / 1_000_000);
 
     public static string Size(ulong bytes)
     {
+        string[] units = [Strings.Unit_Bytes, Strings.Unit_Kilobytes, Strings.Unit_Megabytes, Strings.Unit_Gigabytes, Strings.Unit_Terabytes];
         double value = bytes;
         int unit = 0;
 
-        while (value >= 1024 && unit < SizeUnits.Length - 1)
+        while (value >= 1024 && unit < units.Length - 1)
         {
             value /= 1024;
             unit++;
         }
 
-        return $"{value:0.##} {SizeUnits[unit]}";
+        return Localizer.Format(Strings.Format_Size, value, units[unit]);
     }
 
+    public static string TransferSize(long bytes) =>
+        bytes >= 1_000_000
+            ? Localizer.Format(Strings.Format_Size, bytes / 1_000_000, Strings.Unit_Megabytes)
+            : Localizer.Format(Strings.Format_Size, bytes / 1_000, Strings.Unit_Kilobytes);
+
     public static string DiskLabel(DiskActivity disk) =>
-        disk.Letters.Length == 0 ? $"{disk.Number}" : $"{disk.Number} ({disk.Letters})";
+        disk.Letters.Length == 0
+            ? Localizer.Format("{0}", disk.Number)
+            : Localizer.Format("{0} ({1})", disk.Number, disk.Letters);
 
     public static string ShortName(string? fullName)
     {

@@ -18,12 +18,12 @@ public sealed record GpuSnapshot(string? Name, double? UsagePercent, ulong? Memo
 
 public sealed record DiskSnapshot(IReadOnlyList<DiskActivity> Disks)
 {
-    public DiskActivity? Busiest => Disks.MaxBy(disk => disk.ActivePercent);
+    public DiskActivity? System => Disks.FirstOrDefault(disk => disk.IsSystem);
 
     public DiskActivity? Find(int number) => Disks.FirstOrDefault(disk => disk.Number == number);
 }
 
-public sealed record DiskActivity(int Number, string Letters, double ActivePercent);
+public sealed record DiskActivity(int Number, string Letters, double ActivePercent, bool IsSystem);
 
 public sealed record NetworkSnapshot(
     double? DownloadBytesPerSecond,

@@ -6,6 +6,8 @@ internal sealed class DiskReader
 {
     private const string TotalInstance = "_Total";
 
+    private static readonly string? SystemDriveLetter = Path.GetPathRoot(Environment.SystemDirectory)?.TrimEnd('\\');
+
     private readonly PdhCounter? _idleTime;
 
     public DiskReader(PdhQuery query)
@@ -32,12 +34,16 @@ internal sealed class DiskReader
             }
 
             double activePercent = Math.Clamp(100 - idlePercent, 0, 100);
-            disks.Add(new DiskActivity(number, letters, activePercent));
+            disks.Add(new DiskActivity(number, letters, activePercent, ContainsSystemDrive(letters)));
         }
 
         disks.Sort((left, right) => left.Number.CompareTo(right.Number));
         return disks;
     }
+
+    private static bool ContainsSystemDrive(string letters) =>
+        !string.IsNullOrEmpty(SystemDriveLetter) &&
+        letters.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(SystemDriveLetter, StringComparer.OrdinalIgnoreCase);
 
     private static bool TryParseInstance(string instance, out int number, out string letters)
     {

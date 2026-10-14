@@ -5,6 +5,9 @@ namespace CobiHw.App.Interop;
 internal static partial class User32
 {
     public const int WmWindowPosChanging = 0x0046;
+    public const int GwlExStyle = -20;
+    public const nint WsExTransparent = 0x20;
+    public const int VkLeftButton = 0x01;
     public const int WmMoving = 0x0216;
     public const nint HwndBottom = 1;
     public const uint SwpNoSize = 0x0001;
@@ -61,4 +64,13 @@ internal static partial class User32
     [LibraryImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool GetWindowRect(nint hwnd, out Rect rect);
+
+    [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
+    public static partial nint GetWindowLongPtr(nint hwnd, int index);
+
+    [LibraryImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
+    public static partial nint SetWindowLongPtr(nint hwnd, int index, nint value);
+
+    [LibraryImport("user32.dll")]
+    public static partial short GetAsyncKeyState(int key);
 }

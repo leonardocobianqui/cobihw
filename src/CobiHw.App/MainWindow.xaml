@@ -5,41 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CobiHw.App"
         xmlns:converters="clr-namespace:CobiHw.App.Converters"
+        xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel}"
         Title="cobihw"
         WindowStyle="None"
         ResizeMode="NoResize"
+        AllowsTransparency="True"
         SizeToContent="WidthAndHeight"
         ShowInTaskbar="False"
-        Background="#FF1E1F22"
-        Foreground="#FFE6E6E6"
+        Background="{Binding BackgroundColor}"
+        Foreground="{Binding TextColor}"
         FontFamily="Segoe UI"
         FontSize="13"
+        FontWeight="{Binding FontWeightName}"
+        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}"
         MouseLeftButtonDown="OnMouseLeftButtonDown">
 
     <Window.Resources>
-        <converters:UsageLevelBrushConverter x:Key="BarBrush" Neutral="#FF4FB0EA" Normal="#FF4CC26A" Warning="#FFE8B33A" Critical="#FFE5534B" />
-        <converters:UsageLevelBrushConverter x:Key="TextBrush" Neutral="#FFE6E6E6" Normal="#FF6FD68A" Warning="#FFF0C44C" Critical="#FFFF6B63" />
-        <converters:AnyTrueVisibilityConverter x:Key="AnyTrueVisibility" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
         <Style TargetType="ToolTip">
-            <Setter Property="Background" Value="#FF1E1F22" />
-            <Setter Property="Foreground" Value="#FFE6E6E6" />
-            <Setter Property="BorderBrush" Value="#FF34363A" />
+            <Setter Property="Background" Value="{Binding SolidBackgroundColor}" />
+            <Setter Property="Foreground" Value="{Binding TextColor}" />
+            <Setter Property="BorderBrush" Value="{Binding DividerColor}" />
             <Setter Property="Padding" Value="10,8" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="{Binding FontWeightName}" />
+            <Setter Property="Language" Value="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}" />
         </Style>
 
         <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#FF9AA0A6" />
+            <Setter Property="Foreground" Value="{Binding LabelColor}" />
             <Setter Property="Margin" Value="0,0,10,0" />
-        </Style>
-
-        <Style x:Key="ModelName" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
         <Style x:Key="MetricRow" TargetType="Grid">
@@ -71,10 +71,15 @@
         <Style x:Key="Divider" TargetType="Border">
             <Setter Property="Height" Value="1" />
             <Setter Property="Margin" Value="0,10" />
-            <Setter Property="Background" Value="#FF34363A" />
+            <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
-        <Style x:Key="FullViewPanel" TargetType="StackPanel">
+        <Style x:Key="FullViewPanel" TargetType="ItemsControl">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Layout}" Value="Full">
@@ -83,7 +88,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="HorizontalViewPanel" TargetType="StackPanel">
+        <Style x:Key="HorizontalViewPanel" TargetType="ItemsControl">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Layout}" Value="CompactHorizontal">
@@ -92,7 +97,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="VerticalViewPanel" TargetType="StackPanel">
+        <Style x:Key="VerticalViewPanel" TargetType="ItemsControl">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Layout}" Value="CompactVertical">
@@ -102,7 +107,7 @@
         </Style>
 
         <Style x:Key="CompactTitle" TargetType="TextBlock" BasedOn="{StaticResource MetricValue}">
-            <Setter Property="Foreground" Value="#FF9AA0A6" />
+            <Setter Property="Foreground" Value="{Binding LabelColor}" />
         </Style>
 
         <Style x:Key="CompactPercent" TargetType="TextBlock" BasedOn="{StaticResource MetricValue}">
@@ -118,110 +123,390 @@
             <Setter Property="MinWidth" Value="76" />
         </Style>
 
+        <Style x:Key="CompactPing" TargetType="TextBlock" BasedOn="{StaticResource MetricValue}">
+            <Setter Property="MinWidth" Value="64" />
+        </Style>
+
+        <Style x:Key="LiveTest" TargetType="TextBlock" BasedOn="{StaticResource MetricValue}">
+            <Setter Property="Foreground" Value="#FF4FB0EA" />
+        </Style>
+
         <Style x:Key="CompactDivider" TargetType="Border">
             <Setter Property="Width" Value="1" />
             <Setter Property="Margin" Value="12,0" />
-            <Setter Property="Background" Value="#FF34363A" />
+            <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="VerticalDivider" TargetType="Border">
             <Setter Property="Height" Value="1" />
             <Setter Property="Margin" Value="0,6" />
-            <Setter Property="Background" Value="#FF34363A" />
+            <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
-        <Style x:Key="DetailDivider" TargetType="Border">
+        <Style x:Key="DetailGroupDivider" TargetType="Border">
             <Setter Property="Height" Value="1" />
             <Setter Property="Margin" Value="0,6" />
-            <Setter Property="Background" Value="#FF34363A" />
+            <Setter Property="Background" Value="{Binding DividerColor}" />
+        </Style>
+
+        <Style x:Key="DetailDivider" TargetType="Border" BasedOn="{StaticResource DetailGroupDivider}">
+            <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="DetailLabel" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,0,16,0" />
-            <Setter Property="Foreground" Value="#FF9AA0A6" />
+            <Setter Property="Foreground" Value="{Binding LabelColor}" />
         </Style>
-    </Window.Resources>
 
-    <Grid Background="Transparent" ToolTipService.IsEnabled="{Binding DetailedTooltip}" ToolTipService.ShowDuration="2147483647">
-        <Grid.ToolTip>
-            <StackPanel Grid.IsSharedSizeScope="True">
-                <Grid>
+        <DataTemplate x:Key="FullCpu" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Cpu}" />
+                    <TextBlock Text="{Binding CpuName}" />
+                </StackPanel>
+                <Grid Style="{StaticResource MetricRow}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource DetailLabel}" Text="CPU" />
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="{Binding CpuFullName}" />
-                        <TextBlock>
-                            <Run Text="{Binding CpuUsageText.Text, Mode=OneWay}" />
-                            <Run Text="·" />
-                            <Run Text="{Binding CpuFrequencyText, Mode=OneWay}" />
-                        </TextBlock>
-                    </StackPanel>
+                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding CpuUsage, Mode=OneWay}" Foreground="{Binding CpuBarColor}" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
+                        <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuTextColor}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding CpuFrequencyText}" />
                 </Grid>
+            </StackPanel>
+        </DataTemplate>
 
-                <Border Style="{StaticResource DetailDivider}" />
-                <Grid>
+        <DataTemplate x:Key="FullGpu" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Gpu}" />
+                    <TextBlock Text="{Binding GpuName}" />
+                </StackPanel>
+                <Grid Style="{StaticResource MetricRow}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource DetailLabel}" Text="GPU" />
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="{Binding GpuFullName}" />
-                        <TextBlock>
-                            <Run Text="{Binding GpuUsageText.Text, Mode=OneWay}" />
-                            <Run Text="· VRAM" />
-                            <Run Text="{Binding GpuMemoryText, Mode=OneWay}" />
-                        </TextBlock>
-                    </StackPanel>
+                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding GpuUsage, Mode=OneWay}" Foreground="{Binding GpuBarColor}" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
+                        <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuTextColor}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding GpuMemoryText}" />
                 </Grid>
+            </StackPanel>
+        </DataTemplate>
 
-                <Border Style="{StaticResource DetailDivider}" />
-                <Grid>
+        <DataTemplate x:Key="FullMemory" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Memory}" />
+                <Grid Style="{StaticResource MetricRow}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource DetailLabel}" Text="RAM" />
-                    <TextBlock Grid.Column="1">
-                        <Run Text="{Binding MemoryUsageText.Text, Mode=OneWay}" />
-                        <Run Text="·" />
-                        <Run Text="{Binding MemoryAmountText, Mode=OneWay}" />
+                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding MemoryUsage, Mode=OneWay}" Foreground="{Binding MemoryBarColor}" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
+                        <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryTextColor}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding MemoryAmountText}" />
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullDisk" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Disk}" />
+                    <TextBlock Text="{Binding DiskName}" />
+                </StackPanel>
+                <Grid Style="{StaticResource MetricRow}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                    </Grid.ColumnDefinitions>
+                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding DiskActive, Mode=OneWay}" Foreground="{Binding DiskBarColor}" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
+                        <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskTextColor}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
                     </TextBlock>
                 </Grid>
+            </StackPanel>
+        </DataTemplate>
 
-                <Border Style="{StaticResource DetailDivider}" />
+        <DataTemplate x:Key="FullNetwork" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Network}" />
+                <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                        <TextBlock Margin="20,0,0,0" Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource LiveTest}" Text="{Binding SpeedTest.LiveLabelText}"
+                               Visibility="{Binding SpeedTest.IsTesting, Converter={StaticResource BooleanToVisibility}}" />
+                    <TextBlock Margin="20,0,0,0" Style="{StaticResource MetricValue}" Text="{Binding PingLabelText}" />
+                </StackPanel>
+                <TextBlock Margin="0,4,0,0" Style="{StaticResource MetricValue}" Text="{Binding NetworkSessionText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <converters:MetricTemplateConverter x:Key="FullTemplates"
+                                            Cpu="{StaticResource FullCpu}"
+                                            Gpu="{StaticResource FullGpu}"
+                                            Memory="{StaticResource FullMemory}"
+                                            Disk="{StaticResource FullDisk}"
+                                            Network="{StaticResource FullNetwork}" />
+
+        <DataTemplate x:Key="FullItem">
+            <StackPanel>
+                <Border Style="{StaticResource Divider}" />
+                <ContentControl Focusable="False" Content="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                ContentTemplate="{Binding Converter={StaticResource FullTemplates}}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalCpu" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Cpu}" />
+                <TextBlock Style="{StaticResource CompactPercent}">
+                    <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuTextColor}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding CpuFrequencyText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalGpu" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Gpu}" />
+                <TextBlock Style="{StaticResource CompactPercent}">
+                    <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuTextColor}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding GpuMemoryText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalMemory" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Memory}" />
+                <TextBlock Style="{StaticResource CompactPercent}">
+                    <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryTextColor}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding MemoryAmountText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalDisk" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
+                <TextBlock Style="{StaticResource CompactPercent}">
+                    <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskTextColor}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
+                </TextBlock>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalNetwork" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
+                    <TextBlock Style="{StaticResource CompactSpeed}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                    <TextBlock Margin="10,0,0,0" Style="{StaticResource CompactSpeed}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                </StackPanel>
+                <TextBlock MinWidth="162" Style="{StaticResource LiveTest}" Text="{Binding SpeedTest.LiveLabelText}"
+                           Visibility="{Binding SpeedTest.IsTesting, Converter={StaticResource BooleanToVisibility}}" />
+                <TextBlock Margin="10,0,0,0" Style="{StaticResource CompactPing}" Text="{Binding PingLabelText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <converters:MetricTemplateConverter x:Key="HorizontalTemplates"
+                                            Cpu="{StaticResource HorizontalCpu}"
+                                            Gpu="{StaticResource HorizontalGpu}"
+                                            Memory="{StaticResource HorizontalMemory}"
+                                            Disk="{StaticResource HorizontalDisk}"
+                                            Network="{StaticResource HorizontalNetwork}" />
+
+        <DataTemplate x:Key="HorizontalItem">
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CompactDivider}" />
+                <ContentControl VerticalAlignment="Center" Focusable="False"
+                                Content="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                ContentTemplate="{Binding Converter={StaticResource HorizontalTemplates}}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalCpu" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
+                        <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuTextColor}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Cpu}" />
+                </DockPanel>
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding CpuFrequencyText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalGpu" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
+                        <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuTextColor}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Gpu}" />
+                </DockPanel>
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding GpuMemoryText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalMemory" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
+                        <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryTextColor}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Memory}" />
+                </DockPanel>
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding MemoryAmountText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalDisk" DataType="{x:Type local:MainViewModel}">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
+                    <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskTextColor}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalNetwork" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <StackPanel Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
+                    <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                    <TextBlock Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                </StackPanel>
+                <StackPanel Visibility="{Binding SpeedTest.IsTesting, Converter={StaticResource BooleanToVisibility}}">
+                    <TextBlock Style="{StaticResource LiveTest}" Text="{loc:Text Widget_Test}" />
+                    <TextBlock Style="{StaticResource LiveTest}" Text="{Binding SpeedTest.LiveText}" />
+                </StackPanel>
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding PingLabelText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <converters:MetricTemplateConverter x:Key="VerticalTemplates"
+                                            Cpu="{StaticResource VerticalCpu}"
+                                            Gpu="{StaticResource VerticalGpu}"
+                                            Memory="{StaticResource VerticalMemory}"
+                                            Disk="{StaticResource VerticalDisk}"
+                                            Network="{StaticResource VerticalNetwork}" />
+
+        <DataTemplate x:Key="VerticalItem">
+            <StackPanel>
+                <Border Style="{StaticResource VerticalDivider}" />
+                <ContentControl Focusable="False" Content="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                ContentTemplate="{Binding Converter={StaticResource VerticalTemplates}}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailCpu" DataType="{x:Type local:MainViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Cpu}" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding CpuFullName}" />
+                    <TextBlock>
+                        <Run Text="{Binding CpuUsageText.Text, Mode=OneWay}" />
+                        <Run Text="·" />
+                        <Run Text="{Binding CpuFrequencyText, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailGpu" DataType="{x:Type local:MainViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Gpu}" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding GpuFullName}" />
+                    <TextBlock>
+                        <Run Text="{Binding GpuUsageText.Text, Mode=OneWay}" />
+                        <Run Text="· VRAM" />
+                        <Run Text="{Binding GpuMemoryText, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailMemory" DataType="{x:Type local:MainViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Memory}" />
+                <TextBlock Grid.Column="1">
+                    <Run Text="{Binding MemoryUsageText.Text, Mode=OneWay}" />
+                    <Run Text="·" />
+                    <Run Text="{Binding MemoryAmountText, Mode=OneWay}" />
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailDisk" DataType="{x:Type local:MainViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Widget_Disks}" />
+                <ItemsControl Grid.Column="1" ItemsSource="{Binding DiskDetails}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:DiskDetail}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DiskName" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="0,0,12,0" Text="{Binding Name}" />
+                                <TextBlock Grid.Column="1" Text="{Binding ActiveText}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailNetwork" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource DetailLabel}" Text="Discos" />
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding DiskDetails}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type local:DiskDetail}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" SharedSizeGroup="DiskName" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Margin="0,0,12,0" Text="{Binding Name}" />
-                                    <TextBlock Grid.Column="1" Text="{Binding ActiveText}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
-
-                <Border Style="{StaticResource DetailDivider}" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Style="{StaticResource DetailLabel}" Text="Rede" />
+                    <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Network}" />
                     <StackPanel Grid.Column="1">
                         <TextBlock>
                             <Run Text="{Binding DownloadSpeedText, StringFormat='↓ {0}', Mode=OneWay}" />
@@ -229,277 +514,58 @@
                             <Run Text="{Binding UploadSpeedText, StringFormat='↑ {0}', Mode=OneWay}" />
                         </TextBlock>
                         <TextBlock Text="{Binding NetworkSessionText}" />
+                        <TextBlock Text="{Binding PingDetailText}" />
+                    </StackPanel>
+                </Grid>
+
+                <Border Style="{StaticResource DetailGroupDivider}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Widget_Speed}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding SpeedTest.ResultText}" />
+                        <TextBlock Text="{Binding SpeedTest.LatencyText}" Visibility="{Binding SpeedTest.HasResult, Converter={StaticResource BooleanToVisibility}}" />
+                        <TextBlock Text="{Binding SpeedTest.MeasuredAtText}" />
                     </StackPanel>
                 </Grid>
             </StackPanel>
+        </DataTemplate>
+
+        <converters:MetricTemplateConverter x:Key="DetailTemplates"
+                                            Cpu="{StaticResource DetailCpu}"
+                                            Gpu="{StaticResource DetailGpu}"
+                                            Memory="{StaticResource DetailMemory}"
+                                            Disk="{StaticResource DetailDisk}"
+                                            Network="{StaticResource DetailNetwork}" />
+
+        <DataTemplate x:Key="DetailItem">
+            <StackPanel>
+                <Border Style="{StaticResource DetailDivider}" />
+                <ContentControl Focusable="False" Content="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                ContentTemplate="{Binding Converter={StaticResource DetailTemplates}}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <ItemsPanelTemplate x:Key="HorizontalPanel">
+            <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+    </Window.Resources>
+
+    <Grid Background="Transparent" ToolTipService.IsEnabled="{Binding DetailedTooltip}" ToolTipService.ShowDuration="2147483647">
+        <Grid.ToolTip>
+            <ItemsControl Grid.IsSharedSizeScope="True" Focusable="False" ItemsSource="{Binding DetailItems}" ItemTemplate="{StaticResource DetailItem}" />
         </Grid.ToolTip>
 
-        <StackPanel Margin="16,14" Grid.IsSharedSizeScope="True" Style="{StaticResource FullViewPanel}">
-            <StackPanel Visibility="{Binding ShowCpu, Converter={StaticResource BooleanToVisibility}}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource SectionTitle}" Text="CPU" />
-                    <TextBlock Style="{StaticResource ModelName}" Text="{Binding CpuName}" ToolTip="{Binding CpuNameTooltip}" />
-                </StackPanel>
-                <Grid Style="{StaticResource MetricRow}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding CpuUsage, Mode=OneWay}" Foreground="{Binding CpuLevel, Converter={StaticResource BarBrush}}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding CpuFrequencyText}" />
-                </Grid>
-            </StackPanel>
+        <ItemsControl Margin="16,14" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
+                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullItem}" />
 
-            <StackPanel Visibility="{Binding ShowMemory, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource Divider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <TextBlock Style="{StaticResource SectionTitle}" Text="RAM" />
-                <Grid Style="{StaticResource MetricRow}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding MemoryUsage, Mode=OneWay}" Foreground="{Binding MemoryLevel, Converter={StaticResource BarBrush}}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding MemoryAmountText}" />
-                </Grid>
-            </StackPanel>
+        <ItemsControl Margin="14,8" Background="Transparent" Focusable="False" Style="{StaticResource HorizontalViewPanel}"
+                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource HorizontalItem}" ItemsPanel="{StaticResource HorizontalPanel}" />
 
-            <StackPanel Visibility="{Binding ShowGpu, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource Divider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowMemory" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource SectionTitle}" Text="GPU" />
-                    <TextBlock Style="{StaticResource ModelName}" Text="{Binding GpuName}" ToolTip="{Binding GpuNameTooltip}" />
-                </StackPanel>
-                <Grid Style="{StaticResource MetricRow}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding GpuUsage, Mode=OneWay}" Foreground="{Binding GpuLevel, Converter={StaticResource BarBrush}}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding GpuMemoryText}" />
-                </Grid>
-            </StackPanel>
-
-            <StackPanel Visibility="{Binding ShowDisk, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource Divider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowMemory" />
-                            <Binding Path="ShowGpu" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource SectionTitle}" Text="Disco" />
-                    <TextBlock Style="{StaticResource ModelName}" Text="{Binding DiskName}" />
-                </StackPanel>
-                <Grid Style="{StaticResource MetricRow}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding DiskActive, Mode=OneWay}" Foreground="{Binding DiskLevel, Converter={StaticResource BarBrush}}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                </Grid>
-            </StackPanel>
-
-            <StackPanel Visibility="{Binding ShowNetwork, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource Divider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowMemory" />
-                            <Binding Path="ShowGpu" />
-                            <Binding Path="ShowDisk" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <TextBlock Style="{StaticResource SectionTitle}" Text="Rede" />
-                <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
-                    <TextBlock Margin="20,0,0,0" Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
-                </StackPanel>
-                <TextBlock Margin="0,4,0,0" Style="{StaticResource MetricValue}" Text="{Binding NetworkSessionText}" />
-            </StackPanel>
-        </StackPanel>
-
-        <StackPanel Margin="14,8" Orientation="Horizontal" Background="Transparent" ToolTip="{Binding CompactTooltip}" Style="{StaticResource HorizontalViewPanel}">
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowCpu, Converter={StaticResource BooleanToVisibility}}">
-                <TextBlock Style="{StaticResource CompactTitle}" Text="CPU" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding CpuFrequencyText}" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowGpu, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource CompactDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <TextBlock Style="{StaticResource CompactTitle}" Text="GPU" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding GpuMemoryText}" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowMemory, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource CompactDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowGpu" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <TextBlock Style="{StaticResource CompactTitle}" Text="RAM" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding MemoryAmountText}" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowDisk, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource CompactDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowGpu" />
-                            <Binding Path="ShowMemory" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <TextBlock Style="{StaticResource CompactTitle}" Text="Disco" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
-                </TextBlock>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Visibility="{Binding ShowNetwork, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource CompactDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowGpu" />
-                            <Binding Path="ShowMemory" />
-                            <Binding Path="ShowDisk" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <TextBlock Style="{StaticResource CompactSpeed}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
-                <TextBlock Margin="10,0,0,0" Style="{StaticResource CompactSpeed}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
-            </StackPanel>
-        </StackPanel>
-
-        <StackPanel Margin="12,10" Background="Transparent" ToolTip="{Binding CompactTooltip}" Style="{StaticResource VerticalViewPanel}">
-            <StackPanel Visibility="{Binding ShowCpu, Converter={StaticResource BooleanToVisibility}}">
-                <DockPanel>
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                        <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="CPU" />
-                </DockPanel>
-                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding CpuFrequencyText}" />
-            </StackPanel>
-
-            <StackPanel Visibility="{Binding ShowGpu, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource VerticalDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <DockPanel>
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                        <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="GPU" />
-                </DockPanel>
-                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding GpuMemoryText}" />
-            </StackPanel>
-
-            <StackPanel Visibility="{Binding ShowMemory, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource VerticalDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowGpu" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <DockPanel>
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                        <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="RAM" />
-                </DockPanel>
-                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding MemoryAmountText}" />
-            </StackPanel>
-
-            <StackPanel Visibility="{Binding ShowDisk, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource VerticalDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowGpu" />
-                            <Binding Path="ShowMemory" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <DockPanel>
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                        <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskLevel, Converter={StaticResource TextBrush}}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="Disco" />
-                </DockPanel>
-            </StackPanel>
-
-            <StackPanel Visibility="{Binding ShowNetwork, Converter={StaticResource BooleanToVisibility}}">
-                <Border Style="{StaticResource VerticalDivider}">
-                    <Border.Visibility>
-                        <MultiBinding Converter="{StaticResource AnyTrueVisibility}">
-                            <Binding Path="ShowCpu" />
-                            <Binding Path="ShowGpu" />
-                            <Binding Path="ShowMemory" />
-                            <Binding Path="ShowDisk" />
-                        </MultiBinding>
-                    </Border.Visibility>
-                </Border>
-                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
-                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
-            </StackPanel>
-        </StackPanel>
+        <ItemsControl Margin="12,10" Background="Transparent" Focusable="False" Style="{StaticResource VerticalViewPanel}"
+                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource VerticalItem}" />
     </Grid>
 </Window>

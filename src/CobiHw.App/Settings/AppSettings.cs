@@ -1,4 +1,6 @@
+using CobiHw.App.Localization;
 using CobiHw.Core;
+using CobiHw.Core.Network;
 
 namespace CobiHw.App.Settings;
 
@@ -25,5 +27,9 @@ public sealed class AppSettings
     public bool PositionLocked { get; set; }
     public DisplaySettings Display { get; set; } = new();
     public ColorSettings Colors { get; set; } = new();
+    public NetworkSettings Network { get; set; } = new();
+    public AppearanceSettings Appearance { get; set; } = new();
+    public string Language { get; set; } = Localizer.AutomaticLanguage;
     public NetworkSessionState? NetworkSession { get; set; }
+    public SpeedTestResult? LastSpeedTest { get; set; }
 }
