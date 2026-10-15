@@ -210,9 +210,9 @@
     <value>Encaixar nas bordas</value>
   </data>
   <data name="Tray_LockPosition" xml:space="preserve">
-    <value>Travar posição</value>
+    <value>Travar posição e tamanho</value>
   </data>
-  <data name="Tray_StartWithWindows" xml:space="preserve">
+  <data name="General_StartWithWindows" xml:space="preserve">
     <value>Iniciar com o Windows</value>
   </data>
   <data name="Tray_Settings" xml:space="preserve">
@@ -248,6 +248,60 @@
   <data name="Settings_Apply" xml:space="preserve">
     <value>Aplicar</value>
   </data>
+  <data name="Tab_General" xml:space="preserve">
+    <value>Geral</value>
+  </data>
+  <data name="General_Language" xml:space="preserve">
+    <value>Idioma:</value>
+  </data>
+  <data name="General_Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>Automático (igual ao Windows)</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Escuro</value>
+  </data>
+  <data name="General_ThemeHint" xml:space="preserve">
+    <value>Vale para esta janela e o menu do ícone. O widget tem cores próprias, na aba Aparência.</value>
+  </data>
+  <data name="General_Widget" xml:space="preserve">
+    <value>Widget</value>
+  </data>
+  <data name="General_Monitor" xml:space="preserve">
+    <value>Monitor:</value>
+  </data>
+  <data name="General_Mode" xml:space="preserve">
+    <value>Exibir o widget:</value>
+  </data>
+  <data name="General_ModeHint" xml:space="preserve">
+    <value>Sempre por cima: o widget fica na frente das outras janelas. Na área de trabalho: fica atrás de tudo, junto aos ícones.</value>
+  </data>
+  <data name="General_SnapHint" xml:space="preserve">
+    <value>Ao arrastar o widget para perto de uma borda da tela, ele encosta sozinho nela.</value>
+  </data>
+  <data name="General_LockHint" xml:space="preserve">
+    <value>Impede mover o widget e mudar o tamanho dele pelas bordas.</value>
+  </data>
+  <data name="Format_Monitor" xml:space="preserve">
+    <value>Monitor {0} — {1} × {2}</value>
+  </data>
+  <data name="Format_MonitorPrimary" xml:space="preserve">
+    <value>Monitor {0} — {1} × {2} (principal)</value>
+  </data>
+  <data name="Settings_UnappliedTitle" xml:space="preserve">
+    <value>Mudanças não aplicadas</value>
+  </data>
+  <data name="Format_UnappliedMessage" xml:space="preserve">
+    <value>Há mudanças não aplicadas em: {0}. Aplicar antes de fechar?</value>
+  </data>
+  <data name="Format_UnappliedInvalid" xml:space="preserve">
+    <value>Há mudanças não aplicadas em: {0}, e algumas têm erro, por isso não podem ser aplicadas. Descartar e fechar?</value>
+  </data>
   <data name="Tab_Display" xml:space="preserve">
     <value>Exibição</value>
   </data>
@@ -281,11 +335,44 @@
   <data name="Tab_Appearance" xml:space="preserve">
     <value>Aparência</value>
   </data>
-  <data name="Appearance_Language" xml:space="preserve">
-    <value>Idioma:</value>
-  </data>
   <data name="Language_Automatic" xml:space="preserve">
     <value>Automático (idioma do Windows)</value>
+  </data>
+  <data name="General_Clicks" xml:space="preserve">
+    <value>Cliques</value>
+  </data>
+  <data name="General_Startup" xml:space="preserve">
+    <value>Inicialização</value>
+  </data>
+  <data name="Appearance_Border" xml:space="preserve">
+    <value>Borda</value>
+  </data>
+  <data name="Appearance_BorderMode" xml:space="preserve">
+    <value>Mostrar a borda:</value>
+  </data>
+  <data name="BorderMode_Off" xml:space="preserve">
+    <value>Desligada</value>
+  </data>
+  <data name="BorderMode_Always" xml:space="preserve">
+    <value>Sempre</value>
+  </data>
+  <data name="BorderMode_Hover" xml:space="preserve">
+    <value>Ao passar o mouse</value>
+  </data>
+  <data name="Appearance_BorderColor" xml:space="preserve">
+    <value>Cor da borda</value>
+  </data>
+  <data name="Appearance_BorderThickness" xml:space="preserve">
+    <value>Espessura da borda:</value>
+  </data>
+  <data name="Appearance_BorderTransparency" xml:space="preserve">
+    <value>Transparência da borda:</value>
+  </data>
+  <data name="Appearance_BorderHint" xml:space="preserve">
+    <value>A borda fica sobre a faixa que dá para puxar para redimensionar o widget.</value>
+  </data>
+  <data name="Appearance_UsageColors" xml:space="preserve">
+    <value>Cores por nível de uso</value>
   </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Fundo</value>
@@ -310,6 +397,15 @@
   </data>
   <data name="Appearance_LabelsHint" xml:space="preserve">
     <value>Os rótulos (CPU, RAM...) usam a cor do texto um pouco mais apagada.</value>
+  </data>
+  <data name="Appearance_Size" xml:space="preserve">
+    <value>Tamanho</value>
+  </data>
+  <data name="Appearance_Scale" xml:space="preserve">
+    <value>Tamanho do widget:</value>
+  </data>
+  <data name="Appearance_ScaleHint" xml:space="preserve">
+    <value>Também dá para arrastar as bordas ou os cantos do widget. "Travar posição e tamanho", no menu do ícone, impede mudanças.</value>
   </data>
   <data name="Weight_Light" xml:space="preserve">
     <value>Fina</value>
@@ -350,9 +446,6 @@
   <data name="Network_DataHint" xml:space="preserve">
     <value>Usa os servidores da Cloudflare. Consome cerca de 200 MB numa conexão de 100 Mbps e 700 MB numa de 1 Gbps, e deixa a internet lenta por até 30 segundos.</value>
   </data>
-  <data name="Tab_Colors" xml:space="preserve">
-    <value>Cores</value>
-  </data>
   <data name="Colors_Enabled" xml:space="preserve">
     <value>Colorir conforme o uso</value>
   </data>
@@ -383,13 +476,13 @@
   <data name="Tray_ClickThrough" xml:space="preserve">
     <value>Atravessar cliques</value>
   </data>
-  <data name="Display_ClickThrough" xml:space="preserve">
+  <data name="General_ClickThrough" xml:space="preserve">
     <value>Deixar os cliques atravessarem o widget</value>
   </data>
-  <data name="Display_InteractionKey" xml:space="preserve">
+  <data name="General_InteractionKey" xml:space="preserve">
     <value>Segure para interagir (arrastar, detalhes):</value>
   </data>
-  <data name="Display_ClickThroughHint" xml:space="preserve">
+  <data name="General_ClickThroughHint" xml:space="preserve">
     <value>Ligado, o widget ignora o mouse. Segure a tecla acima para movê-lo ou ver os detalhes, ou desligue no menu do ícone.</value>
   </data>
   <data name="Key_None" xml:space="preserve">

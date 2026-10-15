@@ -9,6 +9,7 @@ internal static partial class User32
     public const nint WsExTransparent = 0x20;
     public const int VkLeftButton = 0x01;
     public const int WmMoving = 0x0216;
+    public const int WmEnterSizeMove = 0x0231;
     public const nint HwndBottom = 1;
     public const uint SwpNoSize = 0x0001;
     public const uint SwpNoMove = 0x0002;
@@ -39,6 +40,13 @@ internal static partial class User32
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct Point
+    {
+        public int X;
+        public int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct MonitorInfo
     {
         public uint Size;
@@ -56,6 +64,13 @@ internal static partial class User32
 
     [LibraryImport("user32.dll")]
     public static partial nint MonitorFromRect(in Rect rect, uint flags);
+
+    [LibraryImport("user32.dll")]
+    public static partial nint MonitorFromPoint(Point point, uint flags);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool GetCursorPos(out Point point);
 
     [LibraryImport("user32.dll", EntryPoint = "GetMonitorInfoW")]
     [return: MarshalAs(UnmanagedType.Bool)]

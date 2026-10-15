@@ -3,12 +3,14 @@ using System.Net.Http;
 using System.Windows;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
 using CobiHw.App.Localization;
 using CobiHw.App.Resources;
 using CobiHw.App.Settings;
 using CobiHw.App.Tray;
 using CobiHw.Core;
 using CobiHw.Core.Network;
+using Forms = System.Windows.Forms;
 
 namespace CobiHw.App;
 
@@ -66,12 +68,15 @@ public partial class App : Application
             DataContext = _viewModel,
             IsPositionLocked = _settings.PositionLocked,
             SnapToEdges = _settings.SnapToEdges,
+            ScalePercent = ResizeRule.ClampPercent(_settings.Appearance.Scale),
         };
         _window.RestorePosition(_settings.WindowLeft, _settings.WindowTop);
         _window.ApplyMode(_settings.Mode);
-        _window.ApplyClickThrough(_settings.Display.ClickThrough, _settings.Display.InteractionKey);
-        _window.DragCompleted += (_, _) => SaveSettings();
+        _window.ApplyClickThrough(_settings.ClickThrough, _settings.InteractionKey);
+        _window.DragCompleted += (_, _) => AfterWindowMoved();
         _window.LayoutCycleRequested += (_, _) => ChangeLayout(NextLayout(_settings.Layout));
+        _window.ScaleDragged += (_, percent) => _viewModel?.ApplyScale(percent);
+        _window.ScaleCompleted += (_, percent) => ChangeScale(percent);
         MainWindow = _window;
         _window.Show();
 
@@ -82,12 +87,13 @@ public partial class App : Application
         _trayIcon.SnapToEdgesToggled += (_, enabled) => ChangeSnapToEdges(enabled);
         _trayIcon.LockPositionToggled += (_, locked) => ChangePositionLock(locked);
         _trayIcon.ClickThroughToggled += (_, enabled) => ChangeClickThrough(enabled);
-        _trayIcon.StartWithWindowsToggled += (_, enabled) => ChangeStartWithWindows(enabled);
         _trayIcon.SettingsRequested += (_, _) => OpenSettingsWindow();
         _trayIcon.SpeedTestRequested += (_, _) => StartSpeedTest();
         _trayIcon.ResetNetworkRequested += (_, _) => ResetNetworkSession();
-        _trayIcon.ExitRequested += (_, _) => Shutdown();
+        _trayIcon.ExitRequested += (_, _) => RequestExit();
         RefreshTrayMenu();
+        ApplyTrayTheme();
+        SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
 
         _singleInstance.ListenForShowRequests(() => Dispatcher.InvokeAsync(ShowWindow));
 
@@ -105,6 +111,7 @@ public partial class App : Application
         _shutdown.Cancel();
         _autoSaveTimer?.Stop();
         SaveSettings();
+        SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
         _trayIcon?.Dispose();
         _monitor?.Dispose();
         _http?.Dispose();
@@ -146,12 +153,39 @@ public partial class App : Application
 
     private void ShowWindow() => _window?.Show();
 
+    private void RequestExit()
+    {
+        _settingsWindow?.Close();
+
+        if (_settingsWindow is null)
+        {
+            Shutdown();
+        }
+    }
+
+    private void AfterWindowMoved()
+    {
+        SaveSettings();
+        _settingsViewModel?.SyncGeneral(CurrentGeneral());
+    }
+
+    private void AfterGeneralChange()
+    {
+        RefreshTrayMenu();
+        _settingsViewModel?.SyncGeneral(CurrentGeneral());
+        SaveSettings();
+    }
+
     private void ChangeMode(WidgetMode mode)
+    {
+        SetMode(mode);
+        AfterGeneralChange();
+    }
+
+    private void SetMode(WidgetMode mode)
     {
         _settings.Mode = mode;
         _window?.ApplyMode(mode);
-        RefreshTrayMenu();
-        SaveSettings();
     }
 
     private void ChangeLayout(ViewLayout layout)
@@ -169,18 +203,27 @@ public partial class App : Application
 
     private void ChangeSnapToEdges(bool enabled)
     {
+        SetSnapToEdges(enabled);
+        AfterGeneralChange();
+    }
+
+    private void SetSnapToEdges(bool enabled)
+    {
         _settings.SnapToEdges = enabled;
 
         if (_window is not null)
         {
             _window.SnapToEdges = enabled;
         }
-
-        RefreshTrayMenu();
-        SaveSettings();
     }
 
     private void ChangePositionLock(bool locked)
+    {
+        SetPositionLock(locked);
+        AfterGeneralChange();
+    }
+
+    private void SetPositionLock(bool locked)
     {
         _settings.PositionLocked = locked;
 
@@ -188,22 +231,35 @@ public partial class App : Application
         {
             _window.IsPositionLocked = locked;
         }
-
-        RefreshTrayMenu();
-        SaveSettings();
     }
 
     private void ChangeClickThrough(bool enabled)
     {
-        _settings.Display = _settings.Display with { ClickThrough = enabled };
-        _window?.ApplyClickThrough(enabled, _settings.Display.InteractionKey);
-        _settingsViewModel?.SyncClickThrough(enabled);
-        RefreshTrayMenu();
+        SetClickThrough(enabled, _settings.InteractionKey);
+        AfterGeneralChange();
+    }
+
+    private void SetClickThrough(bool enabled, InteractionKey interactionKey)
+    {
+        _settings.ClickThrough = enabled;
+        _settings.InteractionKey = interactionKey;
+        _window?.ApplyClickThrough(enabled, interactionKey);
+    }
+
+    private void ChangeScale(int percent)
+    {
+        _settings.Appearance = _settings.Appearance with { Scale = percent };
+        _settingsViewModel?.SyncScale(percent);
         SaveSettings();
     }
 
-    private void ChangeStartWithWindows(bool enabled)
+    private static void SetStartWithWindows(bool enabled)
     {
+        if (enabled == StartupRegistration.IsEnabled())
+        {
+            return;
+        }
+
         if (enabled)
         {
             StartupRegistration.Enable();
@@ -212,8 +268,6 @@ public partial class App : Application
         {
             StartupRegistration.Disable();
         }
-
-        RefreshTrayMenu();
     }
 
     private void OpenSettingsWindow()
@@ -229,11 +283,11 @@ public partial class App : Application
             return;
         }
 
-        var settingsViewModel = new SettingsViewModel(CurrentSettings(), _viewModel.AvailableDisks, _speedTest);
+        var settingsViewModel = new SettingsViewModel(CurrentSettings(), _viewModel.AvailableDisks, ListMonitors(), _speedTest);
         _settingsViewModel = settingsViewModel;
         settingsViewModel.Applied += (_, saved) => ApplySavedSettings(saved);
 
-        _settingsWindow = new SettingsWindow { DataContext = settingsViewModel };
+        _settingsWindow = new SettingsWindow(_settings.Theme) { DataContext = settingsViewModel };
         _settingsWindow.Closed += (_, _) =>
         {
             settingsViewModel.Dispose();
@@ -250,15 +304,68 @@ public partial class App : Application
         _settings.Colors = saved.Colors;
         _settings.Network = saved.Network;
         _settings.Appearance = saved.Appearance;
-        _settings.Language = saved.Language;
-        Localizer.Instance.SetLanguage(saved.Language);
+        ApplyGeneral(saved.General);
         _viewModel?.UpdateSettings(saved);
-        _window?.ApplyClickThrough(saved.Display.ClickThrough, saved.Display.InteractionKey);
+
+        if (_window is not null)
+        {
+            _window.ScalePercent = ResizeRule.ClampPercent(saved.Appearance.Scale);
+        }
+
         RefreshTrayMenu();
         SaveSettings();
     }
 
-    private SavedSettings CurrentSettings() => new(_settings.Display, _settings.Colors, _settings.Network, _settings.Appearance, _settings.Language);
+    private void ApplyGeneral(GeneralSettings general)
+    {
+        _settings.Language = general.Language;
+        Localizer.Instance.SetLanguage(general.Language);
+        _settings.Theme = general.Theme;
+        _settingsWindow?.ApplyTheme(general.Theme);
+        ApplyTrayTheme();
+
+        if (general.Mode != _settings.Mode)
+        {
+            SetMode(general.Mode);
+        }
+
+        SetSnapToEdges(general.SnapToEdges);
+        SetPositionLock(general.PositionLocked);
+        SetClickThrough(general.ClickThrough, general.InteractionKey);
+        SetStartWithWindows(general.StartWithWindows);
+
+        if (general.Monitor is string monitor)
+        {
+            _window?.MoveToMonitor(monitor);
+        }
+    }
+
+    private SavedSettings CurrentSettings() => new(_settings.Display, _settings.Colors, _settings.Network, _settings.Appearance, CurrentGeneral());
+
+    private GeneralSettings CurrentGeneral() => new()
+    {
+        Language = _settings.Language,
+        Theme = _settings.Theme,
+        Mode = _settings.Mode,
+        SnapToEdges = _settings.SnapToEdges,
+        PositionLocked = _settings.PositionLocked,
+        ClickThrough = _settings.ClickThrough,
+        InteractionKey = _settings.InteractionKey,
+        StartWithWindows = StartupRegistration.IsEnabled(),
+        Monitor = _window?.CurrentMonitor,
+    };
+
+    private static List<DisplayMonitor> ListMonitors() =>
+    [
+        .. Forms.Screen.AllScreens
+            .Select((screen, index) => new DisplayMonitor(
+                screen.DeviceName,
+                DisplayMonitor.NumberOf(screen.DeviceName, index + 1),
+                screen.Bounds.Width,
+                screen.Bounds.Height,
+                screen.Primary))
+            .OrderBy(monitor => monitor.Number),
+    ];
 
     private void StartSpeedTest()
     {
@@ -301,8 +408,19 @@ public partial class App : Application
         SaveSettings();
     }
 
+    private void ApplyTrayTheme() =>
+        _trayIcon?.ApplyTheme(WindowsTheme.IsDark(_settings.Theme, WindowsTheme.AppsUseDarkTheme()));
+
+    private void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+    {
+        if (e.Category == UserPreferenceCategory.General && _settings.Theme == AppTheme.System)
+        {
+            Dispatcher.InvokeAsync(ApplyTrayTheme);
+        }
+    }
+
     private void RefreshTrayMenu() =>
-        _trayIcon?.UpdateMenu(_settings, StartupRegistration.IsEnabled());
+        _trayIcon?.UpdateMenu(_settings);
 
     private void SaveSettings()
     {

@@ -6,16 +6,6 @@ public enum DiskSource
     Specific,
 }
 
-public enum InteractionKey
-{
-    None,
-    Ctrl,
-    Shift,
-    Alt,
-    CtrlShift,
-    CtrlAlt,
-}
-
 public sealed record DisplaySettings
 {
     public bool ShowCpu { get; set; } = true;
@@ -27,8 +17,6 @@ public sealed record DisplaySettings
     public int? DiskNumber { get; set; }
     public bool DetailedTooltip { get; set; } = true;
     public MetricOrder Order { get; set; } = MetricOrder.Default;
-    public bool ClickThrough { get; set; }
-    public InteractionKey InteractionKey { get; set; } = InteractionKey.Ctrl;
 
     public bool IsShown(MetricItem item) => item switch
     {

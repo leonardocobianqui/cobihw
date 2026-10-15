@@ -38,6 +38,10 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private string _labelColor = AppearanceSettings.DefaultTextColor;
     [ObservableProperty] private string _dividerColor = AppearanceSettings.DefaultTextColor;
     [ObservableProperty] private string _fontWeightName = nameof(TextWeight.Normal);
+    [ObservableProperty] private double _scale = 1;
+    [ObservableProperty] private double _borderWidth;
+    [ObservableProperty] private string _borderColor = AppearanceSettings.DefaultTextColor;
+    [ObservableProperty] private bool _borderOnHover;
 
     [ObservableProperty] private string _cpuBarColor = AccentColor;
     [ObservableProperty] private string _cpuTextColor = AppearanceSettings.DefaultTextColor;
@@ -158,6 +162,8 @@ public sealed partial class MainViewModel : ObservableObject
         PingText = DisplayFormat.Milliseconds(roundTripMilliseconds);
     }
 
+    public void ApplyScale(int percent) => Scale = ResizeRule.ClampPercent(percent) / 100.0;
+
     private void RefreshTexts()
     {
         ApplyPing(_lastPing);
@@ -189,12 +195,28 @@ public sealed partial class MainViewModel : ObservableObject
         LabelColor = HexColor.WithAlpha(text, LabelAlpha);
         DividerColor = HexColor.WithAlpha(text, DividerAlpha);
         FontWeightName = Enum.IsDefined(appearance.TextWeight) ? appearance.TextWeight.ToString() : nameof(TextWeight.Normal);
+        ApplyScale(appearance.Scale);
+        ApplyBorder(appearance);
 
         ApplyLevelColors();
     }
 
-    private static byte BackgroundAlpha(int transparency) =>
-        (byte)Math.Max(1, Math.Round(255 * (AppearanceSettings.MaximumTransparency - transparency) / (double)AppearanceSettings.MaximumTransparency));
+    private void ApplyBorder(AppearanceSettings appearance)
+    {
+        BorderMode mode = Enum.IsDefined(appearance.BorderMode) ? appearance.BorderMode : BorderMode.Off;
+        int thickness = Math.Clamp(appearance.BorderThickness, AppearanceSettings.MinimumBorderThickness, AppearanceSettings.MaximumBorderThickness);
+        int transparency = Math.Clamp(appearance.BorderTransparency, 0, AppearanceSettings.MaximumTransparency);
+        string color = HexColor.Normalize(appearance.BorderColor, AppearanceSettings.DefaultTextColor);
+
+        BorderWidth = mode == BorderMode.Off ? 0 : thickness;
+        BorderColor = HexColor.WithAlpha(color, Opacity(transparency));
+        BorderOnHover = mode == BorderMode.Hover;
+    }
+
+    private static byte Opacity(int transparency) =>
+        (byte)Math.Round(255 * (AppearanceSettings.MaximumTransparency - transparency) / (double)AppearanceSettings.MaximumTransparency);
+
+    private static byte BackgroundAlpha(int transparency) => Math.Max((byte)1, Opacity(transparency));
 
     private void ApplyLevelColors()
     {

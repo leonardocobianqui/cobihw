@@ -266,12 +266,12 @@
     <comment>Menu do ícone</comment>
   </data>
   <data name="Tray_LockPosition" xml:space="preserve">
-    <value>Lock position</value>
+    <value>Lock position and size</value>
     <comment>Menu do ícone</comment>
   </data>
-  <data name="Tray_StartWithWindows" xml:space="preserve">
+  <data name="General_StartWithWindows" xml:space="preserve">
     <value>Start with Windows</value>
-    <comment>Menu do ícone</comment>
+    <comment>Caixa de marcar na aba Geral</comment>
   </data>
   <data name="Tray_Settings" xml:space="preserve">
     <value>Settings...</value>
@@ -317,6 +317,78 @@
     <value>Apply</value>
     <comment>Botão</comment>
   </data>
+  <data name="Tab_General" xml:space="preserve">
+    <value>General</value>
+    <comment>Aba</comment>
+  </data>
+  <data name="General_Language" xml:space="preserve">
+    <value>Language:</value>
+    <comment>Título da caixa de idioma</comment>
+  </data>
+  <data name="General_Theme" xml:space="preserve">
+    <value>Theme</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>Automatic (same as Windows)</value>
+    <comment>Opção de tema</comment>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Light</value>
+    <comment>Opção de tema</comment>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Dark</value>
+    <comment>Opção de tema</comment>
+  </data>
+  <data name="General_ThemeHint" xml:space="preserve">
+    <value>Applies to this window and the tray icon menu. The widget has its own colors, on the Appearance tab.</value>
+    <comment>Dica do tema</comment>
+  </data>
+  <data name="General_Widget" xml:space="preserve">
+    <value>Widget</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="General_Monitor" xml:space="preserve">
+    <value>Monitor:</value>
+    <comment>Rótulo da caixa de monitor</comment>
+  </data>
+  <data name="General_Mode" xml:space="preserve">
+    <value>Show the widget:</value>
+    <comment>Rótulo da caixa de modo</comment>
+  </data>
+  <data name="General_ModeHint" xml:space="preserve">
+    <value>Always on top: the widget stays in front of other windows. On the desktop: it stays behind everything, with the desktop icons.</value>
+    <comment>Dica do modo</comment>
+  </data>
+  <data name="General_SnapHint" xml:space="preserve">
+    <value>When you drag the widget close to a screen edge, it sticks to it.</value>
+    <comment>Dica do encaixe</comment>
+  </data>
+  <data name="General_LockHint" xml:space="preserve">
+    <value>Prevents moving the widget and resizing it by its edges.</value>
+    <comment>Dica da trava</comment>
+  </data>
+  <data name="Format_Monitor" xml:space="preserve">
+    <value>Monitor {0} — {1} × {2}</value>
+    <comment>Opção de monitor: {0} = número, {1} × {2} = resolução</comment>
+  </data>
+  <data name="Format_MonitorPrimary" xml:space="preserve">
+    <value>Monitor {0} — {1} × {2} (main)</value>
+    <comment>Opção do monitor principal</comment>
+  </data>
+  <data name="Settings_UnappliedTitle" xml:space="preserve">
+    <value>Unapplied changes</value>
+    <comment>Título do aviso ao fechar</comment>
+  </data>
+  <data name="Format_UnappliedMessage" xml:space="preserve">
+    <value>There are unapplied changes in: {0}. Apply them before closing?</value>
+    <comment>Aviso ao fechar (Sim/Não/Cancelar); {0} = abas com mudanças</comment>
+  </data>
+  <data name="Format_UnappliedInvalid" xml:space="preserve">
+    <value>There are unapplied changes in: {0}, and some have errors, so they can't be applied. Discard them and close?</value>
+    <comment>Aviso ao fechar com erro (OK/Cancelar); {0} = abas com mudanças</comment>
+  </data>
   <data name="Tab_Display" xml:space="preserve">
     <value>Display</value>
     <comment>Aba</comment>
@@ -361,13 +433,57 @@
     <value>Appearance</value>
     <comment>Aba</comment>
   </data>
-  <data name="Appearance_Language" xml:space="preserve">
-    <value>Language:</value>
-    <comment>Título da caixa de idioma</comment>
-  </data>
   <data name="Language_Automatic" xml:space="preserve">
     <value>Automatic (Windows language)</value>
     <comment>Opção de idioma</comment>
+  </data>
+  <data name="General_Clicks" xml:space="preserve">
+    <value>Clicks</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="General_Startup" xml:space="preserve">
+    <value>Startup</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Appearance_Border" xml:space="preserve">
+    <value>Border</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Appearance_BorderMode" xml:space="preserve">
+    <value>Show the border:</value>
+    <comment>Título da caixa da borda</comment>
+  </data>
+  <data name="BorderMode_Off" xml:space="preserve">
+    <value>Off</value>
+    <comment>Opção da borda</comment>
+  </data>
+  <data name="BorderMode_Always" xml:space="preserve">
+    <value>Always</value>
+    <comment>Opção da borda</comment>
+  </data>
+  <data name="BorderMode_Hover" xml:space="preserve">
+    <value>When the mouse is over the widget</value>
+    <comment>Opção da borda</comment>
+  </data>
+  <data name="Appearance_BorderColor" xml:space="preserve">
+    <value>Border color</value>
+    <comment>Cor escolhível</comment>
+  </data>
+  <data name="Appearance_BorderThickness" xml:space="preserve">
+    <value>Border thickness:</value>
+    <comment>Rótulo do controle deslizante</comment>
+  </data>
+  <data name="Appearance_BorderTransparency" xml:space="preserve">
+    <value>Border transparency:</value>
+    <comment>Rótulo do controle deslizante</comment>
+  </data>
+  <data name="Appearance_BorderHint" xml:space="preserve">
+    <value>The border sits on the strip you can drag to resize the widget.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Appearance_UsageColors" xml:space="preserve">
+    <value>Colors by usage level</value>
+    <comment>Seção</comment>
   </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Background</value>
@@ -399,6 +515,18 @@
   </data>
   <data name="Appearance_LabelsHint" xml:space="preserve">
     <value>Labels (CPU, RAM...) use a slightly dimmer text color.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Appearance_Size" xml:space="preserve">
+    <value>Size</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Appearance_Scale" xml:space="preserve">
+    <value>Widget size:</value>
+    <comment>Rótulo do controle deslizante</comment>
+  </data>
+  <data name="Appearance_ScaleHint" xml:space="preserve">
+    <value>You can also drag the edges or corners of the widget. "Lock position and size" in the tray icon menu prevents changes.</value>
     <comment>Dica</comment>
   </data>
   <data name="Weight_Light" xml:space="preserve">
@@ -453,10 +581,6 @@
     <value>Uses Cloudflare servers. Uses about 200 MB on a 100 Mbps connection and 700 MB on a 1 Gbps one, and slows the internet down for up to 30 seconds.</value>
     <comment>Dica</comment>
   </data>
-  <data name="Tab_Colors" xml:space="preserve">
-    <value>Colors</value>
-    <comment>Aba</comment>
-  </data>
   <data name="Colors_Enabled" xml:space="preserve">
     <value>Color by usage</value>
     <comment>Caixa de marcar</comment>
@@ -497,15 +621,15 @@
     <value>Click through</value>
     <comment>Menu do ícone</comment>
   </data>
-  <data name="Display_ClickThrough" xml:space="preserve">
+  <data name="General_ClickThrough" xml:space="preserve">
     <value>Let clicks pass through the widget</value>
     <comment>Caixa de marcar</comment>
   </data>
-  <data name="Display_InteractionKey" xml:space="preserve">
+  <data name="General_InteractionKey" xml:space="preserve">
     <value>Hold to interact (drag, details):</value>
     <comment>Título da caixa de tecla</comment>
   </data>
-  <data name="Display_ClickThroughHint" xml:space="preserve">
+  <data name="General_ClickThroughHint" xml:space="preserve">
     <value>While it's on, the widget ignores the mouse. Hold the key above to move it or see the details, or turn it off in the tray icon menu.</value>
     <comment>Dica</comment>
   </data>

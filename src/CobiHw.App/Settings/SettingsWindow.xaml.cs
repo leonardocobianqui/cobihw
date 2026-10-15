@@ -1,7 +1,10 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using CobiHw.App.Localization;
+using CobiHw.App.Resources;
 
 namespace CobiHw.App.Settings;
 
@@ -10,11 +13,58 @@ public partial class SettingsWindow : Window
     private MetricRowViewModel? _pressedRow;
     private Point _pressPoint;
 
-    public SettingsWindow() => InitializeComponent();
+    public SettingsWindow(AppTheme theme)
+    {
+        ApplyTheme(theme);
+        InitializeComponent();
+        Closing += OnClosing;
+    }
+
+    public void ApplyTheme(AppTheme theme)
+    {
+#pragma warning disable WPF0001
+        ThemeMode = theme switch
+        {
+            AppTheme.Light => ThemeMode.Light,
+            AppTheme.Dark => ThemeMode.Dark,
+            _ => ThemeMode.System,
+        };
+#pragma warning restore WPF0001
+    }
 
     private SettingsViewModel ViewModel => (SettingsViewModel)DataContext;
 
     private void OnCloseClick(object sender, RoutedEventArgs e) => Close();
+
+    private void OnClosing(object? sender, CancelEventArgs e)
+    {
+        if (!ViewModel.HasPendingChanges)
+        {
+            return;
+        }
+
+        if (!ViewModel.CanApplyAll)
+        {
+            string invalid = Localizer.Format(Strings.Format_UnappliedInvalid, ViewModel.PendingTabNames);
+            MessageBoxResult discard = MessageBox.Show(this, invalid, Strings.Settings_UnappliedTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            e.Cancel = discard != MessageBoxResult.OK;
+            return;
+        }
+
+        string message = Localizer.Format(Strings.Format_UnappliedMessage, ViewModel.PendingTabNames);
+
+        switch (MessageBox.Show(this, message, Strings.Settings_UnappliedTitle, MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
+        {
+            case MessageBoxResult.Yes:
+                ViewModel.ApplyAll();
+                break;
+            case MessageBoxResult.No:
+                break;
+            default:
+                e.Cancel = true;
+                break;
+        }
+    }
 
     private void OnChooseColorClick(object sender, RoutedEventArgs e)
     {

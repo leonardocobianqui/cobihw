@@ -21,7 +21,6 @@ internal sealed class TrayIcon : IDisposable
     private readonly Forms.ToolStripMenuItem _snapToEdgesItem;
     private readonly Forms.ToolStripMenuItem _lockPositionItem;
     private readonly Forms.ToolStripMenuItem _clickThroughItem;
-    private readonly Forms.ToolStripMenuItem _startWithWindowsItem;
     private readonly Forms.ToolStripMenuItem _speedTestItem;
     private readonly Forms.ToolStripMenuItem _layoutMenu;
     private readonly Forms.ToolStripMenuItem _settingsItem;
@@ -41,7 +40,6 @@ internal sealed class TrayIcon : IDisposable
         _snapToEdgesItem = new Forms.ToolStripMenuItem(string.Empty, null, OnSnapToEdgesClick);
         _lockPositionItem = new Forms.ToolStripMenuItem(string.Empty, null, OnLockPositionClick);
         _clickThroughItem = new Forms.ToolStripMenuItem(string.Empty, null, OnClickThroughClick);
-        _startWithWindowsItem = new Forms.ToolStripMenuItem(string.Empty, null, OnStartWithWindowsClick);
         _speedTestItem = new Forms.ToolStripMenuItem(string.Empty, null, (_, _) => SpeedTestRequested?.Invoke(this, EventArgs.Empty));
 
         _settingsItem = new Forms.ToolStripMenuItem(string.Empty, null, (_, _) => SettingsRequested?.Invoke(this, EventArgs.Empty));
@@ -66,7 +64,6 @@ internal sealed class TrayIcon : IDisposable
             _snapToEdgesItem,
             _lockPositionItem,
             _clickThroughItem,
-            _startWithWindowsItem,
             new Forms.ToolStripSeparator(),
             _settingsItem,
             _speedTestItem,
@@ -92,13 +89,27 @@ internal sealed class TrayIcon : IDisposable
     public event EventHandler<bool>? SnapToEdgesToggled;
     public event EventHandler<bool>? LockPositionToggled;
     public event EventHandler<bool>? ClickThroughToggled;
-    public event EventHandler<bool>? StartWithWindowsToggled;
     public event EventHandler? SettingsRequested;
     public event EventHandler? SpeedTestRequested;
     public event EventHandler? ResetNetworkRequested;
     public event EventHandler? ExitRequested;
 
-    public void UpdateMenu(AppSettings settings, bool startWithWindows)
+    public void ApplyTheme(bool dark)
+    {
+        foreach (Forms.ToolStrip strip in new Forms.ToolStrip[] { _menu, _layoutMenu.DropDown })
+        {
+            if (dark)
+            {
+                strip.Renderer = new DarkMenuRenderer();
+            }
+            else
+            {
+                strip.RenderMode = Forms.ToolStripRenderMode.ManagerRenderMode;
+            }
+        }
+    }
+
+    public void UpdateMenu(AppSettings settings)
     {
         _alwaysOnTopItem.Checked = settings.Mode == WidgetMode.AlwaysOnTop;
         _desktopItem.Checked = settings.Mode == WidgetMode.Desktop;
@@ -107,8 +118,7 @@ internal sealed class TrayIcon : IDisposable
         _verticalLayoutItem.Checked = settings.Layout == ViewLayout.CompactVertical;
         _snapToEdgesItem.Checked = settings.SnapToEdges;
         _lockPositionItem.Checked = settings.PositionLocked;
-        _clickThroughItem.Checked = settings.Display.ClickThrough;
-        _startWithWindowsItem.Checked = startWithWindows;
+        _clickThroughItem.Checked = settings.ClickThrough;
     }
 
     public void ApplyTexts()
@@ -122,7 +132,6 @@ internal sealed class TrayIcon : IDisposable
         _snapToEdgesItem.Text = Strings.Tray_SnapToEdges;
         _lockPositionItem.Text = Strings.Tray_LockPosition;
         _clickThroughItem.Text = Strings.Tray_ClickThrough;
-        _startWithWindowsItem.Text = Strings.Tray_StartWithWindows;
         _settingsItem.Text = Strings.Tray_Settings;
         _speedTestItem.Text = _speedTestRunning ? Strings.Tray_SpeedTestRunning : Strings.Tray_SpeedTest;
         _resetNetworkItem.Text = Strings.Tray_ResetNetwork;
@@ -155,9 +164,6 @@ internal sealed class TrayIcon : IDisposable
 
     private void OnClickThroughClick(object? sender, EventArgs e) =>
         ClickThroughToggled?.Invoke(this, !_clickThroughItem.Checked);
-
-    private void OnStartWithWindowsClick(object? sender, EventArgs e) =>
-        StartWithWindowsToggled?.Invoke(this, !_startWithWindowsItem.Checked);
 
     private void OnNotifyIconMouseClick(object? sender, Forms.MouseEventArgs e)
     {

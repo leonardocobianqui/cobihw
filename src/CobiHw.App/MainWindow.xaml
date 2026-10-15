@@ -34,6 +34,7 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="{Binding FontWeightName}" />
+            <Setter Property="LayoutTransform" Value="{Binding Scale, Converter={x:Static converters:ScaleTransformConverter.Instance}}" />
             <Setter Property="Language" Value="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}" />
         </Style>
 
@@ -554,18 +555,36 @@
         </ItemsPanelTemplate>
     </Window.Resources>
 
-    <Grid Background="Transparent" ToolTipService.IsEnabled="{Binding DetailedTooltip}" ToolTipService.ShowDuration="2147483647">
-        <Grid.ToolTip>
-            <ItemsControl Grid.IsSharedSizeScope="True" Focusable="False" ItemsSource="{Binding DetailItems}" ItemTemplate="{StaticResource DetailItem}" />
-        </Grid.ToolTip>
+    <Border BorderThickness="{Binding BorderWidth}">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="BorderBrush" Value="{Binding BorderColor}" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding BorderOnHover}" Value="True" />
+                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Window}}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
 
-        <ItemsControl Margin="16,14" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
-                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullItem}" />
+        <Grid Background="Transparent" ToolTipService.IsEnabled="{Binding DetailedTooltip}" ToolTipService.ShowDuration="2147483647"
+              LayoutTransform="{Binding Scale, Converter={x:Static converters:ScaleTransformConverter.Instance}}">
+            <Grid.ToolTip>
+                <ItemsControl Grid.IsSharedSizeScope="True" Focusable="False" ItemsSource="{Binding DetailItems}" ItemTemplate="{StaticResource DetailItem}" />
+            </Grid.ToolTip>
 
-        <ItemsControl Margin="14,8" Background="Transparent" Focusable="False" Style="{StaticResource HorizontalViewPanel}"
-                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource HorizontalItem}" ItemsPanel="{StaticResource HorizontalPanel}" />
+            <ItemsControl Margin="16,14" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
+                          ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullItem}" />
 
-        <ItemsControl Margin="12,10" Background="Transparent" Focusable="False" Style="{StaticResource VerticalViewPanel}"
-                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource VerticalItem}" />
-    </Grid>
+            <ItemsControl Margin="14,8" Background="Transparent" Focusable="False" Style="{StaticResource HorizontalViewPanel}"
+                          ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource HorizontalItem}" ItemsPanel="{StaticResource HorizontalPanel}" />
+
+            <ItemsControl Margin="12,10" Background="Transparent" Focusable="False" Style="{StaticResource VerticalViewPanel}"
+                          ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource VerticalItem}" />
+        </Grid>
+    </Border>
 </Window>

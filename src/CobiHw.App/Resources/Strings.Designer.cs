@@ -560,7 +560,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Lock position.
+        ///   Looks up a localized string similar to Lock position and size.
         /// </summary>
         internal static string Tray_LockPosition {
             get {
@@ -571,9 +571,9 @@ namespace CobiHw.App.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Start with Windows.
         /// </summary>
-        internal static string Tray_StartWithWindows {
+        internal static string General_StartWithWindows {
             get {
-                return ResourceManager.GetString("Tray_StartWithWindows", resourceCulture);
+                return ResourceManager.GetString("General_StartWithWindows", resourceCulture);
             }
         }
 
@@ -677,6 +677,168 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        internal static string Tab_General {
+            get {
+                return ResourceManager.GetString("Tab_General", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        internal static string General_Language {
+            get {
+                return ResourceManager.GetString("General_Language", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Theme.
+        /// </summary>
+        internal static string General_Theme {
+            get {
+                return ResourceManager.GetString("General_Theme", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic (same as Windows).
+        /// </summary>
+        internal static string Theme_System {
+            get {
+                return ResourceManager.GetString("Theme_System", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        internal static string Theme_Light {
+            get {
+                return ResourceManager.GetString("Theme_Light", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        internal static string Theme_Dark {
+            get {
+                return ResourceManager.GetString("Theme_Dark", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Applies to this window and the tray icon menu. The widget has its own colors, on the Appearance tab..
+        /// </summary>
+        internal static string General_ThemeHint {
+            get {
+                return ResourceManager.GetString("General_ThemeHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Widget.
+        /// </summary>
+        internal static string General_Widget {
+            get {
+                return ResourceManager.GetString("General_Widget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor:.
+        /// </summary>
+        internal static string General_Monitor {
+            get {
+                return ResourceManager.GetString("General_Monitor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show the widget:.
+        /// </summary>
+        internal static string General_Mode {
+            get {
+                return ResourceManager.GetString("General_Mode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Always on top: the widget stays in front of other windows. On the desktop: it stays behind everything, with the desktop icons..
+        /// </summary>
+        internal static string General_ModeHint {
+            get {
+                return ResourceManager.GetString("General_ModeHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When you drag the widget close to a screen edge, it sticks to it..
+        /// </summary>
+        internal static string General_SnapHint {
+            get {
+                return ResourceManager.GetString("General_SnapHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Prevents moving the widget and resizing it by its edges..
+        /// </summary>
+        internal static string General_LockHint {
+            get {
+                return ResourceManager.GetString("General_LockHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor {0} — {1} × {2}.
+        /// </summary>
+        internal static string Format_Monitor {
+            get {
+                return ResourceManager.GetString("Format_Monitor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor {0} — {1} × {2} (main).
+        /// </summary>
+        internal static string Format_MonitorPrimary {
+            get {
+                return ResourceManager.GetString("Format_MonitorPrimary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unapplied changes.
+        /// </summary>
+        internal static string Settings_UnappliedTitle {
+            get {
+                return ResourceManager.GetString("Settings_UnappliedTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to There are unapplied changes in: {0}. Apply them before closing?.
+        /// </summary>
+        internal static string Format_UnappliedMessage {
+            get {
+                return ResourceManager.GetString("Format_UnappliedMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to There are unapplied changes in: {0}, and some have errors, so they can't be applied. Discard them and close?.
+        /// </summary>
+        internal static string Format_UnappliedInvalid {
+            get {
+                return ResourceManager.GetString("Format_UnappliedInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Display.
         /// </summary>
         internal static string Tab_Display {
@@ -776,20 +938,119 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Language:.
-        /// </summary>
-        internal static string Appearance_Language {
-            get {
-                return ResourceManager.GetString("Appearance_Language", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Automatic (Windows language).
         /// </summary>
         internal static string Language_Automatic {
             get {
                 return ResourceManager.GetString("Language_Automatic", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clicks.
+        /// </summary>
+        internal static string General_Clicks {
+            get {
+                return ResourceManager.GetString("General_Clicks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Startup.
+        /// </summary>
+        internal static string General_Startup {
+            get {
+                return ResourceManager.GetString("General_Startup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Border.
+        /// </summary>
+        internal static string Appearance_Border {
+            get {
+                return ResourceManager.GetString("Appearance_Border", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show the border:.
+        /// </summary>
+        internal static string Appearance_BorderMode {
+            get {
+                return ResourceManager.GetString("Appearance_BorderMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        internal static string BorderMode_Off {
+            get {
+                return ResourceManager.GetString("BorderMode_Off", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Always.
+        /// </summary>
+        internal static string BorderMode_Always {
+            get {
+                return ResourceManager.GetString("BorderMode_Always", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When the mouse is over the widget.
+        /// </summary>
+        internal static string BorderMode_Hover {
+            get {
+                return ResourceManager.GetString("BorderMode_Hover", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Border color.
+        /// </summary>
+        internal static string Appearance_BorderColor {
+            get {
+                return ResourceManager.GetString("Appearance_BorderColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Border thickness:.
+        /// </summary>
+        internal static string Appearance_BorderThickness {
+            get {
+                return ResourceManager.GetString("Appearance_BorderThickness", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Border transparency:.
+        /// </summary>
+        internal static string Appearance_BorderTransparency {
+            get {
+                return ResourceManager.GetString("Appearance_BorderTransparency", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The border sits on the strip you can drag to resize the widget..
+        /// </summary>
+        internal static string Appearance_BorderHint {
+            get {
+                return ResourceManager.GetString("Appearance_BorderHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Colors by usage level.
+        /// </summary>
+        internal static string Appearance_UsageColors {
+            get {
+                return ResourceManager.GetString("Appearance_UsageColors", resourceCulture);
             }
         }
 
@@ -862,6 +1123,33 @@ namespace CobiHw.App.Resources {
         internal static string Appearance_LabelsHint {
             get {
                 return ResourceManager.GetString("Appearance_LabelsHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        internal static string Appearance_Size {
+            get {
+                return ResourceManager.GetString("Appearance_Size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Widget size:.
+        /// </summary>
+        internal static string Appearance_Scale {
+            get {
+                return ResourceManager.GetString("Appearance_Scale", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You can also drag the edges or corners of the widget. "Lock position and size" in the tray icon menu prevents changes..
+        /// </summary>
+        internal static string Appearance_ScaleHint {
+            get {
+                return ResourceManager.GetString("Appearance_ScaleHint", resourceCulture);
             }
         }
 
@@ -983,15 +1271,6 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Colors.
-        /// </summary>
-        internal static string Tab_Colors {
-            get {
-                return ResourceManager.GetString("Tab_Colors", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Color by usage.
         /// </summary>
         internal static string Colors_Enabled {
@@ -1084,27 +1363,27 @@ namespace CobiHw.App.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Let clicks pass through the widget.
         /// </summary>
-        internal static string Display_ClickThrough {
+        internal static string General_ClickThrough {
             get {
-                return ResourceManager.GetString("Display_ClickThrough", resourceCulture);
+                return ResourceManager.GetString("General_ClickThrough", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Hold to interact (drag, details):.
         /// </summary>
-        internal static string Display_InteractionKey {
+        internal static string General_InteractionKey {
             get {
-                return ResourceManager.GetString("Display_InteractionKey", resourceCulture);
+                return ResourceManager.GetString("General_InteractionKey", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to While it's on, the widget ignores the mouse. Hold the key above to move it or see the details, or turn it off in the tray icon menu..
         /// </summary>
-        internal static string Display_ClickThroughHint {
+        internal static string General_ClickThroughHint {
             get {
-                return ResourceManager.GetString("Display_ClickThroughHint", resourceCulture);
+                return ResourceManager.GetString("General_ClickThroughHint", resourceCulture);
             }
         }
 

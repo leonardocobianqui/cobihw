@@ -210,9 +210,9 @@
     <value>Прилипать к краям</value>
   </data>
   <data name="Tray_LockPosition" xml:space="preserve">
-    <value>Закрепить положение</value>
+    <value>Закрепить положение и размер</value>
   </data>
-  <data name="Tray_StartWithWindows" xml:space="preserve">
+  <data name="General_StartWithWindows" xml:space="preserve">
     <value>Запускать вместе с Windows</value>
   </data>
   <data name="Tray_Settings" xml:space="preserve">
@@ -248,6 +248,60 @@
   <data name="Settings_Apply" xml:space="preserve">
     <value>Применить</value>
   </data>
+  <data name="Tab_General" xml:space="preserve">
+    <value>Общие</value>
+  </data>
+  <data name="General_Language" xml:space="preserve">
+    <value>Язык:</value>
+  </data>
+  <data name="General_Theme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>Автоматически (как в Windows)</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Тёмная</value>
+  </data>
+  <data name="General_ThemeHint" xml:space="preserve">
+    <value>Действует для этого окна и меню значка. У виджета свои цвета — на вкладке «Внешний вид».</value>
+  </data>
+  <data name="General_Widget" xml:space="preserve">
+    <value>Виджет</value>
+  </data>
+  <data name="General_Monitor" xml:space="preserve">
+    <value>Монитор:</value>
+  </data>
+  <data name="General_Mode" xml:space="preserve">
+    <value>Показывать виджет:</value>
+  </data>
+  <data name="General_ModeHint" xml:space="preserve">
+    <value>Поверх всех окон: виджет остаётся перед другими окнами. На рабочем столе: он находится позади всего, рядом со значками.</value>
+  </data>
+  <data name="General_SnapHint" xml:space="preserve">
+    <value>Если подтащить виджет к краю экрана, он прилипнет к нему.</value>
+  </data>
+  <data name="General_LockHint" xml:space="preserve">
+    <value>Запрещает перемещать виджет и менять его размер за края.</value>
+  </data>
+  <data name="Format_Monitor" xml:space="preserve">
+    <value>Монитор {0} — {1} × {2}</value>
+  </data>
+  <data name="Format_MonitorPrimary" xml:space="preserve">
+    <value>Монитор {0} — {1} × {2} (основной)</value>
+  </data>
+  <data name="Settings_UnappliedTitle" xml:space="preserve">
+    <value>Непримененные изменения</value>
+  </data>
+  <data name="Format_UnappliedMessage" xml:space="preserve">
+    <value>Есть непримененные изменения: {0}. Применить их перед закрытием?</value>
+  </data>
+  <data name="Format_UnappliedInvalid" xml:space="preserve">
+    <value>Есть непримененные изменения: {0}, и некоторые содержат ошибки, поэтому их нельзя применить. Отменить их и закрыть?</value>
+  </data>
   <data name="Tab_Display" xml:space="preserve">
     <value>Отображение</value>
   </data>
@@ -281,11 +335,44 @@
   <data name="Tab_Appearance" xml:space="preserve">
     <value>Внешний вид</value>
   </data>
-  <data name="Appearance_Language" xml:space="preserve">
-    <value>Язык:</value>
-  </data>
   <data name="Language_Automatic" xml:space="preserve">
     <value>Автоматически (язык Windows)</value>
+  </data>
+  <data name="General_Clicks" xml:space="preserve">
+    <value>Клики</value>
+  </data>
+  <data name="General_Startup" xml:space="preserve">
+    <value>Автозапуск</value>
+  </data>
+  <data name="Appearance_Border" xml:space="preserve">
+    <value>Рамка</value>
+  </data>
+  <data name="Appearance_BorderMode" xml:space="preserve">
+    <value>Показывать рамку:</value>
+  </data>
+  <data name="BorderMode_Off" xml:space="preserve">
+    <value>Выключена</value>
+  </data>
+  <data name="BorderMode_Always" xml:space="preserve">
+    <value>Всегда</value>
+  </data>
+  <data name="BorderMode_Hover" xml:space="preserve">
+    <value>При наведении мыши</value>
+  </data>
+  <data name="Appearance_BorderColor" xml:space="preserve">
+    <value>Цвет рамки</value>
+  </data>
+  <data name="Appearance_BorderThickness" xml:space="preserve">
+    <value>Толщина рамки:</value>
+  </data>
+  <data name="Appearance_BorderTransparency" xml:space="preserve">
+    <value>Прозрачность рамки:</value>
+  </data>
+  <data name="Appearance_BorderHint" xml:space="preserve">
+    <value>Рамка совпадает с полосой, за которую можно потянуть, чтобы изменить размер виджета.</value>
+  </data>
+  <data name="Appearance_UsageColors" xml:space="preserve">
+    <value>Цвета по уровню нагрузки</value>
   </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Фон</value>
@@ -310,6 +397,15 @@
   </data>
   <data name="Appearance_LabelsHint" xml:space="preserve">
     <value>Подписи (ЦП, ОЗУ...) используют цвет текста чуть бледнее.</value>
+  </data>
+  <data name="Appearance_Size" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="Appearance_Scale" xml:space="preserve">
+    <value>Размер виджета:</value>
+  </data>
+  <data name="Appearance_ScaleHint" xml:space="preserve">
+    <value>Также можно перетаскивать края или углы виджета. «Закрепить положение и размер» в меню значка запрещает изменения.</value>
   </data>
   <data name="Weight_Light" xml:space="preserve">
     <value>Тонкий</value>
@@ -350,9 +446,6 @@
   <data name="Network_DataHint" xml:space="preserve">
     <value>Использует серверы Cloudflare. Расходует около 200 МБ при подключении 100 Мбит/с и 700 МБ при 1 Гбит/с и замедляет интернет до 30 секунд.</value>
   </data>
-  <data name="Tab_Colors" xml:space="preserve">
-    <value>Цвета</value>
-  </data>
   <data name="Colors_Enabled" xml:space="preserve">
     <value>Окрашивать по нагрузке</value>
   </data>
@@ -383,13 +476,13 @@
   <data name="Tray_ClickThrough" xml:space="preserve">
     <value>Пропускать клики</value>
   </data>
-  <data name="Display_ClickThrough" xml:space="preserve">
+  <data name="General_ClickThrough" xml:space="preserve">
     <value>Пропускать клики сквозь виджет</value>
   </data>
-  <data name="Display_InteractionKey" xml:space="preserve">
+  <data name="General_InteractionKey" xml:space="preserve">
     <value>Удерживайте для взаимодействия (перемещение, подробности):</value>
   </data>
-  <data name="Display_ClickThroughHint" xml:space="preserve">
+  <data name="General_ClickThroughHint" xml:space="preserve">
     <value>Пока включено, виджет игнорирует мышь. Удерживайте клавишу выше, чтобы переместить его или увидеть подробности, или отключите в меню значка.</value>
   </data>
   <data name="Key_None" xml:space="preserve">
