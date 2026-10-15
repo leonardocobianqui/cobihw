@@ -488,4 +488,31 @@
   <data name="Key_None" xml:space="preserve">
     <value>Ninguna (solo el menú del icono)</value>
   </data>
+  <data name="Metric_Fps" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Display_FpsHint" xml:space="preserve">
+    <value>Siempre va primero en el widget y solo aparece mientras la app en primer plano dibuja fotogramas (juegos y apps 3D con DirectX 9 a 12). Necesita permiso de administrador: Windows pide confirmación solo una vez.</value>
+  </data>
+  <data name="Fps_Denied" xml:space="preserve">
+    <value>Windows no concedió el permiso de administrador. El FPS sigue desactivado.</value>
+  </data>
+  <data name="Fps_RequiresAdmin" xml:space="preserve">
+    <value>El FPS necesita permiso de administrador y esta cuenta de Windows no es administradora. El FPS sigue desactivado.</value>
+  </data>
+  <data name="Fps_Failed" xml:space="preserve">
+    <value>No se pudo configurar el permiso del FPS. El FPS sigue desactivado.</value>
+  </data>
+  <data name="Fps_RestartPending" xml:space="preserve">
+    <value>El FPS empieza a medirse la próxima vez que se abra cobihw.</value>
+  </data>
+  <data name="Format_FpsUnavailable" xml:space="preserve">
+    <value>No se pudo iniciar la lectura de FPS: {0}</value>
+  </data>
+  <data name="Appearance_CornerRadius" xml:space="preserve">
+    <value>Esquinas redondeadas:</value>
+  </data>
+  <data name="Format_CornerRadiusHint" xml:space="preserve">
+    <value>0 deja las esquinas rectas. El máximo ({0} px) es el mayor redondeo que nunca toca el texto. Sigue el tamaño del widget y también se aplica a los detalles.</value>
+  </data>
 </root>

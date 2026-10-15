@@ -7,16 +7,19 @@ public enum MetricItem
     Memory,
     Disk,
     Network,
+    Fps,
 }
 
 public sealed record MetricOrder
 {
-    public static readonly MetricOrder Default = new(Enum.GetValues<MetricItem>());
+    public static readonly IReadOnlyList<MetricItem> Orderable = [.. Enum.GetValues<MetricItem>().Where(item => item != MetricItem.Fps)];
+
+    public static readonly MetricOrder Default = new(Orderable);
 
     public MetricOrder(IReadOnlyList<MetricItem> items)
     {
-        List<MetricItem> valid = items.Where(Enum.IsDefined).Distinct().ToList();
-        valid.AddRange(Enum.GetValues<MetricItem>().Where(item => !valid.Contains(item)));
+        List<MetricItem> valid = items.Where(Orderable.Contains).Distinct().ToList();
+        valid.AddRange(Orderable.Where(item => !valid.Contains(item)));
         Items = valid.AsReadOnly();
     }
 

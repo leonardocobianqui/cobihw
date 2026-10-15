@@ -21,6 +21,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     private readonly IReadOnlyList<DiskActivity> _availableDisks;
     private readonly IReadOnlyList<DisplayMonitor> _monitors;
     private SavedSettings _applied;
+    private string? _fpsNoticeKey;
     private bool _ready;
 
     public SettingsViewModel(SavedSettings current, IReadOnlyList<DiskActivity> availableDisks, IReadOnlyList<DisplayMonitor> monitors, SpeedTestViewModel speedTest)
@@ -40,8 +41,8 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             row.PropertyChanged += OnRowPropertyChanged;
         }
 
-        _metricRows = Enum.GetValues<MetricItem>().ToDictionary(item => item, item => new MetricRowViewModel(item));
-        Metrics = [.. Enum.GetValues<MetricItem>().Select(item => _metricRows[item])];
+        _metricRows = MetricOrder.Orderable.ToDictionary(item => item, item => new MetricRowViewModel(item));
+        Metrics = [.. MetricOrder.Orderable.Select(item => _metricRows[item])];
 
         foreach (MetricRowViewModel row in Metrics)
         {
@@ -67,6 +68,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         BorderMode = Enum.IsDefined(current.Appearance.BorderMode) ? current.Appearance.BorderMode : BorderMode.Off;
         BorderThickness = Math.Clamp(current.Appearance.BorderThickness, AppearanceSettings.MinimumBorderThickness, AppearanceSettings.MaximumBorderThickness);
         BorderTransparency = Math.Clamp(current.Appearance.BorderTransparency, 0, AppearanceSettings.MaximumTransparency);
+        CornerRadius = CornerRule.Clamp(current.Appearance.CornerRadius);
 
         _availableDisks = availableDisks;
         _diskOptions = BuildDiskOptions(availableDisks, current.Display);
@@ -128,6 +130,9 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     private DiskOption? _selectedDisk;
 
     [ObservableProperty]
+    private bool _showFps;
+
+    [ObservableProperty]
     private bool _detailedTooltip;
 
     [ObservableProperty]
@@ -157,6 +162,13 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     private int _borderTransparency = AppearanceSettings.DefaultBorderTransparency;
+
+    [ObservableProperty]
+    private int _cornerRadius;
+
+    public int MaximumCornerRadius => CornerRule.MaximumRadius;
+
+    public string CornerRadiusHint => Localizer.Format(Strings.Format_CornerRadiusHint, CornerRule.MaximumRadius);
 
     [ObservableProperty]
     private string _language = Localizer.AutomaticLanguage;
@@ -190,6 +202,10 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     public bool HasSeveralMonitors => _monitors.Count > 1;
 
     public bool HasBorder => BorderMode != BorderMode.Off;
+
+    public string? FpsNotice => _fpsNoticeKey is null ? null : Localizer.Instance[_fpsNoticeKey];
+
+    public bool HasFpsNotice => _fpsNoticeKey is not null;
 
     public bool IsGeneralPending => BuildGeneral() != _applied.General;
 
@@ -285,6 +301,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         BorderColor.Reset();
         BorderThickness = AppearanceSettings.MinimumBorderThickness;
         BorderTransparency = AppearanceSettings.DefaultBorderTransparency;
+        CornerRadius = 0;
     }
 
     private void RestoreColors()
@@ -331,6 +348,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         ShowMemory = _metricRows[MetricItem.Memory].IsVisible,
         ShowDisk = _metricRows[MetricItem.Disk].IsVisible,
         ShowNetwork = _metricRows[MetricItem.Network].IsVisible,
+        ShowFps = ShowFps,
         Order = new MetricOrder([.. Metrics.Select(row => row.Item)]),
         DiskSource = SelectedDisk?.Source ?? DiskSource.System,
         DiskNumber = SelectedDisk?.Number,
@@ -362,6 +380,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         BorderColor = BorderColor.Color,
         BorderThickness = BorderThickness,
         BorderTransparency = BorderTransparency,
+        CornerRadius = CornerRadius,
     };
 
     private static List<DiskOption> BuildDiskOptions(IReadOnlyList<DiskActivity> availableDisks, DisplaySettings saved)
@@ -468,6 +487,20 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         RefreshPending();
     }
 
+    public void RejectFps(string noticeKey)
+    {
+        ShowFps = false;
+        _applied = _applied with { Display = _applied.Display with { ShowFps = false } };
+        ShowFpsNotice(noticeKey);
+    }
+
+    public void ShowFpsNotice(string noticeKey)
+    {
+        _fpsNoticeKey = noticeKey;
+        OnPropertyChanged(nameof(FpsNotice));
+        OnPropertyChanged(nameof(HasFpsNotice));
+    }
+
     public void SyncScale(int percent)
     {
         Scale = percent;
@@ -476,6 +509,13 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     }
 
     public void Dispose() => Localizer.Instance.CultureChanged -= OnCultureChanged;
+
+    partial void OnShowFpsChanged(bool value)
+    {
+        _fpsNoticeKey = null;
+        OnPropertyChanged(nameof(FpsNotice));
+        OnPropertyChanged(nameof(HasFpsNotice));
+    }
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
@@ -517,6 +557,9 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         {
             choice.RefreshLabel();
         }
+
+        OnPropertyChanged(nameof(FpsNotice));
+        OnPropertyChanged(nameof(CornerRadiusHint));
 
         DiskOption? disk = SelectedDisk;
         TextWeight weight = TextWeight;
@@ -577,6 +620,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             row.IsVisible = display.IsShown(row.Item);
         }
 
+        ShowFps = display.ShowFps;
         SelectedDisk = DiskOptions.FirstOrDefault(option => option.Matches(display)) ?? DiskOptions[0];
         DetailedTooltip = display.DetailedTooltip;
     }

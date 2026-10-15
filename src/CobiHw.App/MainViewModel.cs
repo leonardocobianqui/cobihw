@@ -3,6 +3,7 @@ using CobiHw.App.Localization;
 using CobiHw.App.Resources;
 using CobiHw.App.Settings;
 using CobiHw.Core;
+using CobiHw.Core.Fps;
 
 namespace CobiHw.App;
 
@@ -15,6 +16,8 @@ public sealed partial class MainViewModel : ObservableObject
     private DisplaySettings _display;
     private ColorSettings _colors;
     private HardwareSnapshot? _lastSnapshot;
+    private FpsSnapshot? _lastFps;
+    private bool _fpsShown;
     private long? _lastPing;
 
     public MainViewModel(SavedSettings settings, SpeedTestViewModel speedTest)
@@ -38,7 +41,14 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private string _labelColor = AppearanceSettings.DefaultTextColor;
     [ObservableProperty] private string _dividerColor = AppearanceSettings.DefaultTextColor;
     [ObservableProperty] private string _fontWeightName = nameof(TextWeight.Normal);
-    [ObservableProperty] private double _scale = 1;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(WidgetCornerRadius))]
+    private double _scale = 1;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(WidgetCornerRadius))]
+    private double _cornerRadius;
+
     [ObservableProperty] private double _borderWidth;
     [ObservableProperty] private string _borderColor = AppearanceSettings.DefaultTextColor;
     [ObservableProperty] private bool _borderOnHover;
@@ -86,6 +96,9 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private PercentText _diskActiveText = DisplayFormat.PercentParts(null);
     [ObservableProperty] private IReadOnlyList<DiskDetail> _diskDetails = [];
 
+    [ObservableProperty] private string _fpsText = DisplayFormat.Unavailable;
+    [ObservableProperty] private string _fpsProcessText = DisplayFormat.Unavailable;
+
     [ObservableProperty] private string _downloadSpeedText = DisplayFormat.Unavailable;
     [ObservableProperty] private string _uploadSpeedText = DisplayFormat.Unavailable;
     [ObservableProperty] private string _networkSessionText = DisplayFormat.Unavailable;
@@ -101,6 +114,8 @@ public sealed partial class MainViewModel : ObservableObject
     public string PingLabelText => Localizer.Format(Strings.Format_Ping, PingText);
 
     public string PingDetailText => Localizer.Format(Strings.Format_PingDetail, PingText, PingHost);
+
+    public double WidgetCornerRadius => CornerRadius * Scale;
 
     public IReadOnlyList<DiskActivity> AvailableDisks => _lastSnapshot?.Disk.Disks ?? [];
 
@@ -156,6 +171,18 @@ public sealed partial class MainViewModel : ObservableObject
             DisplayFormat.Size(snapshot.Network.SessionSentBytes));
     }
 
+    public void ApplyFps(FpsSnapshot? snapshot)
+    {
+        _lastFps = snapshot;
+        FpsText = DisplayFormat.FramesPerSecond(snapshot?.FramesPerSecond);
+        FpsProcessText = snapshot?.ProcessName ?? DisplayFormat.Unavailable;
+
+        if (IsFpsVisible != _fpsShown)
+        {
+            ApplyDisplay();
+        }
+    }
+
     public void ApplyPing(long? roundTripMilliseconds)
     {
         _lastPing = roundTripMilliseconds;
@@ -164,9 +191,12 @@ public sealed partial class MainViewModel : ObservableObject
 
     public void ApplyScale(int percent) => Scale = ResizeRule.ClampPercent(percent) / 100.0;
 
+    private bool IsFpsVisible => _display.ShowFps && _lastFps is not null;
+
     private void RefreshTexts()
     {
         ApplyPing(_lastPing);
+        ApplyFps(_lastFps);
         OnPropertyChanged(nameof(PingLabelText));
         OnPropertyChanged(nameof(PingDetailText));
 
@@ -178,8 +208,10 @@ public sealed partial class MainViewModel : ObservableObject
 
     private void ApplyDisplay()
     {
-        VisibleItems = _display.Order.Items.Where(_display.IsShown).ToList();
-        DetailItems = _display.Order.Items;
+        _fpsShown = IsFpsVisible;
+        MetricItem[] top = _fpsShown ? [MetricItem.Fps] : [];
+        VisibleItems = [.. top, .. _display.Order.Items.Where(_display.IsShown)];
+        DetailItems = [.. top, .. _display.Order.Items];
         DetailedTooltip = _display.DetailedTooltip;
     }
 
@@ -196,6 +228,7 @@ public sealed partial class MainViewModel : ObservableObject
         DividerColor = HexColor.WithAlpha(text, DividerAlpha);
         FontWeightName = Enum.IsDefined(appearance.TextWeight) ? appearance.TextWeight.ToString() : nameof(TextWeight.Normal);
         ApplyScale(appearance.Scale);
+        CornerRadius = CornerRule.Clamp(appearance.CornerRadius);
         ApplyBorder(appearance);
 
         ApplyLevelColors();

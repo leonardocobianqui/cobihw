@@ -12,6 +12,7 @@ public sealed class MetricTemplateConverter : IValueConverter
     public DataTemplate? Memory { get; set; }
     public DataTemplate? Disk { get; set; }
     public DataTemplate? Network { get; set; }
+    public DataTemplate? Fps { get; set; }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
         (value switch
@@ -21,6 +22,7 @@ public sealed class MetricTemplateConverter : IValueConverter
             MetricItem.Memory => Memory,
             MetricItem.Disk => Disk,
             MetricItem.Network => Network,
+            MetricItem.Fps => Fps,
             _ => null,
         }) ?? DependencyProperty.UnsetValue;
 

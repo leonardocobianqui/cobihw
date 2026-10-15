@@ -22,6 +22,7 @@ public sealed partial class MetricRowViewModel : ObservableObject
         MetricItem.Memory => Strings.Metric_Memory,
         MetricItem.Disk => Strings.Metric_Disk,
         MetricItem.Network => Strings.Metric_Network,
+        MetricItem.Fps => Strings.Metric_Fps,
         _ => throw new ArgumentOutOfRangeException(nameof(item), item, null),
     };
 

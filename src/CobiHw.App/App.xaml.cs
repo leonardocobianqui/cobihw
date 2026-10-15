@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Threading;
@@ -9,6 +10,7 @@ using CobiHw.App.Resources;
 using CobiHw.App.Settings;
 using CobiHw.App.Tray;
 using CobiHw.Core;
+using CobiHw.Core.Fps;
 using CobiHw.Core.Network;
 using Forms = System.Windows.Forms;
 
@@ -22,6 +24,7 @@ public partial class App : Application
     private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(2);
     private static readonly TimeSpan HttpRequestTimeout = TimeSpan.FromSeconds(60);
     private static readonly Uri IconResource = new("pack://application:,,,/Assets/app.ico");
+    private const int ErrorCancelled = 1223;
 
     private readonly CancellationTokenSource _shutdown = new();
     private SingleInstance? _singleInstance;
@@ -36,11 +39,34 @@ public partial class App : Application
     private SettingsWindow? _settingsWindow;
     private SettingsViewModel? _settingsViewModel;
     private DispatcherTimer? _autoSaveTimer;
+    private FpsMonitor? _fps;
+    private bool _fpsPermissionPending;
+    private bool _relaunchElevated;
+
+    private static string ExecutablePath => Environment.ProcessPath
+        ?? throw new InvalidOperationException("O caminho do executável não está disponível.");
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
         DispatcherUnhandledException += OnDispatcherUnhandledException;
+
+        string? settingsPath = ElevatedTask.SettingsPathFrom(e.Args);
+
+        if (e.Args.Contains(ElevatedTask.RegisterArgument))
+        {
+            Shutdown(settingsPath is not null && ElevatedTask.Register(ExecutablePath, settingsPath) ? 0 : 1);
+            return;
+        }
+
+        _settingsStore = settingsPath is null ? SettingsStore.CreateBesideExecutable() : SettingsStore.At(settingsPath);
+        _settings = _settingsStore.Load();
+
+        if (settingsPath is null && CanRelaunchElevated() && ElevatedTask.Run())
+        {
+            Shutdown();
+            return;
+        }
 
         _singleInstance = SingleInstance.TryAcquire();
         if (_singleInstance is null)
@@ -49,8 +75,6 @@ public partial class App : Application
             return;
         }
 
-        _settingsStore = SettingsStore.CreateBesideExecutable();
-        _settings = _settingsStore.Load();
         Localizer.Instance.SetLanguage(_settings.Language);
         Localizer.Instance.CultureChanged += (_, _) => _trayIcon?.ApplyTexts();
         StartupRegistration.RepairIfMoved();
@@ -101,6 +125,11 @@ public partial class App : Application
         _autoSaveTimer.Tick += (_, _) => SaveSettings();
         _autoSaveTimer.Start();
 
+        if (_settings.Display.ShowFps)
+        {
+            EnableFps();
+        }
+
         RunSamplingLoop(_monitor, _viewModel, _shutdown.Token);
         RunPingLoop(_viewModel, _shutdown.Token);
     }
@@ -113,10 +142,17 @@ public partial class App : Application
         SaveSettings();
         SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
         _trayIcon?.Dispose();
+        _fps?.Dispose();
         _monitor?.Dispose();
         _http?.Dispose();
         _singleInstance?.Dispose();
         _shutdown.Dispose();
+
+        if (_relaunchElevated)
+        {
+            ElevatedTask.Run();
+        }
+
         base.OnExit(e);
     }
 
@@ -287,7 +323,26 @@ public partial class App : Application
         _settingsViewModel = settingsViewModel;
         settingsViewModel.Applied += (_, saved) => ApplySavedSettings(saved);
 
-        _settingsWindow = new SettingsWindow(_settings.Theme) { DataContext = settingsViewModel };
+        var settingsWindow = new SettingsWindow(_settings.Theme) { DataContext = settingsViewModel };
+        _settingsWindow = settingsWindow;
+
+        if (_settings.SettingsWidth is double width && width > 0)
+        {
+            settingsWindow.Width = width;
+        }
+
+        if (_settings.SettingsHeight is double height && height > 0)
+        {
+            settingsWindow.Height = height;
+        }
+
+        settingsWindow.Closing += (_, e) =>
+        {
+            if (!e.Cancel)
+            {
+                RememberSettingsSize(settingsWindow.RestoreBounds);
+            }
+        };
         _settingsWindow.Closed += (_, _) =>
         {
             settingsViewModel.Dispose();
@@ -298,8 +353,21 @@ public partial class App : Application
         _settingsWindow.Activate();
     }
 
+    private void RememberSettingsSize(Rect bounds)
+    {
+        if (bounds.IsEmpty)
+        {
+            return;
+        }
+
+        _settings.SettingsWidth = bounds.Width;
+        _settings.SettingsHeight = bounds.Height;
+        SaveSettings();
+    }
+
     private void ApplySavedSettings(SavedSettings saved)
     {
+        bool fpsWasShown = _settings.Display.ShowFps;
         _settings.Display = saved.Display;
         _settings.Colors = saved.Colors;
         _settings.Network = saved.Network;
@@ -313,6 +381,160 @@ public partial class App : Application
         }
 
         RefreshTrayMenu();
+
+        if (saved.Display.ShowFps != fpsWasShown)
+        {
+            if (saved.Display.ShowFps)
+            {
+                EnableFps();
+            }
+            else
+            {
+                DisableFps();
+            }
+        }
+
+        SaveSettings();
+    }
+
+    private bool CanRelaunchElevated() =>
+        _settings.Display.ShowFps && !Elevation.IsElevated && _settings.FpsTaskPath == ExecutablePath;
+
+    private void EnableFps()
+    {
+        if (Elevation.IsElevated)
+        {
+            StartFps();
+        }
+        else
+        {
+            RequestFpsPermission();
+        }
+    }
+
+    private void StartFps()
+    {
+        if (_fps is not null || _settingsStore is null)
+        {
+            return;
+        }
+
+        if (_settings.FpsTaskPath != ExecutablePath && ElevatedTask.Register(ExecutablePath, _settingsStore.FilePath))
+        {
+            _settings.FpsTaskPath = ExecutablePath;
+            SaveSettings();
+        }
+
+        try
+        {
+            _fps = FpsMonitor.Start();
+        }
+        catch (Exception exception)
+        {
+            _trayIcon?.ShowNotification(Strings.Metric_Fps, Localizer.Format(Strings.Format_FpsUnavailable, exception.Message), isError: true);
+        }
+    }
+
+    private void DisableFps()
+    {
+        _fps?.Dispose();
+        _fps = null;
+        _viewModel?.ApplyFps(null);
+
+        if (_settings.FpsTaskPath is not null)
+        {
+            ElevatedTask.Delete();
+            _settings.FpsTaskPath = null;
+        }
+    }
+
+    private async void RequestFpsPermission()
+    {
+        if (_fpsPermissionPending || _settingsStore is null)
+        {
+            return;
+        }
+
+        if (!Elevation.CanElevate)
+        {
+            RejectFps(nameof(Strings.Fps_RequiresAdmin));
+            return;
+        }
+
+        _fpsPermissionPending = true;
+        string? noticeKey;
+
+        try
+        {
+            noticeKey = await RegisterTaskElevatedAsync(_settingsStore.FilePath);
+        }
+        finally
+        {
+            _fpsPermissionPending = false;
+        }
+
+        if (noticeKey is not null)
+        {
+            RejectFps(noticeKey);
+            return;
+        }
+
+        _settings.FpsTaskPath = ExecutablePath;
+        RelaunchElevated();
+    }
+
+    private static async Task<string?> RegisterTaskElevatedAsync(string settingsPath)
+    {
+        var startInfo = new ProcessStartInfo(ExecutablePath, ElevatedTask.RegisterArguments(settingsPath))
+        {
+            UseShellExecute = true,
+            Verb = "runas",
+        };
+
+        try
+        {
+            using Process? process = Process.Start(startInfo);
+
+            if (process is null)
+            {
+                return nameof(Strings.Fps_Failed);
+            }
+
+            await process.WaitForExitAsync();
+            return process.ExitCode == 0 ? null : nameof(Strings.Fps_Failed);
+        }
+        catch (Win32Exception exception) when (exception.NativeErrorCode == ErrorCancelled)
+        {
+            return nameof(Strings.Fps_Denied);
+        }
+    }
+
+    private void RelaunchElevated()
+    {
+        _relaunchElevated = true;
+        RequestExit();
+
+        if (_settingsWindow is not null)
+        {
+            _relaunchElevated = false;
+            _settingsViewModel?.ShowFpsNotice(nameof(Strings.Fps_RestartPending));
+        }
+    }
+
+    private void RejectFps(string noticeKey)
+    {
+        _settings.Display = _settings.Display with { ShowFps = false };
+        _viewModel?.UpdateSettings(CurrentSettings());
+
+        if (_settingsViewModel is not null)
+        {
+            _settingsViewModel.RejectFps(noticeKey);
+        }
+        else
+        {
+            _trayIcon?.ShowNotification(Strings.Metric_Fps, Localizer.Instance[noticeKey], isError: true);
+        }
+
         SaveSettings();
     }
 
@@ -356,16 +578,13 @@ public partial class App : Application
     };
 
     private static List<DisplayMonitor> ListMonitors() =>
-    [
-        .. Forms.Screen.AllScreens
-            .Select((screen, index) => new DisplayMonitor(
-                screen.DeviceName,
-                DisplayMonitor.NumberOf(screen.DeviceName, index + 1),
-                screen.Bounds.Width,
-                screen.Bounds.Height,
-                screen.Primary))
-            .OrderBy(monitor => monitor.Number),
-    ];
+        DisplayMonitor.ByPosition(Forms.Screen.AllScreens.Select(screen => new ScreenInfo(
+            screen.DeviceName,
+            screen.Bounds.Left,
+            screen.Bounds.Top,
+            screen.Bounds.Width,
+            screen.Bounds.Height,
+            screen.Primary)));
 
     private void StartSpeedTest()
     {
@@ -435,7 +654,7 @@ public partial class App : Application
         _settingsStore.Save(_settings);
     }
 
-    private static async void RunSamplingLoop(HardwareMonitor monitor, MainViewModel viewModel, CancellationToken cancellationToken)
+    private async void RunSamplingLoop(HardwareMonitor monitor, MainViewModel viewModel, CancellationToken cancellationToken)
     {
         using var timer = new PeriodicTimer(SampleInterval);
 
@@ -445,6 +664,7 @@ public partial class App : Application
             {
                 HardwareSnapshot snapshot = await Task.Run(() => monitor.Sample(), cancellationToken);
                 viewModel.Apply(snapshot);
+                viewModel.ApplyFps(_fps?.Sample());
             }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

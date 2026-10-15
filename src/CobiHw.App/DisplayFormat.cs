@@ -18,6 +18,9 @@ internal static class DisplayFormat
 
     public static string Percent(double? value) => PercentParts(value).Text;
 
+    public static string FramesPerSecond(double? value) =>
+        value is null ? Unavailable : Localizer.Format("{0:0}", value.Value);
+
     public static string Gigahertz(double? value) =>
         value is null ? Unavailable : Localizer.Format(Strings.Format_Gigahertz, value.Value);
 

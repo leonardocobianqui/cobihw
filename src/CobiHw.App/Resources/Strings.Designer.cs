@@ -1395,5 +1395,86 @@ namespace CobiHw.App.Resources {
                 return ResourceManager.GetString("Key_None", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to FPS.
+        /// </summary>
+        internal static string Metric_Fps {
+            get {
+                return ResourceManager.GetString("Metric_Fps", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Always first in the widget. It only shows while the app in the foreground is drawing frames (games and 3D apps using DirectX 9 to 12). Needs administrator permission: Windows asks for confirmation only once..
+        /// </summary>
+        internal static string Display_FpsHint {
+            get {
+                return ResourceManager.GetString("Display_FpsHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Windows did not grant administrator permission. FPS stays off..
+        /// </summary>
+        internal static string Fps_Denied {
+            get {
+                return ResourceManager.GetString("Fps_Denied", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to FPS needs administrator permission, and this Windows account is not an administrator. FPS stays off..
+        /// </summary>
+        internal static string Fps_RequiresAdmin {
+            get {
+                return ResourceManager.GetString("Fps_RequiresAdmin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not set up the FPS permission. FPS stays off..
+        /// </summary>
+        internal static string Fps_Failed {
+            get {
+                return ResourceManager.GetString("Fps_Failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to FPS starts being measured the next time cobihw opens..
+        /// </summary>
+        internal static string Fps_RestartPending {
+            get {
+                return ResourceManager.GetString("Fps_RestartPending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start reading FPS: {0}.
+        /// </summary>
+        internal static string Format_FpsUnavailable {
+            get {
+                return ResourceManager.GetString("Format_FpsUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rounded corners:.
+        /// </summary>
+        internal static string Appearance_CornerRadius {
+            get {
+                return ResourceManager.GetString("Appearance_CornerRadius", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 0 keeps the corners square. The maximum ({0} px) is the largest rounding that never touches the text. It follows the widget size and also applies to the details..
+        /// </summary>
+        internal static string Format_CornerRadiusHint {
+            get {
+                return ResourceManager.GetString("Format_CornerRadiusHint", resourceCulture);
+            }
+        }
     }
 }

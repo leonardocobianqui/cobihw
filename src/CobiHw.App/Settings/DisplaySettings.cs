@@ -13,6 +13,7 @@ public sealed record DisplaySettings
     public bool ShowMemory { get; set; } = true;
     public bool ShowDisk { get; set; } = true;
     public bool ShowNetwork { get; set; } = true;
+    public bool ShowFps { get; set; }
     public DiskSource DiskSource { get; set; } = DiskSource.System;
     public int? DiskNumber { get; set; }
     public bool DetailedTooltip { get; set; } = true;
@@ -25,6 +26,7 @@ public sealed record DisplaySettings
         MetricItem.Memory => ShowMemory,
         MetricItem.Disk => ShowDisk,
         MetricItem.Network => ShowNetwork,
+        MetricItem.Fps => ShowFps,
         _ => throw new ArgumentOutOfRangeException(nameof(item), item, null),
     };
 }

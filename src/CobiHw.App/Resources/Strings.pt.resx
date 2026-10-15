@@ -488,4 +488,31 @@
   <data name="Key_None" xml:space="preserve">
     <value>Nenhuma (só pelo menu do ícone)</value>
   </data>
+  <data name="Metric_Fps" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Display_FpsHint" xml:space="preserve">
+    <value>Fica sempre em primeiro no widget e só aparece enquanto o app em primeiro plano estiver desenhando quadros (jogos e apps 3D com DirectX 9 a 12). Precisa de permissão de administrador: o Windows pede confirmação só uma vez.</value>
+  </data>
+  <data name="Fps_Denied" xml:space="preserve">
+    <value>O Windows não concedeu a permissão de administrador. O FPS continua desligado.</value>
+  </data>
+  <data name="Fps_RequiresAdmin" xml:space="preserve">
+    <value>O FPS precisa de permissão de administrador, e esta conta do Windows não é administradora. O FPS continua desligado.</value>
+  </data>
+  <data name="Fps_Failed" xml:space="preserve">
+    <value>Não foi possível configurar a permissão do FPS. O FPS continua desligado.</value>
+  </data>
+  <data name="Fps_RestartPending" xml:space="preserve">
+    <value>O FPS começa a ser medido na próxima vez que o cobihw abrir.</value>
+  </data>
+  <data name="Format_FpsUnavailable" xml:space="preserve">
+    <value>Não foi possível iniciar a leitura de FPS: {0}</value>
+  </data>
+  <data name="Appearance_CornerRadius" xml:space="preserve">
+    <value>Cantos arredondados:</value>
+  </data>
+  <data name="Format_CornerRadiusHint" xml:space="preserve">
+    <value>0 deixa os cantos retos. O máximo ({0} px) é o maior arredondamento que não encosta no texto. Acompanha o tamanho do widget e vale também para os detalhes.</value>
+  </data>
 </root>

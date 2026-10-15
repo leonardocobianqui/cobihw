@@ -15,7 +15,7 @@
         AllowsTransparency="True"
         SizeToContent="WidthAndHeight"
         ShowInTaskbar="False"
-        Background="{Binding BackgroundColor}"
+        Background="#01000000"
         Foreground="{Binding TextColor}"
         FontFamily="Segoe UI"
         FontSize="13"
@@ -30,12 +30,22 @@
             <Setter Property="Background" Value="{Binding SolidBackgroundColor}" />
             <Setter Property="Foreground" Value="{Binding TextColor}" />
             <Setter Property="BorderBrush" Value="{Binding DividerColor}" />
-            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Padding" Value="{x:Static local:WidgetThickness.Details}" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="{Binding FontWeightName}" />
             <Setter Property="LayoutTransform" Value="{Binding Scale, Converter={x:Static converters:ScaleTransformConverter.Instance}}" />
             <Setter Property="Language" Value="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" CornerRadius="{Binding CornerRadius}">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="SectionTitle" TargetType="TextBlock">
@@ -269,12 +279,20 @@
             </StackPanel>
         </DataTemplate>
 
+        <DataTemplate x:Key="FullFps" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Fps}" />
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding FpsText}" />
+            </StackPanel>
+        </DataTemplate>
+
         <converters:MetricTemplateConverter x:Key="FullTemplates"
                                             Cpu="{StaticResource FullCpu}"
                                             Gpu="{StaticResource FullGpu}"
                                             Memory="{StaticResource FullMemory}"
                                             Disk="{StaticResource FullDisk}"
-                                            Network="{StaticResource FullNetwork}" />
+                                            Network="{StaticResource FullNetwork}"
+                                            Fps="{StaticResource FullFps}" />
 
         <DataTemplate x:Key="FullItem">
             <StackPanel>
@@ -335,12 +353,20 @@
             </StackPanel>
         </DataTemplate>
 
+        <DataTemplate x:Key="HorizontalFps" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Fps}" />
+                <TextBlock Style="{StaticResource CompactPercent}" Text="{Binding FpsText}" />
+            </StackPanel>
+        </DataTemplate>
+
         <converters:MetricTemplateConverter x:Key="HorizontalTemplates"
                                             Cpu="{StaticResource HorizontalCpu}"
                                             Gpu="{StaticResource HorizontalGpu}"
                                             Memory="{StaticResource HorizontalMemory}"
                                             Disk="{StaticResource HorizontalDisk}"
-                                            Network="{StaticResource HorizontalNetwork}" />
+                                            Network="{StaticResource HorizontalNetwork}"
+                                            Fps="{StaticResource HorizontalFps}" />
 
         <DataTemplate x:Key="HorizontalItem">
             <StackPanel Orientation="Horizontal">
@@ -410,12 +436,20 @@
             </StackPanel>
         </DataTemplate>
 
+        <DataTemplate x:Key="VerticalFps" DataType="{x:Type local:MainViewModel}">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Text="{Binding FpsText}" />
+                <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Fps}" />
+            </DockPanel>
+        </DataTemplate>
+
         <converters:MetricTemplateConverter x:Key="VerticalTemplates"
                                             Cpu="{StaticResource VerticalCpu}"
                                             Gpu="{StaticResource VerticalGpu}"
                                             Memory="{StaticResource VerticalMemory}"
                                             Disk="{StaticResource VerticalDisk}"
-                                            Network="{StaticResource VerticalNetwork}" />
+                                            Network="{StaticResource VerticalNetwork}"
+                                            Fps="{StaticResource VerticalFps}" />
 
         <DataTemplate x:Key="VerticalItem">
             <StackPanel>
@@ -535,12 +569,28 @@
             </StackPanel>
         </DataTemplate>
 
+        <DataTemplate x:Key="DetailFps" DataType="{x:Type local:MainViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Fps}" />
+                <TextBlock Grid.Column="1">
+                    <Run Text="{Binding FpsText, Mode=OneWay}" />
+                    <Run Text="·" />
+                    <Run Text="{Binding FpsProcessText, Mode=OneWay}" />
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+
         <converters:MetricTemplateConverter x:Key="DetailTemplates"
                                             Cpu="{StaticResource DetailCpu}"
                                             Gpu="{StaticResource DetailGpu}"
                                             Memory="{StaticResource DetailMemory}"
                                             Disk="{StaticResource DetailDisk}"
-                                            Network="{StaticResource DetailNetwork}" />
+                                            Network="{StaticResource DetailNetwork}"
+                                            Fps="{StaticResource DetailFps}" />
 
         <DataTemplate x:Key="DetailItem">
             <StackPanel>
@@ -555,7 +605,7 @@
         </ItemsPanelTemplate>
     </Window.Resources>
 
-    <Border BorderThickness="{Binding BorderWidth}">
+    <Border Background="{Binding BackgroundColor}" BorderThickness="{Binding BorderWidth}" CornerRadius="{Binding WidgetCornerRadius}">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="{Binding BorderColor}" />
@@ -577,13 +627,13 @@
                 <ItemsControl Grid.IsSharedSizeScope="True" Focusable="False" ItemsSource="{Binding DetailItems}" ItemTemplate="{StaticResource DetailItem}" />
             </Grid.ToolTip>
 
-            <ItemsControl Margin="16,14" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
+            <ItemsControl Margin="{x:Static local:WidgetThickness.Full}" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
                           ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullItem}" />
 
-            <ItemsControl Margin="14,8" Background="Transparent" Focusable="False" Style="{StaticResource HorizontalViewPanel}"
+            <ItemsControl Margin="{x:Static local:WidgetThickness.CompactHorizontal}" Background="Transparent" Focusable="False" Style="{StaticResource HorizontalViewPanel}"
                           ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource HorizontalItem}" ItemsPanel="{StaticResource HorizontalPanel}" />
 
-            <ItemsControl Margin="12,10" Background="Transparent" Focusable="False" Style="{StaticResource VerticalViewPanel}"
+            <ItemsControl Margin="{x:Static local:WidgetThickness.CompactVertical}" Background="Transparent" Focusable="False" Style="{StaticResource VerticalViewPanel}"
                           ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource VerticalItem}" />
         </Grid>
     </Border>

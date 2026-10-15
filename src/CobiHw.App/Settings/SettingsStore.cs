@@ -19,6 +19,8 @@ internal sealed class SettingsStore
 
     public string FilePath { get; }
 
+    public static SettingsStore At(string filePath) => new(Path.GetFullPath(filePath));
+
     public static SettingsStore CreateBesideExecutable()
     {
         string executableDirectory = AppContext.BaseDirectory;

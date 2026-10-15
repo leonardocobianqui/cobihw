@@ -17,18 +17,37 @@ internal sealed class SingleInstance : IDisposable
 
     public static SingleInstance? TryAcquire()
     {
-        var mutex = new Mutex(initiallyOwned: true, MutexName, out bool createdNew);
-        var showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName);
+        Mutex mutex;
 
-        if (createdNew)
+        try
         {
-            return new SingleInstance(mutex, showEvent);
+            mutex = new Mutex(initiallyOwned: true, MutexName, out bool createdNew);
+
+            if (!createdNew)
+            {
+                SignalRunningInstance();
+                mutex.Dispose();
+                return null;
+            }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
         }
 
-        showEvent.Set();
-        showEvent.Dispose();
-        mutex.Dispose();
-        return null;
+        return new SingleInstance(mutex, new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName));
+    }
+
+    private static void SignalRunningInstance()
+    {
+        try
+        {
+            using var showEvent = EventWaitHandle.OpenExisting(ShowEventName);
+            showEvent.Set();
+        }
+        catch (Exception exception) when (exception is WaitHandleCannotBeOpenedException or UnauthorizedAccessException)
+        {
+        }
     }
 
     public void ListenForShowRequests(Action onShowRequested)

@@ -488,4 +488,31 @@
   <data name="Key_None" xml:space="preserve">
     <value>Нет (только через меню значка)</value>
   </data>
+  <data name="Metric_Fps" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Display_FpsHint" xml:space="preserve">
+    <value>Всегда первый в виджете и показывается, только пока приложение на переднем плане выводит кадры (игры и 3D-приложения с DirectX 9–12). Нужны права администратора: Windows запросит подтверждение только один раз.</value>
+  </data>
+  <data name="Fps_Denied" xml:space="preserve">
+    <value>Windows не предоставила права администратора. FPS остаётся выключенным.</value>
+  </data>
+  <data name="Fps_RequiresAdmin" xml:space="preserve">
+    <value>Для FPS нужны права администратора, а эта учётная запись Windows не является администратором. FPS остаётся выключенным.</value>
+  </data>
+  <data name="Fps_Failed" xml:space="preserve">
+    <value>Не удалось настроить разрешение для FPS. FPS остаётся выключенным.</value>
+  </data>
+  <data name="Fps_RestartPending" xml:space="preserve">
+    <value>FPS начнёт измеряться при следующем запуске cobihw.</value>
+  </data>
+  <data name="Format_FpsUnavailable" xml:space="preserve">
+    <value>Не удалось запустить измерение FPS: {0}</value>
+  </data>
+  <data name="Appearance_CornerRadius" xml:space="preserve">
+    <value>Скругление углов:</value>
+  </data>
+  <data name="Format_CornerRadiusHint" xml:space="preserve">
+    <value>0 — прямые углы. Максимум ({0} пкс) — самое большое скругление, которое не задевает текст. Масштабируется вместе с виджетом и применяется и к подробностям.</value>
+  </data>
 </root>

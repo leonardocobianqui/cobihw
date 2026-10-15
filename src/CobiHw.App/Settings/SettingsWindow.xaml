@@ -10,9 +10,10 @@
         d:DataContext="{d:DesignInstance Type=settings:SettingsViewModel}"
         Title="{loc:Text Settings_Title}"
         Width="460"
-        SizeToContent="Height"
-        MaxHeight="720"
-        ResizeMode="NoResize"
+        Height="720"
+        MinWidth="460"
+        MinHeight="400"
+        ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
         FontSize="13"
@@ -138,6 +139,10 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
                     <StackPanel Style="{StaticResource TabContent}">
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Display_ShowInWidget}" />
+                        <StackPanel Margin="0,3" Orientation="Horizontal">
+                            <TextBlock Width="22" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="&#xE72E;" />
+                            <CheckBox VerticalAlignment="Center" Content="{loc:Text Metric_Fps}" IsChecked="{Binding ShowFps}" />
+                        </StackPanel>
                         <ItemsControl x:Name="MetricList" AllowDrop="True" Focusable="False" ItemsSource="{Binding Metrics}"
                                       PreviewMouseLeftButtonDown="OnMetricPreviewMouseLeftButtonDown"
                                       PreviewMouseMove="OnMetricPreviewMouseMove"
@@ -157,6 +162,9 @@
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Display_DragHint}" />
                         <TextBlock Style="{StaticResource ErrorText}" Text="{loc:Text Display_SelectOne}"
                                    Visibility="{Binding HasDisplayError, Converter={StaticResource BooleanToVisibility}}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Display_FpsHint}" />
+                        <TextBlock Style="{StaticResource ErrorText}" Text="{Binding FpsNotice}"
+                                   Visibility="{Binding HasFpsNotice, Converter={StaticResource BooleanToVisibility}}" />
 
                         <Border Style="{StaticResource SectionLine}" />
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Display_MonitoredDisk}" />
@@ -196,6 +204,12 @@
                             <Slider Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" SmallChange="5" LargeChange="10" Value="{Binding Transparency}" />
                         </DockPanel>
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_TransparencyHint}" />
+                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_CornerRadius}" />
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding CornerRadius, StringFormat={}{0} px}" />
+                            <Slider Minimum="0" Maximum="{Binding MaximumCornerRadius}" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="5" Value="{Binding CornerRadius}" />
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Hint}" Text="{Binding CornerRadiusHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Border}" />

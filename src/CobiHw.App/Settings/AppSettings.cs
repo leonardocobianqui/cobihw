@@ -42,8 +42,11 @@ public sealed class AppSettings
     public ViewLayout Layout { get; set; } = ViewLayout.Full;
     public bool SnapToEdges { get; set; } = true;
     public bool PositionLocked { get; set; }
+    public double? SettingsWidth { get; set; }
+    public double? SettingsHeight { get; set; }
     public bool ClickThrough { get; set; }
     public InteractionKey InteractionKey { get; set; } = InteractionKey.Ctrl;
+    public string? FpsTaskPath { get; set; }
     public DisplaySettings Display { get; set; } = new();
     public ColorSettings Colors { get; set; } = new();
     public NetworkSettings Network { get; set; } = new();

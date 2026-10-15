@@ -37,4 +37,5 @@ public sealed record AppearanceSettings
     public string BorderColor { get; set; } = DefaultTextColor;
     public int BorderThickness { get; set; } = MinimumBorderThickness;
     public int BorderTransparency { get; set; } = DefaultBorderTransparency;
+    public int CornerRadius { get; set; }
 }

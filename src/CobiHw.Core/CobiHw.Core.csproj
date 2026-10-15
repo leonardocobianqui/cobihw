@@ -8,4 +8,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.2.8" ExcludeAssets="buildTransitive" />
+  </ItemGroup>
+
 </Project>

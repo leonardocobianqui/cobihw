@@ -637,4 +637,40 @@
     <value>None (tray icon menu only)</value>
     <comment>Opção de tecla</comment>
   </data>
+  <data name="Metric_Fps" xml:space="preserve">
+    <value>FPS</value>
+    <comment>Item FPS (quadros por segundo); igual em todos os idiomas</comment>
+  </data>
+  <data name="Display_FpsHint" xml:space="preserve">
+    <value>Always first in the widget. It only shows while the app in the foreground is drawing frames (games and 3D apps using DirectX 9 to 12). Needs administrator permission: Windows asks for confirmation only once.</value>
+    <comment>Dica do FPS na aba Exibição</comment>
+  </data>
+  <data name="Fps_Denied" xml:space="preserve">
+    <value>Windows did not grant administrator permission. FPS stays off.</value>
+    <comment>Aviso: UAC recusado</comment>
+  </data>
+  <data name="Fps_RequiresAdmin" xml:space="preserve">
+    <value>FPS needs administrator permission, and this Windows account is not an administrator. FPS stays off.</value>
+    <comment>Aviso: conta sem administrador</comment>
+  </data>
+  <data name="Fps_Failed" xml:space="preserve">
+    <value>Could not set up the FPS permission. FPS stays off.</value>
+    <comment>Aviso: falha ao criar a tarefa agendada</comment>
+  </data>
+  <data name="Fps_RestartPending" xml:space="preserve">
+    <value>FPS starts being measured the next time cobihw opens.</value>
+    <comment>Aviso: FPS ligado, mas o programa não reiniciou</comment>
+  </data>
+  <data name="Format_FpsUnavailable" xml:space="preserve">
+    <value>Could not start reading FPS: {0}</value>
+    <comment>{0} = mensagem de erro do Windows</comment>
+  </data>
+  <data name="Appearance_CornerRadius" xml:space="preserve">
+    <value>Rounded corners:</value>
+    <comment>Rótulo do controle deslizante</comment>
+  </data>
+  <data name="Format_CornerRadiusHint" xml:space="preserve">
+    <value>0 keeps the corners square. The maximum ({0} px) is the largest rounding that never touches the text. It follows the widget size and also applies to the details.</value>
+    <comment>Dica; {0} = raio máximo em px</comment>
+  </data>
 </root>
