@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cobihw — monitor de hardware para Windows</title>
+<meta name="description" content="Widget gratuito para Windows que mostra o uso de CPU, memória, GPU, disco e rede em tempo real, sempre à vista.">
+<meta name="color-scheme" content="light dark">
+<style>
+:root {
+  --paper: #F3F5F7;
+  --ink: #1E1F22;
+  --muted: #59626D;
+  --line: #D5DAE0;
+  --scene: #34495E;
+  --taskbar: #1C2026;
+  --w-bg: #1E1F22;
+  --w-fg: #E6E6E6;
+  --w-label: #9AA0A6;
+  --w-line: #34363A;
+  --ok: #4CC26A;
+  --warn: #E8B33A;
+  --crit: #E5534B;
+  --focus: #2F7DD3;
+  --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #15171A;
+    --ink: #E6E6E6;
+    --muted: #A2AAB4;
+    --line: #2C3036;
+    --scene: #2A3A4B;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.top { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+.top a.plain { color: var(--muted); text-decoration: none; }
+.top a.plain:hover { color: var(--ink); text-decoration: underline; }
+.hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 48px; align-items: center; padding-block: 40px 72px; }
+h1 { font-family: var(--font-display); font-size: clamp(2.1rem, 4.2vw, 3.25rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 700; margin: 0 0 20px; max-width: 16ch; }
+.lede { color: var(--muted); font-size: 1.1875rem; max-width: 36ch; margin: 0 0 28px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 1rem; }
+.btn-primary { background: var(--ok); color: #10241A; }
+.btn-primary:hover { background: #3FAE5C; }
+.btn-secondary { color: var(--ink); border: 1px solid var(--line); }
+.btn-secondary:hover { border-color: var(--muted); }
+.fineprint { color: var(--muted); font-size: 0.9375rem; margin: 16px 0 0; }
+.desktop { position: relative; background: var(--scene); border-radius: 12px; aspect-ratio: 16 / 10.5; overflow: hidden; box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset; }
+.taskbar { position: absolute; left: 0; right: 0; bottom: 0; height: 36px; background: var(--taskbar); display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding: 0 14px; color: #C9CDD2; font-size: 0.75rem; }
+.tray-icon { width: 14px; height: 14px; border-radius: 3px; background: var(--ok); }
+.widget { position: absolute; top: 18px; right: 18px; background: var(--w-bg); color: var(--w-fg); font-family: "Segoe UI", system-ui, sans-serif; font-size: 13px; line-height: 1.35; padding: 14px 16px; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); font-variant-numeric: tabular-nums; max-width: calc(100% - 36px); }
+.w-title { color: var(--w-label); margin-right: 10px; }
+.w-model { font-weight: 600; }
+.w-row { display: flex; align-items: center; margin-top: 6px; }
+.w-bar { width: 130px; height: 6px; background: #2A2C30; border-radius: 3px; overflow: hidden; }
+.w-fill { height: 100%; width: 0; background: var(--ok); transition: width 0.6s ease, background-color 0.3s; }
+.w-pct { min-width: 38px; margin-left: 10px; text-align: right; }
+.w-detail { margin-left: 14px; }
+.w-div { height: 1px; background: var(--w-line); margin: 10px 0; }
+.lv-ok .w-fill { background: var(--ok); }
+.lv-warn .w-fill { background: var(--warn); }
+.lv-crit .w-fill { background: var(--crit); }
+.lv-ok .w-pct, .lv-ok.c-item .c-pct { color: #6FD68A; }
+.lv-warn .w-pct, .lv-warn.c-item .c-pct { color: #F0C44C; }
+.lv-crit .w-pct, .lv-crit.c-item .c-pct { color: #FF6B63; }
+.compact-h { display: flex; flex-wrap: wrap; align-items: center; row-gap: 6px; white-space: nowrap; padding: 10px 14px; font-size: 12px; }
+.compact-h .c-sep { width: 1px; align-self: stretch; background: var(--w-line); margin: 0 8px; }
+.compact-h .c-pct { min-width: 28px; }
+.compact-v .c-item { display: flex; justify-content: space-between; gap: 16px; padding: 3px 0; }
+.compact-v .c-sep { height: 1px; background: var(--w-line); margin: 3px 0; }
+.c-title { color: var(--w-label); margin-right: 6px; }
+.c-pct { display: inline-block; min-width: 34px; text-align: right; }
+.switcher { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+.switcher span { color: var(--muted); font-size: 0.9375rem; margin-right: 6px; }
+.switcher button { font: inherit; font-size: 0.9375rem; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+.switcher button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+section.block { padding: 64px 0; border-top: 1px solid var(--line); }
+h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.015em; line-height: 1.15; margin: 0 0 28px; max-width: 24ch; }
+.metrics { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 0; margin: 0; max-width: 760px; }
+.metrics dt { font-weight: 600; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.metrics dd { margin: 0; padding: 14px 0; border-bottom: 1px solid var(--line); color: var(--muted); }
+.features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 48px; max-width: 900px; }
+.features h3 { font-size: 1.0625rem; margin: 0 0 4px; }
+.features p { margin: 0; color: var(--muted); max-width: 46ch; }
+.steps { margin: 0; padding-left: 1.4rem; max-width: 62ch; }
+.steps li { margin-bottom: 14px; padding-left: 6px; }
+.steps strong { font-weight: 600; }
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.9375rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+footer a { color: inherit; }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 32px; padding-block: 24px 56px; }
+  .features { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .desktop { aspect-ratio: auto; min-height: 300px; padding-bottom: 36px; }
+  .widget { position: relative; top: auto; right: auto; margin: 18px auto 18px; width: fit-content; max-width: calc(100% - 24px); font-size: 12px; }
+  .w-bar { width: 84px; }
+  .compact-h { flex-wrap: wrap; white-space: normal; row-gap: 6px; }
+  .metrics { grid-template-columns: 1fr; }
+  .metrics dt { border-bottom: 0; padding-bottom: 0; }
+  .metrics dd { padding-top: 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w-fill { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="/">cobihw</a>
+  <a class="plain" href="https://github.com/leonardocobianqui/cobihw">Código no GitHub</a>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div>
+      <h1>O uso do seu PC, sempre à vista.</h1>
+      <p class="lede">Um widget leve para Windows que mostra CPU, memória, GPU, disco e rede em tempo real, num canto da tela.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://github.com/leonardocobianqui/cobihw/releases/latest/download/cobihw.exe">Baixar para Windows</a>
+        <a class="btn btn-secondary" href="#primeiro-uso">Como instalar</a>
+      </div>
+      <p class="fineprint">Gratuito, para Windows 10 e 11. Não precisa instalar: é um arquivo só.</p>
+    </div>
+
+    <div>
+      <div class="desktop" role="img" aria-label="Demonstração do cobihw num canto da área de trabalho, com valores de exemplo mudando a cada segundo">
+        <div class="widget" id="widget" aria-hidden="true"></div>
+        <div class="taskbar" aria-hidden="true">
+          <span class="tray-icon"></span>
+          <span id="clock">17:42</span>
+        </div>
+      </div>
+      <div class="switcher" role="group" aria-label="Layout da demonstração">
+        <span>Layouts do widget:</span>
+        <button type="button" data-layout="full" aria-pressed="true">Completo</button>
+        <button type="button" data-layout="h" aria-pressed="false">Horizontal</button>
+        <button type="button" data-layout="v" aria-pressed="false">Vertical</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>O que ele mostra</h2>
+      <dl class="metrics">
+        <dt>CPU</dt>
+        <dd>Modelo do processador, frequência atual e porcentagem de uso.</dd>
+        <dt>RAM</dt>
+        <dd>Porcentagem de uso e quantos GB estão ocupados do total.</dd>
+        <dt>GPU</dt>
+        <dd>Modelo da placa de vídeo, porcentagem de uso e memória de vídeo ocupada.</dd>
+        <dt>Disco</dt>
+        <dd>Quanto tempo o disco passa trabalhando, em porcentagem.</dd>
+        <dt>Rede</dt>
+        <dd>Velocidade de download e upload agora, e o total de dados trafegados desde que o Windows ligou.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Do jeito que você usa o PC</h2>
+      <div class="features">
+        <div>
+          <h3>Por cima de tudo ou na área de trabalho</h3>
+          <p>Deixe o widget sempre visível, até sobre jogos em janela, ou preso ao fundo, atrás das janelas abertas.</p>
+        </div>
+        <div>
+          <h3>Três layouts</h3>
+          <p>Completo, com modelos e detalhes, ou compacto, na horizontal ou na vertical, para ocupar pouco espaço.</p>
+        </div>
+        <div>
+          <h3>Cores que avisam</h3>
+          <p>As barras ficam verdes, amarelas ou vermelhas conforme o uso. Você escolhe os limites de cada componente.</p>
+        </div>
+        <div>
+          <h3>Fica onde você deixar</h3>
+          <p>Arraste para qualquer lugar, encaixe nas bordas da tela e trave a posição. Ele lembra o lugar na próxima vez.</p>
+        </div>
+        <div>
+          <h3>Abre com o Windows</h3>
+          <p>Ative a opção uma vez e o cobihw já aparece quando você liga o computador.</p>
+        </div>
+        <div>
+          <h3>Configuração no ícone da bandeja</h3>
+          <p>Todas as opções ficam no clique direito do ícone perto do relógio, sem janelas a mais na barra de tarefas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="primeiro-uso">
+    <div class="wrap">
+      <h2>Primeiro uso</h2>
+      <ol class="steps">
+        <li>Baixe o <strong>cobihw.exe</strong> e coloque numa pasta onde ele vai ficar, como Documentos. Não precisa instalar.</li>
+        <li>Abra o arquivo. Se aparecer a tela azul <strong>"O Windows protegeu o computador"</strong>, clique em <strong>Mais informações</strong> e depois em <strong>Executar assim mesmo</strong>. O aviso aparece porque o app ainda não tem assinatura digital paga; o código é aberto e pode ser conferido no GitHub.</li>
+        <li>Arraste o widget para onde preferir e clique com o botão direito no ícone perto do relógio para escolher o layout, as cores e se ele abre com o Windows.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>cobihw, feito por Leonardo Cobianqui.</span>
+  <a href="https://github.com/leonardocobianqui/cobihw">Código-fonte e versões no GitHub</a>
+</footer>
+
+<script>
+const state = { cpu: 23, ghz: 4.2, ram: 41, gpu: 12, vram: 1.6, disk: 3, down: 12.4, up: 1.1, session: 3.2 };
+const WARN = 50, CRIT = 75;
+let layout = "full";
+const widget = document.getElementById("widget");
+
+function level(p) {
+  const v = Math.round(p);
+  if (v >= CRIT) return "lv-crit";
+  return v >= WARN ? "lv-warn" : "lv-ok";
+}
+
+function br(n, casas) {
+  return n.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
+}
+
+function fullSection(title, model, pct, detail) {
+  const modelHtml = model ? `<span class="w-model">${model}</span>` : "";
+  return `<div><span class="w-title">${title}</span>${modelHtml}</div>
+    <div class="w-row ${level(pct)}"><div class="w-bar"><div class="w-fill" style="width:${pct}%"></div></div>
+    <span class="w-pct">${Math.round(pct)}%</span><span class="w-detail">${detail}</span></div>`;
+}
+
+function compactItem(title, pct) {
+  return `<div class="c-item ${level(pct)}"><span class="c-title">${title}</span><span class="c-pct">${Math.round(pct)}%</span></div>`;
+}
+
+function render() {
+  const s = state;
+  const net = `↓ ${br(s.down, 1)} Mbps&nbsp;&nbsp;↑ ${br(s.up, 1)} Mbps`;
+  if (layout === "full") {
+    widget.className = "widget";
+    widget.innerHTML = [
+      fullSection("CPU", "Intel Core i5-12400F", s.cpu, `${br(s.ghz, 1)} GHz`),
+      fullSection("RAM", "", s.ram, `${br(s.ram * 0.16, 1)} / 16 GB`),
+      fullSection("GPU", "NVIDIA GeForce RTX 3060", s.gpu, `${br(s.vram, 1)} / 12 GB`),
+      fullSection("Disco", "", s.disk, ""),
+      `<div><span class="w-title">Rede</span>${net}</div><div class="w-row"><span class="w-title">Sessão</span>${br(s.session, 2)} GB</div>`
+    ].join('<div class="w-div"></div>');
+    return;
+  }
+  const items = [compactItem("CPU", s.cpu), compactItem("RAM", s.ram), compactItem("GPU", s.gpu), compactItem("Disco", s.disk), `<div class="c-item"><span>${net}</span></div>`];
+  widget.className = "widget " + (layout === "h" ? "compact-h" : "compact-v");
+  widget.innerHTML = items.join('<div class="c-sep"></div>');
+}
+
+function clamp(v, min, max) {
+  return Math.min(max, Math.max(min, v));
+}
+
+function tick() {
+  const drift = (v, amp, min, max) => clamp(v + (Math.random() * 2 - 1) * amp, min, max);
+  state.cpu = Math.random() < 0.12 ? clamp(state.cpu + 35, 0, 96) : drift(state.cpu, 9, 4, 96);
+  state.ghz = clamp(2.5 + state.cpu / 50, 2.5, 4.4);
+  state.ram = drift(state.ram, 1.5, 30, 80);
+  state.gpu = drift(state.gpu, 12, 2, 98);
+  state.vram = clamp(1 + state.gpu / 12, 1, 11.5);
+  state.disk = Math.random() < 0.15 ? 40 + Math.random() * 45 : drift(state.disk, 3, 0, 20);
+  state.down = drift(state.down, 6, 0.2, 95);
+  state.up = drift(state.up, 0.8, 0.1, 12);
+  state.session += (state.down + state.up) / 8 / 1024;
+  render();
+}
+
+document.querySelectorAll(".switcher button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    layout = btn.dataset.layout;
+    document.querySelectorAll(".switcher button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+    render();
+  });
+});
+
+function updateClock() {
+  document.getElementById("clock").textContent = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+render();
+updateClock();
+setInterval(updateClock, 30000);
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  setInterval(tick, 1000);
+}
+</script>
+</body>
+</html>
