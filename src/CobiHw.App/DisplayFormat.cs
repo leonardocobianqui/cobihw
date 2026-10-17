@@ -1,6 +1,7 @@
 using CobiHw.App.Localization;
 using CobiHw.App.Resources;
 using CobiHw.Core;
+using CobiHw.Core.Network;
 
 namespace CobiHw.App;
 
@@ -13,10 +14,27 @@ internal static class DisplayFormat
     private static readonly string[] Trademarks = ["(R)", "(TM)", "®", "™"];
     private static readonly string[] GenericWords = ["Intel", "AMD", "NVIDIA", "CPU", "Processor"];
 
-    public static PercentText PercentParts(double? value) =>
-        value is null ? new PercentText(Unavailable, string.Empty) : new PercentText(Localizer.Format("{0:0}", value.Value), "%");
+    public static string Percent(double? value) =>
+        value is null ? Unavailable : Localizer.Format("{0:0}%", value.Value);
 
-    public static string Percent(double? value) => PercentParts(value).Text;
+    public static string LinkRate(double? megabitsPerSecond) =>
+        megabitsPerSecond is null ? Unavailable : Localizer.Format(Strings.Format_LinkRate, megabitsPerSecond.Value);
+
+    public static string UpDown(string down, string up) => Localizer.Format(Strings.Format_UpDown, down, up);
+
+    public static string Lines(IReadOnlyList<string> values) => string.Join(Environment.NewLine, values);
+
+    public static string DeviceKind(NetworkDeviceKind kind) => kind switch
+    {
+        NetworkDeviceKind.Ethernet => Strings.Kind_Ethernet,
+        NetworkDeviceKind.WiFi => Strings.Kind_WiFi,
+        NetworkDeviceKind.Bluetooth => Strings.Kind_Bluetooth,
+        NetworkDeviceKind.Virtual => Strings.Kind_Virtual,
+        NetworkDeviceKind.Cellular => Strings.Kind_Cellular,
+        NetworkDeviceKind.Tunnel => Strings.Kind_Tunnel,
+        NetworkDeviceKind.Loopback => Strings.Kind_Loopback,
+        _ => Strings.Kind_Other,
+    };
 
     public static string FramesPerSecond(double? value) =>
         value is null ? Unavailable : Localizer.Format("{0:0}", value.Value);
@@ -34,6 +52,9 @@ internal static class DisplayFormat
 
     public static string Milliseconds(double? value) =>
         value is null ? Unavailable : Localizer.Format(Strings.Format_Milliseconds, value.Value);
+
+    public static string Megabits(double? bytesPerSecond) =>
+        bytesPerSecond is null ? Unavailable : Localizer.Format("{0:0.0}", bytesPerSecond.Value * 8 / 1_000_000);
 
     public static string MegabitsPerSecond(double? bytesPerSecond) =>
         bytesPerSecond is null ? Unavailable : Localizer.Format(Strings.Format_NetworkRate, bytesPerSecond.Value * 8 / 1_000_000);

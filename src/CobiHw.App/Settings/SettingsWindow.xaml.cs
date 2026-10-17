@@ -20,17 +20,7 @@ public partial class SettingsWindow : Window
         Closing += OnClosing;
     }
 
-    public void ApplyTheme(AppTheme theme)
-    {
-#pragma warning disable WPF0001
-        ThemeMode = theme switch
-        {
-            AppTheme.Light => ThemeMode.Light,
-            AppTheme.Dark => ThemeMode.Dark,
-            _ => ThemeMode.System,
-        };
-#pragma warning restore WPF0001
-    }
+    public void ApplyTheme(AppTheme theme) => WindowTheme.Apply(this, theme);
 
     private SettingsViewModel ViewModel => (SettingsViewModel)DataContext;
 
@@ -63,26 +53,6 @@ public partial class SettingsWindow : Window
             default:
                 e.Cancel = true;
                 break;
-        }
-    }
-
-    private void OnChooseColorClick(object sender, RoutedEventArgs e)
-    {
-        if ((sender as FrameworkElement)?.DataContext is not ColorChoiceViewModel choice ||
-            !HexColor.TryParse(choice.Color, out byte red, out byte green, out byte blue))
-        {
-            return;
-        }
-
-        using var dialog = new System.Windows.Forms.ColorDialog
-        {
-            FullOpen = true,
-            Color = System.Drawing.Color.FromArgb(red, green, blue),
-        };
-
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-        {
-            choice.Color = HexColor.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B);
         }
     }
 

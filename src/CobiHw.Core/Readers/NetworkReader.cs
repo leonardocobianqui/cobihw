@@ -1,6 +1,4 @@
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using CobiHw.Core.Interop;
 
 namespace CobiHw.Core.Readers;
@@ -18,104 +16,95 @@ internal sealed class NetworkReader
             : NetworkSessionState.CreateForCurrentBoot();
     }
 
-    public NetworkSnapshot Read()
-    {
-        Dictionary<ulong, InterfaceCounters> current = ReadPhysicalInterfaces();
-        long now = Stopwatch.GetTimestamp();
+    public NetworkSnapshot Read() => Process(IfTable.Read(), Stopwatch.GetTimestamp());
 
-        var (download, upload) = CalculateSpeed(current, now);
-        AccumulateSession(current);
+    public NetworkSnapshot Process(IReadOnlyList<IfRow> rows, long timestamp)
+    {
+        double? seconds = _previousTimestamp == 0 ? null : Stopwatch.GetElapsedTime(_previousTimestamp, timestamp).TotalSeconds;
+        var current = new Dictionary<ulong, InterfaceCounters>();
+        var devices = new List<DeviceTraffic>(rows.Count);
+        ulong physicalReceived = 0;
+        ulong physicalSent = 0;
+
+        foreach (IfRow row in rows)
+        {
+            var counters = new InterfaceCounters(row.ReceivedBytes, row.SentBytes);
+            current[row.Luid] = counters;
+
+            InterfaceCounters? previous = _previousSample.GetValueOrDefault(row.Luid);
+            ulong receivedDelta = previous is null ? 0 : Delta(counters.ReceivedBytes, previous.ReceivedBytes);
+            ulong sentDelta = previous is null ? 0 : Delta(counters.SentBytes, previous.SentBytes);
+
+            if (row.IsPhysicalUp)
+            {
+                physicalReceived += receivedDelta;
+                physicalSent += sentDelta;
+            }
+
+            DeviceSession session = Accumulate(row, counters);
+            bool measured = seconds is not null && previous is not null;
+
+            devices.Add(new DeviceTraffic(
+                row.Id,
+                row.Name,
+                row.IsUp,
+                measured ? receivedDelta / seconds!.Value : null,
+                measured ? sentDelta / seconds!.Value : null,
+                session.ReceivedBytes,
+                session.SentBytes,
+                counters.ReceivedBytes,
+                counters.SentBytes));
+        }
 
         _previousSample = current;
-        _previousTimestamp = now;
+        _previousTimestamp = timestamp;
 
-        return new NetworkSnapshot(download, upload, _session.ReceivedBytes, _session.SentBytes);
+        return new NetworkSnapshot(
+            seconds is null ? null : physicalReceived / seconds.Value,
+            seconds is null ? null : physicalSent / seconds.Value,
+            _session.ReceivedBytes,
+            _session.SentBytes,
+            devices);
     }
 
-    public void ResetSession()
+    public void ResetSession(Guid? device)
     {
+        if (device is Guid id)
+        {
+            _session.Devices[id] = new DeviceSession();
+            return;
+        }
+
         _session.ReceivedBytes = 0;
         _session.SentBytes = 0;
-        _session.LastCounters = ReadPhysicalInterfaces();
     }
 
     public NetworkSessionState ExportSession() => _session.CopyForSave();
 
-    private (double? Download, double? Upload) CalculateSpeed(Dictionary<ulong, InterfaceCounters> current, long now)
+    private DeviceSession Accumulate(IfRow row, InterfaceCounters counters)
     {
-        if (_previousTimestamp == 0)
+        InterfaceCounters last = _session.LastCounters.GetValueOrDefault(row.Luid) ?? new InterfaceCounters(0, 0);
+        ulong received = Delta(counters.ReceivedBytes, last.ReceivedBytes);
+        ulong sent = Delta(counters.SentBytes, last.SentBytes);
+
+        if (row.IsPhysicalUp)
         {
-            return (null, null);
+            _session.ReceivedBytes += received;
+            _session.SentBytes += sent;
         }
 
-        double seconds = Stopwatch.GetElapsedTime(_previousTimestamp, now).TotalSeconds;
-        ulong received = 0;
-        ulong sent = 0;
-
-        foreach (var (luid, counters) in current)
+        if (!_session.Devices.TryGetValue(row.Id, out DeviceSession? session))
         {
-            if (_previousSample.TryGetValue(luid, out InterfaceCounters? previous))
-            {
-                received += Delta(counters.ReceivedBytes, previous.ReceivedBytes);
-                sent += Delta(counters.SentBytes, previous.SentBytes);
-            }
+            session = new DeviceSession();
+            _session.Devices[row.Id] = session;
         }
 
-        return (received / seconds, sent / seconds);
-    }
-
-    private void AccumulateSession(Dictionary<ulong, InterfaceCounters> current)
-    {
-        foreach (var (luid, counters) in current)
-        {
-            InterfaceCounters last = _session.LastCounters.GetValueOrDefault(luid) ?? new InterfaceCounters(0, 0);
-
-            _session.ReceivedBytes += Delta(counters.ReceivedBytes, last.ReceivedBytes);
-            _session.SentBytes += Delta(counters.SentBytes, last.SentBytes);
-            _session.LastCounters[luid] = counters;
-        }
+        session.ReceivedBytes += received;
+        session.SentBytes += sent;
+        _session.LastCounters[row.Luid] = counters;
+        return session;
     }
 
     private static ulong Delta(ulong current, ulong previous) =>
         current >= previous ? current - previous : current;
-
-    private static Dictionary<ulong, InterfaceCounters> ReadPhysicalInterfaces()
-    {
-        uint status = IpHelper.GetIfTable2(out nint table);
-        if (status != 0)
-        {
-            throw new Win32Exception((int)status);
-        }
-
-        try
-        {
-            int rowCount = Marshal.ReadInt32(table);
-            int rowSize = Marshal.SizeOf<IpHelper.MibIfRow2>();
-            var interfaces = new Dictionary<ulong, InterfaceCounters>();
-
-            for (int i = 0; i < rowCount; i++)
-            {
-                var row = Marshal.PtrToStructure<IpHelper.MibIfRow2>(table + IpHelper.TableRowsOffset + i * rowSize);
-
-                if (IsActivePhysicalAdapter(row))
-                {
-                    interfaces[row.InterfaceLuid] = new InterfaceCounters(row.InOctets, row.OutOctets);
-                }
-            }
-
-            return interfaces;
-        }
-        finally
-        {
-            IpHelper.FreeMibTable(table);
-        }
-    }
-
-    private static bool IsActivePhysicalAdapter(IpHelper.MibIfRow2 row)
-    {
-        bool isHardware = (row.InterfaceAndOperStatusFlags & IpHelper.FlagHardwareInterface) != 0;
-        bool isFilter = (row.InterfaceAndOperStatusFlags & IpHelper.FlagFilterInterface) != 0;
-
-        return isHardware && !isFilter && row.OperStatus == IpHelper.OperStatusUp;
-    }
 }

@@ -67,15 +67,6 @@
             <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
-
-        <DataTemplate DataType="{x:Type settings:ColorChoiceViewModel}">
-            <DockPanel Margin="0,0,0,6">
-                <Button DockPanel.Dock="Right" MinWidth="90" Padding="10,2" Content="{loc:Text Settings_ChooseColor}" Click="OnChooseColorClick" />
-                <Border Width="28" Height="18" Margin="0,0,10,0" BorderBrush="{DynamicResource ControlStrongStrokeColorDefaultBrush}" BorderThickness="1" Background="{Binding Color}" />
-                <TextBlock MinWidth="90" VerticalAlignment="Center" Text="{Binding Label}" />
-                <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding Color}" />
-            </DockPanel>
-        </DataTemplate>
     </Window.Resources>
 
     <DockPanel Margin="16">
@@ -185,104 +176,38 @@
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
-                    <StackPanel Style="{StaticResource TabContent}" Grid.IsSharedSizeScope="True">
-                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Size}" />
-                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_Scale}" />
+                    <StackPanel Style="{StaticResource TabContent}">
                         <DockPanel>
-                            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,2" Content="100%" Command="{Binding ResetScaleCommand}" />
-                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding Scale, StringFormat={}{0}%}" />
-                            <Slider Minimum="50" Maximum="200" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="10" Value="{Binding Scale}" />
+                            <Button DockPanel.Dock="Right" MinWidth="90" Margin="12,0,0,0" Padding="10,4" VerticalAlignment="Center" Content="{loc:Text Appearance_Edit}"
+                                    Command="{Binding EditAppearanceCommand}" CommandParameter="{x:Static settings:AppearanceGroup.Shape}" />
+                            <StackPanel>
+                                <TextBlock FontWeight="SemiBold" Text="{loc:Text Section_AppearanceShape}" />
+                                <TextBlock Style="{StaticResource Hint}" Text="{Binding ShapeSummary}" />
+                            </StackPanel>
                         </DockPanel>
-                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_ScaleHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
-                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Background}" />
-                        <ContentControl Focusable="False" Content="{Binding BackgroundColor}" />
-                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_Transparency}" />
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding Transparency, StringFormat={}{0}%}" />
-                            <Slider Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" SmallChange="5" LargeChange="10" Value="{Binding Transparency}" />
+                            <Button DockPanel.Dock="Right" MinWidth="90" Margin="12,0,0,0" Padding="10,4" VerticalAlignment="Center" Content="{loc:Text Appearance_Edit}"
+                                    Command="{Binding EditAppearanceCommand}" CommandParameter="{x:Static settings:AppearanceGroup.TextColors}" />
+                            <StackPanel>
+                                <TextBlock FontWeight="SemiBold" Text="{loc:Text Section_AppearanceColors}" />
+                                <TextBlock Style="{StaticResource Hint}" Text="{Binding TextColorsSummary}" />
+                            </StackPanel>
                         </DockPanel>
-                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_TransparencyHint}" />
-                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_CornerRadius}" />
+
+                        <Border Style="{StaticResource SectionLine}" />
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding CornerRadius, StringFormat={}{0} px}" />
-                            <Slider Minimum="0" Maximum="{Binding MaximumCornerRadius}" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="5" Value="{Binding CornerRadius}" />
+                            <Button DockPanel.Dock="Right" MinWidth="90" Margin="12,0,0,0" Padding="10,4" VerticalAlignment="Center" Content="{loc:Text Appearance_Edit}"
+                                    Command="{Binding EditAppearanceCommand}" CommandParameter="{x:Static settings:AppearanceGroup.UsageColors}" />
+                            <StackPanel>
+                                <TextBlock FontWeight="SemiBold" Text="{loc:Text Section_AppearanceUsage}" />
+                                <TextBlock Style="{StaticResource Hint}" Text="{Binding UsageColorsSummary}" />
+                            </StackPanel>
                         </DockPanel>
-                        <TextBlock Style="{StaticResource Hint}" Text="{Binding CornerRadiusHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
-                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Border}" />
-                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_BorderMode}" />
-                        <ComboBox ItemsSource="{Binding BorderModeOptions}" SelectedValuePath="Mode" SelectedValue="{Binding BorderMode}" DisplayMemberPath="Label" />
-                        <StackPanel Margin="0,10,0,0" IsEnabled="{Binding HasBorder}">
-                            <ContentControl Focusable="False" Content="{Binding BorderColor}" />
-                            <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_BorderThickness}" />
-                            <DockPanel>
-                                <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BorderThickness, StringFormat={}{0} px}" />
-                                <Slider Minimum="1" Maximum="6" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1" Value="{Binding BorderThickness}" />
-                            </DockPanel>
-                            <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_BorderTransparency}" />
-                            <DockPanel>
-                                <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BorderTransparency, StringFormat={}{0}%}" />
-                                <Slider Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" SmallChange="5" LargeChange="10" Value="{Binding BorderTransparency}" />
-                            </DockPanel>
-                        </StackPanel>
-                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_BorderHint}" />
-
-                        <Border Style="{StaticResource SectionLine}" />
-                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Text}" />
-                        <ContentControl Focusable="False" Content="{Binding TextColor}" />
-                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_Weight}" />
-                        <ComboBox ItemsSource="{Binding WeightOptions}" SelectedValuePath="Weight" SelectedValue="{Binding TextWeight}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type settings:WeightOption}">
-                                    <TextBlock FontWeight="{Binding WeightName}" Text="{Binding Label}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_LabelsHint}" />
-
-                        <Border Style="{StaticResource SectionLine}" />
-                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_UsageColors}" />
-                        <CheckBox Content="{loc:Text Colors_Enabled}" IsChecked="{Binding ColorsEnabled}" />
-
-                        <TextBlock Margin="0,12,0,8" Text="{loc:Text Colors_ThresholdsHeader}" />
-                        <Grid Margin="0,0,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="Warning" />
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="Critical" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="1" Margin="0,0,16,0" Text="{loc:Text Level_Warning}" />
-                            <TextBlock Grid.Column="2" Text="{loc:Text Level_Critical}" />
-                        </Grid>
-
-                        <ItemsControl IsEnabled="{Binding ColorsEnabled}" ItemsSource="{Binding Thresholds}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type settings:ThresholdRowViewModel}">
-                                    <StackPanel Margin="0,0,0,8">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
-                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Warning" />
-                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Critical" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center" Text="{Binding Name}" />
-                                            <TextBox Grid.Column="1" Width="56" Margin="0,0,16,0" Text="{Binding WarningText, UpdateSourceTrigger=PropertyChanged}" />
-                                            <TextBox Grid.Column="2" Width="56" Text="{Binding CriticalText, UpdateSourceTrigger=PropertyChanged}" />
-                                        </Grid>
-                                        <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}"
-                                                   Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibility}}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Colors_BelowHint}" />
-
-                        <TextBlock Margin="0,12,0,8" Text="{loc:Text Colors_LevelColors}" />
-                        <ItemsControl Focusable="False" IsEnabled="{Binding ColorsEnabled}" ItemsSource="{Binding LevelColors}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_GroupsHint}" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -296,6 +221,28 @@
                 </TabItem.Header>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
                     <StackPanel Style="{StaticResource TabContent}">
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Network_Devices}" />
+                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Network_Monitor}" />
+                        <ItemsControl Focusable="False" ItemsSource="{Binding NetworkDevices}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type settings:NetworkDeviceRowViewModel}">
+                                    <CheckBox Margin="0,2" IsChecked="{Binding IsMonitored}" Visibility="{Binding IsShown, Converter={StaticResource BooleanToVisibility}}">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" />
+                                            <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Text="{Binding Detail}" />
+                                        </StackPanel>
+                                    </CheckBox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Network_NoDevices}"
+                                   Visibility="{Binding HasNoNetworkDevices, Converter={StaticResource BooleanToVisibility}}" />
+                        <CheckBox Margin="0,6,0,0" Content="{loc:Text Network_ShowInternal}" IsChecked="{Binding ShowInternalDevices}" />
+                        <TextBlock Margin="0,10,0,4" Text="{loc:Text Network_Default}" />
+                        <ComboBox ItemsSource="{Binding DefaultDeviceOptions}" SelectedItem="{Binding SelectedDefaultDevice}" DisplayMemberPath="Label" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Network_DevicesHint}" />
+
+                        <Border Style="{StaticResource SectionLine}" />
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Network_Ping}" />
                         <TextBlock Margin="0,0,0,4" Text="{loc:Text Network_Address}" />
                         <ComboBox IsEditable="True" ItemsSource="{Binding PingSuggestions}" Text="{Binding PingHostText, UpdateSourceTrigger=PropertyChanged}" />

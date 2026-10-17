@@ -1,10 +1,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using CobiHw.App.Devices;
 using CobiHw.App.Localization;
 using CobiHw.App.Resources;
 using CobiHw.App.Settings;
@@ -38,6 +40,9 @@ public partial class App : Application
     private TrayIcon? _trayIcon;
     private SettingsWindow? _settingsWindow;
     private SettingsViewModel? _settingsViewModel;
+    private NetworkDevicesWindow? _networkDevicesWindow;
+    private NetworkDevicesViewModel? _networkDevicesViewModel;
+    private bool _openingSettings;
     private DispatcherTimer? _autoSaveTimer;
     private FpsMonitor? _fps;
     private bool _fpsPermissionPending;
@@ -112,11 +117,14 @@ public partial class App : Application
         _trayIcon.LockPositionToggled += (_, locked) => ChangePositionLock(locked);
         _trayIcon.ClickThroughToggled += (_, enabled) => ChangeClickThrough(enabled);
         _trayIcon.SettingsRequested += (_, _) => OpenSettingsWindow();
+        _trayIcon.NetworkDevicesRequested += (_, _) => OpenNetworkDevicesWindow();
         _trayIcon.SpeedTestRequested += (_, _) => StartSpeedTest();
         _trayIcon.ResetNetworkRequested += (_, _) => ResetNetworkSession();
         _trayIcon.ExitRequested += (_, _) => RequestExit();
         RefreshTrayMenu();
         ApplyTrayTheme();
+        _trayIcon.SetTooltip(_viewModel.TrayText);
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
 
         _singleInstance.ListenForShowRequests(() => Dispatcher.InvokeAsync(ShowWindow));
@@ -191,6 +199,7 @@ public partial class App : Application
 
     private void RequestExit()
     {
+        _networkDevicesWindow?.Close();
         _settingsWindow?.Close();
 
         if (_settingsWindow is null)
@@ -306,7 +315,7 @@ public partial class App : Application
         }
     }
 
-    private void OpenSettingsWindow()
+    private async void OpenSettingsWindow()
     {
         if (_settingsWindow is not null)
         {
@@ -314,14 +323,33 @@ public partial class App : Application
             return;
         }
 
-        if (_viewModel is null || _speedTest is null)
+        if (_openingSettings || _viewModel is null || _speedTest is null)
         {
             return;
         }
 
-        var settingsViewModel = new SettingsViewModel(CurrentSettings(), _viewModel.AvailableDisks, ListMonitors(), _speedTest);
+        IReadOnlyList<NetworkDeviceInfo> networkDevices;
+        _openingSettings = true;
+
+        try
+        {
+            networkDevices = await Task.Run(ListNetworkDevices);
+        }
+        finally
+        {
+            _openingSettings = false;
+        }
+
+        if (_settingsWindow is not null || _viewModel is null || _speedTest is null)
+        {
+            return;
+        }
+
+        var settingsViewModel = new SettingsViewModel(CurrentSettings(), _viewModel.AvailableDisks, ListMonitors(), networkDevices, _speedTest);
         _settingsViewModel = settingsViewModel;
         settingsViewModel.Applied += (_, saved) => ApplySavedSettings(saved);
+        settingsViewModel.AppearanceEditRequested += (_, group) => EditAppearance(group);
+        settingsViewModel.AppearancePreviewed += (_, preview) => PreviewAppearance(preview);
 
         var settingsWindow = new SettingsWindow(_settings.Theme) { DataContext = settingsViewModel };
         _settingsWindow = settingsWindow;
@@ -348,9 +376,145 @@ public partial class App : Application
             settingsViewModel.Dispose();
             _settingsViewModel = null;
             _settingsWindow = null;
+            EndAppearancePreview();
         };
         _settingsWindow.Show();
         _settingsWindow.Activate();
+    }
+
+    private void EditAppearance(AppearanceGroup group)
+    {
+        if (_settingsWindow is null || _settingsViewModel is null)
+        {
+            return;
+        }
+
+        SettingsViewModel settingsViewModel = _settingsViewModel;
+        AppearancePreview shown = settingsViewModel.ShownAppearance;
+        var editor = new AppearanceEditorViewModel(group, shown.Appearance, shown.Colors);
+        var window = new AppearanceEditorWindow(_settings.Theme) { DataContext = editor, Owner = _settingsWindow };
+
+        editor.Previewed += (_, preview) => PreviewAppearance(preview);
+        editor.Applied += (_, preview) =>
+        {
+            CommitAppearance(preview);
+            window.Close();
+        };
+
+        window.ShowDialog();
+        ShowPendingAppearance(settingsViewModel);
+    }
+
+    private void ShowPendingAppearance(SettingsViewModel? settingsViewModel)
+    {
+        if (settingsViewModel?.PendingAppearance is AppearancePreview pending)
+        {
+            PreviewAppearance(pending);
+        }
+        else
+        {
+            EndAppearancePreview();
+        }
+    }
+
+    private void PreviewAppearance(AppearancePreview preview)
+    {
+        _viewModel?.PreviewAppearance(preview.Appearance, preview.Colors);
+
+        if (_window is not null)
+        {
+            _window.ScalePercent = ResizeRule.ClampPercent(preview.Appearance.Scale);
+        }
+    }
+
+    private void CommitAppearance(AppearancePreview preview)
+    {
+        _settings.Appearance = preview.Appearance;
+        _settings.Colors = preview.Colors;
+        _settingsViewModel?.SyncAppearance(preview.Appearance, preview.Colors);
+        SaveSettings();
+    }
+
+    private void EndAppearancePreview()
+    {
+        _viewModel?.UpdateSettings(CurrentSettings());
+
+        if (_window is not null)
+        {
+            _window.ScalePercent = ResizeRule.ClampPercent(_settings.Appearance.Scale);
+        }
+    }
+
+    private void OpenNetworkDevicesWindow()
+    {
+        if (_networkDevicesWindow is not null)
+        {
+            _networkDevicesWindow.Activate();
+            return;
+        }
+
+        if (_http is null)
+        {
+            return;
+        }
+
+        HttpClient http = _http;
+        var wifiReader = new WifiReader();
+        var viewModel = new NetworkDevicesViewModel(
+            _settings.Network,
+            ListNetworkDevices,
+            wifiReader.Read,
+            cancellationToken => PublicAddress.FetchAsync(http, cancellationToken));
+        var window = new NetworkDevicesWindow(_settings.Theme) { DataContext = viewModel };
+
+        _networkDevicesViewModel = viewModel;
+        _networkDevicesWindow = window;
+        NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
+        NetworkChange.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
+        window.Closed += (_, _) =>
+        {
+            NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
+            NetworkChange.NetworkAvailabilityChanged -= OnNetworkAvailabilityChanged;
+            viewModel.Dispose();
+            wifiReader.Dispose();
+            _networkDevicesViewModel = null;
+            _networkDevicesWindow = null;
+        };
+        window.Show();
+        window.Activate();
+        ReloadNetworkDevices();
+    }
+
+    private void OnNetworkAddressChanged(object? sender, EventArgs e) => Dispatcher.InvokeAsync(ReloadNetworkDevices);
+
+    private void OnNetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e) => Dispatcher.InvokeAsync(ReloadNetworkDevices);
+
+    private async void ReloadNetworkDevices()
+    {
+        if (_networkDevicesViewModel is NetworkDevicesViewModel viewModel)
+        {
+            await viewModel.ReloadAsync();
+        }
+    }
+
+    private async void UpdateNetworkDevices(NetworkSnapshot traffic)
+    {
+        if (_networkDevicesViewModel is NetworkDevicesViewModel viewModel)
+        {
+            await viewModel.UpdateAsync(traffic);
+        }
+    }
+
+    private static IReadOnlyList<NetworkDeviceInfo> ListNetworkDevices()
+    {
+        try
+        {
+            return NetworkDevices.List();
+        }
+        catch (Exception exception) when (exception is NetworkInformationException or Win32Exception)
+        {
+            return [];
+        }
     }
 
     private void RememberSettingsSize(Rect bounds)
@@ -374,6 +538,7 @@ public partial class App : Application
         _settings.Appearance = saved.Appearance;
         ApplyGeneral(saved.General);
         _viewModel?.UpdateSettings(saved);
+        _networkDevicesViewModel?.UpdateSettings(saved.Network);
 
         if (_window is not null)
         {
@@ -381,6 +546,7 @@ public partial class App : Application
         }
 
         RefreshTrayMenu();
+        ShowPendingAppearance(_settingsViewModel);
 
         if (saved.Display.ShowFps != fpsWasShown)
         {
@@ -525,6 +691,7 @@ public partial class App : Application
     {
         _settings.Display = _settings.Display with { ShowFps = false };
         _viewModel?.UpdateSettings(CurrentSettings());
+        ShowPendingAppearance(_settingsViewModel);
 
         if (_settingsViewModel is not null)
         {
@@ -544,6 +711,7 @@ public partial class App : Application
         Localizer.Instance.SetLanguage(general.Language);
         _settings.Theme = general.Theme;
         _settingsWindow?.ApplyTheme(general.Theme);
+        _networkDevicesWindow?.ApplyTheme(general.Theme);
         ApplyTrayTheme();
 
         if (general.Mode != _settings.Mode)
@@ -594,6 +762,14 @@ public partial class App : Application
         }
     }
 
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainViewModel.TrayText) && _viewModel is not null)
+        {
+            _trayIcon?.SetTooltip(_viewModel.TrayText);
+        }
+    }
+
     private void OnSpeedTestCommandPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(IAsyncRelayCommand.IsRunning) && _speedTest is not null)
@@ -623,7 +799,7 @@ public partial class App : Application
 
     private void ResetNetworkSession()
     {
-        _monitor?.ResetNetworkSession();
+        _monitor?.ResetNetworkSession(_settings.Network.DefaultDevice?.Id);
         SaveSettings();
     }
 
@@ -664,6 +840,7 @@ public partial class App : Application
             {
                 HardwareSnapshot snapshot = await Task.Run(() => monitor.Sample(), cancellationToken);
                 viewModel.Apply(snapshot);
+                UpdateNetworkDevices(snapshot.Network);
                 viewModel.ApplyFps(_fps?.Sample());
             }
         }

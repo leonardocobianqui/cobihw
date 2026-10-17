@@ -62,6 +62,17 @@
             <Setter Property="Height" Value="6" />
             <Setter Property="Maximum" Value="100" />
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{Binding DividerColor}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="{Binding BarRadius}" />
+                            <Border x:Name="PART_Indicator" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}" CornerRadius="{Binding BarRadius}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="MetricValue" TargetType="TextBlock">
@@ -197,9 +208,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding CpuUsage, Mode=OneWay}" Foreground="{Binding CpuBarColor}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuTextColor}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}" Foreground="{Binding CpuTextColor}" Text="{Binding CpuUsageText}" />
                     <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding CpuFrequencyText}" />
                 </Grid>
             </StackPanel>
@@ -218,9 +227,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding GpuUsage, Mode=OneWay}" Foreground="{Binding GpuBarColor}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuTextColor}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}" Foreground="{Binding GpuTextColor}" Text="{Binding GpuUsageText}" />
                     <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding GpuMemoryText}" />
                 </Grid>
             </StackPanel>
@@ -236,9 +243,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding MemoryUsage, Mode=OneWay}" Foreground="{Binding MemoryBarColor}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryTextColor}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}" Foreground="{Binding MemoryTextColor}" Text="{Binding MemoryUsageText}" />
                     <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding MemoryAmountText}" />
                 </Grid>
             </StackPanel>
@@ -256,16 +261,17 @@
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding DiskActive, Mode=OneWay}" Foreground="{Binding DiskBarColor}" />
-                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}">
-                        <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskTextColor}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
-                    </TextBlock>
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
                 </Grid>
             </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="FullNetwork" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
-                <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Network}" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Network}" />
+                    <TextBlock Text="{Binding NetworkDeviceName}" />
+                </StackPanel>
                 <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal" Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
                         <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
@@ -305,9 +311,7 @@
         <DataTemplate x:Key="HorizontalCpu" DataType="{x:Type local:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Cpu}" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuTextColor}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
-                </TextBlock>
+                <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding CpuTextColor}" Text="{Binding CpuUsageText}" />
                 <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding CpuFrequencyText}" />
             </StackPanel>
         </DataTemplate>
@@ -315,9 +319,7 @@
         <DataTemplate x:Key="HorizontalGpu" DataType="{x:Type local:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Gpu}" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuTextColor}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
-                </TextBlock>
+                <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding GpuTextColor}" Text="{Binding GpuUsageText}" />
                 <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding GpuMemoryText}" />
             </StackPanel>
         </DataTemplate>
@@ -325,9 +327,7 @@
         <DataTemplate x:Key="HorizontalMemory" DataType="{x:Type local:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Memory}" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryTextColor}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
-                </TextBlock>
+                <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding MemoryTextColor}" Text="{Binding MemoryUsageText}" />
                 <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding MemoryAmountText}" />
             </StackPanel>
         </DataTemplate>
@@ -335,9 +335,7 @@
         <DataTemplate x:Key="HorizontalDisk" DataType="{x:Type local:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
-                <TextBlock Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskTextColor}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
-                </TextBlock>
+                <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
             </StackPanel>
         </DataTemplate>
 
@@ -380,9 +378,7 @@
         <DataTemplate x:Key="VerticalCpu" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                        <Run Text="{Binding CpuUsageText.Number, Mode=OneWay}" Foreground="{Binding CpuTextColor}" /><Run Text="{Binding CpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding CpuTextColor}" Text="{Binding CpuUsageText}" />
                     <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Cpu}" />
                 </DockPanel>
                 <TextBlock Style="{StaticResource MetricValue}" Text="{Binding CpuFrequencyText}" />
@@ -392,9 +388,7 @@
         <DataTemplate x:Key="VerticalGpu" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                        <Run Text="{Binding GpuUsageText.Number, Mode=OneWay}" Foreground="{Binding GpuTextColor}" /><Run Text="{Binding GpuUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding GpuTextColor}" Text="{Binding GpuUsageText}" />
                     <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Gpu}" />
                 </DockPanel>
                 <TextBlock Style="{StaticResource MetricValue}" Text="{Binding GpuMemoryText}" />
@@ -404,9 +398,7 @@
         <DataTemplate x:Key="VerticalMemory" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                        <Run Text="{Binding MemoryUsageText.Number, Mode=OneWay}" Foreground="{Binding MemoryTextColor}" /><Run Text="{Binding MemoryUsageText.Sign, Mode=OneWay}" />
-                    </TextBlock>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding MemoryTextColor}" Text="{Binding MemoryUsageText}" />
                     <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Memory}" />
                 </DockPanel>
                 <TextBlock Style="{StaticResource MetricValue}" Text="{Binding MemoryAmountText}" />
@@ -415,9 +407,7 @@
 
         <DataTemplate x:Key="VerticalDisk" DataType="{x:Type local:MainViewModel}">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}">
-                    <Run Text="{Binding DiskActiveText.Number, Mode=OneWay}" Foreground="{Binding DiskTextColor}" /><Run Text="{Binding DiskActiveText.Sign, Mode=OneWay}" />
-                </TextBlock>
+                <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
                 <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
             </DockPanel>
         </DataTemplate>
@@ -469,7 +459,7 @@
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="{Binding CpuFullName}" />
                     <TextBlock>
-                        <Run Text="{Binding CpuUsageText.Text, Mode=OneWay}" />
+                        <Run Text="{Binding CpuUsageText, Mode=OneWay}" />
                         <Run Text="·" />
                         <Run Text="{Binding CpuFrequencyText, Mode=OneWay}" />
                     </TextBlock>
@@ -487,7 +477,7 @@
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="{Binding GpuFullName}" />
                     <TextBlock>
-                        <Run Text="{Binding GpuUsageText.Text, Mode=OneWay}" />
+                        <Run Text="{Binding GpuUsageText, Mode=OneWay}" />
                         <Run Text="· VRAM" />
                         <Run Text="{Binding GpuMemoryText, Mode=OneWay}" />
                     </TextBlock>
@@ -503,7 +493,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Memory}" />
                 <TextBlock Grid.Column="1">
-                    <Run Text="{Binding MemoryUsageText.Text, Mode=OneWay}" />
+                    <Run Text="{Binding MemoryUsageText, Mode=OneWay}" />
                     <Run Text="·" />
                     <Run Text="{Binding MemoryAmountText, Mode=OneWay}" />
                 </TextBlock>
@@ -543,6 +533,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Network}" />
                     <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding NetworkDeviceName}" Visibility="{Binding HasNetworkDeviceName, Converter={StaticResource BooleanToVisibility}}" />
                         <TextBlock>
                             <Run Text="{Binding DownloadSpeedText, StringFormat='↓ {0}', Mode=OneWay}" />
                             <Run Text="·" />

@@ -38,11 +38,11 @@ public sealed class HardwareMonitor : IDisposable
         }
     }
 
-    public void ResetNetworkSession()
+    public void ResetNetworkSession(Guid? device = null)
     {
         lock (_lock)
         {
-            _network.ResetSession();
+            _network.ResetSession(device);
         }
     }
 

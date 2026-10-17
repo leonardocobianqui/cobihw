@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CobiHw.App.Localization;
 using CobiHw.App.Resources;
 using CobiHw.App.Settings;
+using CobiHw.App.Tray;
 using CobiHw.Core;
 using CobiHw.Core.Fps;
 
@@ -15,10 +16,13 @@ public sealed partial class MainViewModel : ObservableObject
 
     private DisplaySettings _display;
     private ColorSettings _colors;
+    private NetworkDeviceRef? _networkDevice;
     private HardwareSnapshot? _lastSnapshot;
     private FpsSnapshot? _lastFps;
     private bool _fpsShown;
     private long? _lastPing;
+    private double? _downloadBytesPerSecond;
+    private double? _uploadBytesPerSecond;
 
     public MainViewModel(SavedSettings settings, SpeedTestViewModel speedTest)
     {
@@ -26,6 +30,7 @@ public sealed partial class MainViewModel : ObservableObject
         _colors = settings.Colors;
         SpeedTest = speedTest;
         PingHost = settings.Network.PingHost;
+        _networkDevice = settings.Network.DefaultDevice;
         ApplyDisplay();
         ApplyAppearance(settings.Appearance);
         Localizer.Instance.CultureChanged += (_, _) => RefreshTexts();
@@ -49,6 +54,8 @@ public sealed partial class MainViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(WidgetCornerRadius))]
     private double _cornerRadius;
 
+    [ObservableProperty] private double _barRadius;
+
     [ObservableProperty] private double _borderWidth;
     [ObservableProperty] private string _borderColor = AppearanceSettings.DefaultTextColor;
     [ObservableProperty] private bool _borderOnHover;
@@ -65,6 +72,8 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private IReadOnlyList<MetricItem> _visibleItems = [];
     [ObservableProperty] private IReadOnlyList<MetricItem> _detailItems = [];
 
+    [ObservableProperty] private string _trayText = TrayTooltip.Title;
+
     [ObservableProperty] private bool _detailedTooltip;
 
     [ObservableProperty] private string _cpuName = DisplayFormat.Unavailable;
@@ -73,12 +82,12 @@ public sealed partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private double _cpuUsage;
     [ObservableProperty] private UsageLevel _cpuLevel;
-    [ObservableProperty] private PercentText _cpuUsageText = DisplayFormat.PercentParts(null);
+    [ObservableProperty] private string _cpuUsageText = DisplayFormat.Unavailable;
     [ObservableProperty] private string _cpuFrequencyText = DisplayFormat.Unavailable;
 
     [ObservableProperty] private double _memoryUsage;
     [ObservableProperty] private UsageLevel _memoryLevel;
-    [ObservableProperty] private PercentText _memoryUsageText = DisplayFormat.PercentParts(null);
+    [ObservableProperty] private string _memoryUsageText = DisplayFormat.Unavailable;
     [ObservableProperty] private string _memoryAmountText = DisplayFormat.Unavailable;
 
     [ObservableProperty] private string _gpuName = DisplayFormat.Unavailable;
@@ -87,17 +96,23 @@ public sealed partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private double _gpuUsage;
     [ObservableProperty] private UsageLevel _gpuLevel;
-    [ObservableProperty] private PercentText _gpuUsageText = DisplayFormat.PercentParts(null);
+    [ObservableProperty] private string _gpuUsageText = DisplayFormat.Unavailable;
     [ObservableProperty] private string _gpuMemoryText = DisplayFormat.Unavailable;
 
     [ObservableProperty] private string _diskName = DisplayFormat.Unavailable;
     [ObservableProperty] private double _diskActive;
     [ObservableProperty] private UsageLevel _diskLevel;
-    [ObservableProperty] private PercentText _diskActiveText = DisplayFormat.PercentParts(null);
+    [ObservableProperty] private string _diskActiveText = DisplayFormat.Unavailable;
     [ObservableProperty] private IReadOnlyList<DiskDetail> _diskDetails = [];
 
     [ObservableProperty] private string _fpsText = DisplayFormat.Unavailable;
     [ObservableProperty] private string _fpsProcessText = DisplayFormat.Unavailable;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasNetworkDeviceName))]
+    private string _networkDeviceName = string.Empty;
+
+    public bool HasNetworkDeviceName => NetworkDeviceName.Length > 0;
 
     [ObservableProperty] private string _downloadSpeedText = DisplayFormat.Unavailable;
     [ObservableProperty] private string _uploadSpeedText = DisplayFormat.Unavailable;
@@ -123,6 +138,7 @@ public sealed partial class MainViewModel : ObservableObject
     {
         _display = settings.Display;
         _colors = settings.Colors;
+        _networkDevice = settings.Network.DefaultDevice;
         ApplyDisplay();
         ApplyAppearance(settings.Appearance);
 
@@ -138,6 +154,17 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    public void PreviewAppearance(AppearanceSettings appearance, ColorSettings colors)
+    {
+        _colors = colors;
+        ApplyAppearance(appearance);
+
+        if (_lastSnapshot is not null)
+        {
+            Apply(_lastSnapshot);
+        }
+    }
+
     public void Apply(HardwareSnapshot snapshot)
     {
         _lastSnapshot = snapshot;
@@ -146,29 +173,58 @@ public sealed partial class MainViewModel : ObservableObject
         CpuFullName = snapshot.Cpu.Name ?? DisplayFormat.Unavailable;
         CpuUsage = snapshot.Cpu.UsagePercent ?? 0;
         CpuLevel = UsageLevels.Classify(snapshot.Cpu.UsagePercent, _colors.Cpu, _colors.Enabled);
-        CpuUsageText = DisplayFormat.PercentParts(snapshot.Cpu.UsagePercent);
+        CpuUsageText = DisplayFormat.Percent(snapshot.Cpu.UsagePercent);
         CpuFrequencyText = DisplayFormat.Gigahertz(snapshot.Cpu.FrequencyGhz);
 
         MemoryUsage = snapshot.Memory?.UsagePercent ?? 0;
         MemoryLevel = UsageLevels.Classify(snapshot.Memory?.UsagePercent, _colors.Memory, _colors.Enabled);
-        MemoryUsageText = DisplayFormat.PercentParts(snapshot.Memory?.UsagePercent);
+        MemoryUsageText = DisplayFormat.Percent(snapshot.Memory?.UsagePercent);
         MemoryAmountText = DisplayFormat.UsedOfTotal(snapshot.Memory?.UsedBytes, snapshot.Memory?.TotalBytes);
 
         GpuName = DisplayFormat.ShortName(snapshot.Gpu.Name);
         GpuFullName = snapshot.Gpu.Name ?? DisplayFormat.Unavailable;
         GpuUsage = snapshot.Gpu.UsagePercent ?? 0;
         GpuLevel = UsageLevels.Classify(snapshot.Gpu.UsagePercent, _colors.Gpu, _colors.Enabled);
-        GpuUsageText = DisplayFormat.PercentParts(snapshot.Gpu.UsagePercent);
+        GpuUsageText = DisplayFormat.Percent(snapshot.Gpu.UsagePercent);
         GpuMemoryText = DisplayFormat.UsedOfTotal(snapshot.Gpu.MemoryUsedBytes, snapshot.Gpu.MemoryTotalBytes);
 
         ApplyDisk(snapshot.Disk);
 
-        DownloadSpeedText = DisplayFormat.MegabitsPerSecond(snapshot.Network.DownloadBytesPerSecond);
-        UploadSpeedText = DisplayFormat.MegabitsPerSecond(snapshot.Network.UploadBytesPerSecond);
+        ApplyNetwork(snapshot.Network);
+        RefreshTrayText();
+    }
+
+    private void ApplyNetwork(NetworkSnapshot network)
+    {
+        if (_networkDevice is null)
+        {
+            NetworkDeviceName = string.Empty;
+            ShowNetwork(network.DownloadBytesPerSecond, network.UploadBytesPerSecond, network.SessionReceivedBytes, network.SessionSentBytes);
+            return;
+        }
+
+        DeviceTraffic? traffic = network.Find(_networkDevice.Id);
+        bool isUp = traffic?.IsUp == true;
+        string name = traffic?.Name ?? _networkDevice.Name;
+
+        NetworkDeviceName = isUp ? name : Localizer.Format(Strings.Format_Disconnected, name);
+        ShowNetwork(
+            isUp ? traffic!.DownloadBytesPerSecond : null,
+            isUp ? traffic!.UploadBytesPerSecond : null,
+            traffic?.SessionReceivedBytes ?? 0,
+            traffic?.SessionSentBytes ?? 0);
+    }
+
+    private void ShowNetwork(double? downloadBytesPerSecond, double? uploadBytesPerSecond, ulong sessionReceivedBytes, ulong sessionSentBytes)
+    {
+        _downloadBytesPerSecond = downloadBytesPerSecond;
+        _uploadBytesPerSecond = uploadBytesPerSecond;
+        DownloadSpeedText = DisplayFormat.MegabitsPerSecond(downloadBytesPerSecond);
+        UploadSpeedText = DisplayFormat.MegabitsPerSecond(uploadBytesPerSecond);
         NetworkSessionText = Localizer.Format(
             Strings.Format_Session,
-            DisplayFormat.Size(snapshot.Network.SessionReceivedBytes),
-            DisplayFormat.Size(snapshot.Network.SessionSentBytes));
+            DisplayFormat.Size(sessionReceivedBytes),
+            DisplayFormat.Size(sessionSentBytes));
     }
 
     public void ApplyFps(FpsSnapshot? snapshot)
@@ -181,12 +237,15 @@ public sealed partial class MainViewModel : ObservableObject
         {
             ApplyDisplay();
         }
+
+        RefreshTrayText();
     }
 
     public void ApplyPing(long? roundTripMilliseconds)
     {
         _lastPing = roundTripMilliseconds;
         PingText = DisplayFormat.Milliseconds(roundTripMilliseconds);
+        RefreshTrayText();
     }
 
     public void ApplyScale(int percent) => Scale = ResizeRule.ClampPercent(percent) / 100.0;
@@ -213,7 +272,27 @@ public sealed partial class MainViewModel : ObservableObject
         VisibleItems = [.. top, .. _display.Order.Items.Where(_display.IsShown)];
         DetailItems = [.. top, .. _display.Order.Items];
         DetailedTooltip = _display.DetailedTooltip;
+        RefreshTrayText();
     }
+
+    private void RefreshTrayText() =>
+        TrayText = TrayTooltip.Build([TrayTooltip.Title, .. VisibleItems.Select(TrayLine)]);
+
+    private string TrayLine(MetricItem item) => item switch
+    {
+        MetricItem.Fps when FpsProcessText == DisplayFormat.Unavailable => Localizer.Format(Strings.Format_TrayValue, Strings.Metric_Fps, FpsText),
+        MetricItem.Fps => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Fps, FpsText, FpsProcessText),
+        MetricItem.Cpu => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Cpu, CpuUsageText, CpuFrequencyText),
+        MetricItem.Gpu => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Gpu, GpuUsageText, GpuMemoryText),
+        MetricItem.Memory => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Memory, MemoryUsageText, MemoryAmountText),
+        MetricItem.Disk => Localizer.Format(Strings.Format_TrayValue, Strings.Metric_Disk, DiskActiveText),
+        _ => Localizer.Format(
+            Strings.Format_TrayNetwork,
+            Strings.Metric_Network,
+            DisplayFormat.Megabits(_downloadBytesPerSecond),
+            DisplayFormat.Megabits(_uploadBytesPerSecond),
+            PingText),
+    };
 
     private void ApplyAppearance(AppearanceSettings appearance)
     {
@@ -229,6 +308,7 @@ public sealed partial class MainViewModel : ObservableObject
         FontWeightName = Enum.IsDefined(appearance.TextWeight) ? appearance.TextWeight.ToString() : nameof(TextWeight.Normal);
         ApplyScale(appearance.Scale);
         CornerRadius = CornerRule.Clamp(appearance.CornerRadius);
+        BarRadius = Math.Clamp(appearance.BarRadius, 0, AppearanceSettings.MaximumBarRadius);
         ApplyBorder(appearance);
 
         ApplyLevelColors();
@@ -288,7 +368,7 @@ public sealed partial class MainViewModel : ObservableObject
         DiskName = disk is not null ? DisplayFormat.DiskLabel(disk) : MissingDiskName(disks);
         DiskActive = disk?.ActivePercent ?? 0;
         DiskLevel = UsageLevels.Classify(disk?.ActivePercent, _colors.Disk, _colors.Enabled);
-        DiskActiveText = DisplayFormat.PercentParts(disk?.ActivePercent);
+        DiskActiveText = DisplayFormat.Percent(disk?.ActivePercent);
         DiskDetails = disks.Disks
             .Select(item => new DiskDetail(Localizer.Format(Strings.Format_DiskNumber, DisplayFormat.DiskLabel(item)), DisplayFormat.Percent(item.ActivePercent)))
             .ToList();

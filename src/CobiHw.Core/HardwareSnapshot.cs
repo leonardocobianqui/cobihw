@@ -29,4 +29,19 @@ public sealed record NetworkSnapshot(
     double? DownloadBytesPerSecond,
     double? UploadBytesPerSecond,
     ulong SessionReceivedBytes,
-    ulong SessionSentBytes);
+    ulong SessionSentBytes,
+    IReadOnlyList<DeviceTraffic> Devices)
+{
+    public DeviceTraffic? Find(Guid id) => Devices.FirstOrDefault(device => device.Id == id);
+}
+
+public sealed record DeviceTraffic(
+    Guid Id,
+    string Name,
+    bool IsUp,
+    double? DownloadBytesPerSecond,
+    double? UploadBytesPerSecond,
+    ulong SessionReceivedBytes,
+    ulong SessionSentBytes,
+    ulong TotalReceivedBytes,
+    ulong TotalSentBytes);

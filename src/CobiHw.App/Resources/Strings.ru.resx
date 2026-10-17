@@ -371,9 +371,6 @@
   <data name="Appearance_BorderHint" xml:space="preserve">
     <value>Рамка совпадает с полосой, за которую можно потянуть, чтобы изменить размер виджета.</value>
   </data>
-  <data name="Appearance_UsageColors" xml:space="preserve">
-    <value>Цвета по уровню нагрузки</value>
-  </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Фон</value>
   </data>
@@ -514,5 +511,224 @@
   </data>
   <data name="Format_CornerRadiusHint" xml:space="preserve">
     <value>0 — прямые углы. Максимум ({0} пкс) — самое большое скругление, которое не задевает текст. Масштабируется вместе с виджетом и применяется и к подробностям.</value>
+  </data>
+  <data name="Tray_NetworkDevices" xml:space="preserve">
+    <value>Сетевые устройства</value>
+  </data>
+  <data name="NetworkDevices_Title" xml:space="preserve">
+    <value>Сетевые устройства</value>
+  </data>
+  <data name="NetworkDevices_None" xml:space="preserve">
+    <value>Нет отмеченных устройств. Выберите их в «Настройки → Сеть».</value>
+  </data>
+  <data name="NetworkDevices_Loading" xml:space="preserve">
+    <value>Чтение устройств…</value>
+  </data>
+  <data name="Network_Devices" xml:space="preserve">
+    <value>Сетевые устройства</value>
+  </data>
+  <data name="Network_Monitor" xml:space="preserve">
+    <value>Отслеживать:</value>
+  </data>
+  <data name="Network_ShowInternal" xml:space="preserve">
+    <value>Показывать внутренние устройства Windows</value>
+  </data>
+  <data name="Network_Default" xml:space="preserve">
+    <value>По умолчанию (в виджете):</value>
+  </data>
+  <data name="Network_PhysicalSum" xml:space="preserve">
+    <value>Сумма физических адаптеров</value>
+  </data>
+  <data name="Network_DevicesHint" xml:space="preserve">
+    <value>Отмеченные устройства появляются в «Сетевые устройства» (меню значка) и могут быть выбраны по умолчанию. Сумма физических адаптеров не включает VPN, чтобы один и тот же трафик не считался дважды.</value>
+  </data>
+  <data name="Network_NoDevices" xml:space="preserve">
+    <value>Сетевые устройства не найдены.</value>
+  </data>
+  <data name="Format_NetworkDeviceMissing" xml:space="preserve">
+    <value>{0} (не найдено)</value>
+  </data>
+  <data name="Format_Disconnected" xml:space="preserve">
+    <value>{0} (отключено)</value>
+  </data>
+  <data name="Status_Connected" xml:space="preserve">
+    <value>Подключено</value>
+  </data>
+  <data name="Status_Disconnected" xml:space="preserve">
+    <value>Отключено</value>
+  </data>
+  <data name="Kind_Ethernet" xml:space="preserve">
+    <value>Ethernet (кабель)</value>
+  </data>
+  <data name="Kind_WiFi" xml:space="preserve">
+    <value>Wi-Fi</value>
+  </data>
+  <data name="Kind_Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="Kind_Virtual" xml:space="preserve">
+    <value>Виртуальное (VPN, туннель приложения)</value>
+  </data>
+  <data name="Kind_Cellular" xml:space="preserve">
+    <value>Мобильный интернет</value>
+  </data>
+  <data name="Kind_Tunnel" xml:space="preserve">
+    <value>Туннель Windows (IPv6)</value>
+  </data>
+  <data name="Kind_Loopback" xml:space="preserve">
+    <value>Петля (loopback)</value>
+  </data>
+  <data name="Kind_Other" xml:space="preserve">
+    <value>Другое</value>
+  </data>
+  <data name="Device_Adapter" xml:space="preserve">
+    <value>Адаптер</value>
+  </data>
+  <data name="Format_StatusKind" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Device_Status" xml:space="preserve">
+    <value>Состояние</value>
+  </data>
+  <data name="Device_LinkSpeed" xml:space="preserve">
+    <value>Скорость соединения</value>
+  </data>
+  <data name="Device_Mac" xml:space="preserve">
+    <value>Физический адрес (MAC)</value>
+  </data>
+  <data name="Device_IPv4" xml:space="preserve">
+    <value>IPv4</value>
+  </data>
+  <data name="Device_IPv6" xml:space="preserve">
+    <value>IPv6</value>
+  </data>
+  <data name="Device_Gateway" xml:space="preserve">
+    <value>Шлюз</value>
+  </data>
+  <data name="Device_Dns" xml:space="preserve">
+    <value>DNS</value>
+  </data>
+  <data name="Device_CurrentSpeed" xml:space="preserve">
+    <value>Трафик сейчас</value>
+  </data>
+  <data name="Device_Session" xml:space="preserve">
+    <value>Сеанс cobihw</value>
+  </data>
+  <data name="Wifi_Section" xml:space="preserve">
+    <value>Сеть Wi-Fi</value>
+  </data>
+  <data name="Wifi_Ssid" xml:space="preserve">
+    <value>Сеть (SSID)</value>
+  </data>
+  <data name="Wifi_Signal" xml:space="preserve">
+    <value>Сигнал</value>
+  </data>
+  <data name="Wifi_BandChannel" xml:space="preserve">
+    <value>Диапазон · канал</value>
+  </data>
+  <data name="Wifi_Standard" xml:space="preserve">
+    <value>Стандарт</value>
+  </data>
+  <data name="Wifi_LinkRates" xml:space="preserve">
+    <value>Скорость канала (приём / передача)</value>
+  </data>
+  <data name="Wifi_NotConnected" xml:space="preserve">
+    <value>Нет подключения к сети Wi-Fi.</value>
+  </data>
+  <data name="Wifi_PermissionNeeded" xml:space="preserve">
+    <value>Windows показывает данные сети Wi-Fi только приложениям с разрешением на определение местоположения.</value>
+  </data>
+  <data name="Wifi_OpenLocationSettings" xml:space="preserve">
+    <value>Открыть параметры местоположения</value>
+  </data>
+  <data name="Wifi_Unavailable" xml:space="preserve">
+    <value>Данные Wi-Fi недоступны.</value>
+  </data>
+  <data name="Format_Signal" xml:space="preserve">
+    <value>{0}% ({1} дБм)</value>
+  </data>
+  <data name="Format_BandChannel" xml:space="preserve">
+    <value>{0:0.#} ГГц · канал {1}</value>
+  </data>
+  <data name="Format_LinkRate" xml:space="preserve">
+    <value>{0:0} Мбит/с</value>
+  </data>
+  <data name="Format_UpDown" xml:space="preserve">
+    <value>↓ {0}   ↑ {1}</value>
+  </data>
+  <data name="PublicIp_Label" xml:space="preserve">
+    <value>Публичный IP:</value>
+  </data>
+  <data name="PublicIp_Discover" xml:space="preserve">
+    <value>Узнать</value>
+  </data>
+  <data name="PublicIp_Hint" xml:space="preserve">
+    <value>Спрашивает у Cloudflare, через какой адрес выходит ваш трафик (основной маршрут). Только по нажатию.</value>
+  </data>
+  <data name="PublicIp_Searching" xml:space="preserve">
+    <value>Запрос…</value>
+  </data>
+  <data name="Format_PublicIpError" xml:space="preserve">
+    <value>Не удалось получить: {0}</value>
+  </data>
+  <data name="Section_AppearanceShape" xml:space="preserve">
+    <value>Размер и форма</value>
+  </data>
+  <data name="Section_AppearanceColors" xml:space="preserve">
+    <value>Цвета и текст</value>
+  </data>
+  <data name="Section_AppearanceUsage" xml:space="preserve">
+    <value>Цвета нагрузки</value>
+  </data>
+  <data name="Appearance_Shape" xml:space="preserve">
+    <value>Форма</value>
+  </data>
+  <data name="Appearance_Edit" xml:space="preserve">
+    <value>Изменить…</value>
+  </data>
+  <data name="Appearance_GroupsHint" xml:space="preserve">
+    <value>Каждая группа открывается в отдельном окне. Виджет показывает изменения до сохранения.</value>
+  </data>
+  <data name="Appearance_EditorHint" xml:space="preserve">
+    <value>Виджет сразу показывает каждое изменение. «Применить» сохраняет, «Отмена» отменяет.</value>
+  </data>
+  <data name="Format_ShapeSummary" xml:space="preserve">
+    <value>{0}% · углы {1} пкс · полосы {2} пкс · {3}</value>
+  </data>
+  <data name="Format_BorderSummary" xml:space="preserve">
+    <value>рамка {0} пкс ({1})</value>
+  </data>
+  <data name="Appearance_NoBorder" xml:space="preserve">
+    <value>без рамки</value>
+  </data>
+  <data name="Format_TextColorsSummary" xml:space="preserve">
+    <value>Фон {0}, прозрачность {1}% · текст {2}, {3}</value>
+  </data>
+  <data name="Format_UsageSummary" xml:space="preserve">
+    <value>Включены · {0}</value>
+  </data>
+  <data name="Format_UsageThreshold" xml:space="preserve">
+    <value>{0} {1}/{2}</value>
+  </data>
+  <data name="Appearance_UsageOff" xml:space="preserve">
+    <value>Выключены</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Appearance_BarRadius" xml:space="preserve">
+    <value>Скругление полос:</value>
+  </data>
+  <data name="Appearance_BarRadiusHint" xml:space="preserve">
+    <value>0 — прямоугольные полосы нагрузки; 3 — полностью скруглённые концы.</value>
+  </data>
+  <data name="Format_TrayLine" xml:space="preserve">
+    <value>{0} {1} · {2}</value>
+  </data>
+  <data name="Format_TrayValue" xml:space="preserve">
+    <value>{0} {1}</value>
+  </data>
+  <data name="Format_TrayNetwork" xml:space="preserve">
+    <value>{0} ↓{1} ↑{2} Мбит/с · пинг {3}</value>
   </data>
 </root>

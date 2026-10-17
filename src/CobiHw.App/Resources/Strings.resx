@@ -481,10 +481,6 @@
     <value>The border sits on the strip you can drag to resize the widget.</value>
     <comment>Dica</comment>
   </data>
-  <data name="Appearance_UsageColors" xml:space="preserve">
-    <value>Colors by usage level</value>
-    <comment>Seção</comment>
-  </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Background</value>
     <comment>Seção</comment>
@@ -672,5 +668,297 @@
   <data name="Format_CornerRadiusHint" xml:space="preserve">
     <value>0 keeps the corners square. The maximum ({0} px) is the largest rounding that never touches the text. It follows the widget size and also applies to the details.</value>
     <comment>Dica; {0} = raio máximo em px</comment>
+  </data>
+  <data name="Tray_NetworkDevices" xml:space="preserve">
+    <value>Network devices</value>
+    <comment>Menu do ícone</comment>
+  </data>
+  <data name="NetworkDevices_Title" xml:space="preserve">
+    <value>Network devices</value>
+    <comment>Título da janela</comment>
+  </data>
+  <data name="NetworkDevices_None" xml:space="preserve">
+    <value>No device is checked. Choose them in Settings → Network.</value>
+    <comment>Janela sem dispositivos marcados</comment>
+  </data>
+  <data name="NetworkDevices_Loading" xml:space="preserve">
+    <value>Reading devices…</value>
+    <comment>Janela enquanto lê a lista</comment>
+  </data>
+  <data name="Network_Devices" xml:space="preserve">
+    <value>Network devices</value>
+    <comment>Seção da aba Rede</comment>
+  </data>
+  <data name="Network_Monitor" xml:space="preserve">
+    <value>Monitor:</value>
+    <comment>Rótulo da lista</comment>
+  </data>
+  <data name="Network_ShowInternal" xml:space="preserve">
+    <value>Show Windows internal devices</value>
+    <comment>Caixa de marcar</comment>
+  </data>
+  <data name="Network_Default" xml:space="preserve">
+    <value>Default (shown in the widget):</value>
+    <comment>Rótulo da caixa de seleção</comment>
+  </data>
+  <data name="Network_PhysicalSum" xml:space="preserve">
+    <value>Sum of physical adapters</value>
+    <comment>Opção do padrão</comment>
+  </data>
+  <data name="Network_DevicesHint" xml:space="preserve">
+    <value>Checked devices appear in Network devices (tray icon menu) and can be the default. The sum of physical adapters leaves VPNs out so the same traffic is not counted twice.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Network_NoDevices" xml:space="preserve">
+    <value>No network device found.</value>
+    <comment>Lista vazia</comment>
+  </data>
+  <data name="Format_NetworkDeviceMissing" xml:space="preserve">
+    <value>{0} (not found)</value>
+    <comment>{0} = nome do dispositivo salvo que sumiu</comment>
+  </data>
+  <data name="Format_Disconnected" xml:space="preserve">
+    <value>{0} (disconnected)</value>
+    <comment>{0} = nome do dispositivo</comment>
+  </data>
+  <data name="Status_Connected" xml:space="preserve">
+    <value>Connected</value>
+    <comment>Status do dispositivo</comment>
+  </data>
+  <data name="Status_Disconnected" xml:space="preserve">
+    <value>Disconnected</value>
+    <comment>Status do dispositivo</comment>
+  </data>
+  <data name="Kind_Ethernet" xml:space="preserve">
+    <value>Ethernet (cable)</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Kind_WiFi" xml:space="preserve">
+    <value>Wi-Fi</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Kind_Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Kind_Virtual" xml:space="preserve">
+    <value>Virtual (VPN, app tunnel)</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Kind_Cellular" xml:space="preserve">
+    <value>Mobile broadband</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Kind_Tunnel" xml:space="preserve">
+    <value>Windows tunnel (IPv6)</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Kind_Loopback" xml:space="preserve">
+    <value>Loopback</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Kind_Other" xml:space="preserve">
+    <value>Other</value>
+    <comment>Tipo de dispositivo</comment>
+  </data>
+  <data name="Device_Adapter" xml:space="preserve">
+    <value>Adapter</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Format_StatusKind" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>{0} = Conectado/Desconectado; {1} = tipo</comment>
+  </data>
+  <data name="Device_Status" xml:space="preserve">
+    <value>Status</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_LinkSpeed" xml:space="preserve">
+    <value>Link speed</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_Mac" xml:space="preserve">
+    <value>Physical address (MAC)</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_IPv4" xml:space="preserve">
+    <value>IPv4</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_IPv6" xml:space="preserve">
+    <value>IPv6</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_Gateway" xml:space="preserve">
+    <value>Gateway</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_Dns" xml:space="preserve">
+    <value>DNS</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_CurrentSpeed" xml:space="preserve">
+    <value>Traffic now</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Device_Session" xml:space="preserve">
+    <value>cobihw session</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Wifi_Section" xml:space="preserve">
+    <value>Wi-Fi network</value>
+    <comment>Título da seção</comment>
+  </data>
+  <data name="Wifi_Ssid" xml:space="preserve">
+    <value>Network (SSID)</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Wifi_Signal" xml:space="preserve">
+    <value>Signal</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Wifi_BandChannel" xml:space="preserve">
+    <value>Band · channel</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Wifi_Standard" xml:space="preserve">
+    <value>Standard</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Wifi_LinkRates" xml:space="preserve">
+    <value>Link rate (receive / send)</value>
+    <comment>Rótulo do detalhe</comment>
+  </data>
+  <data name="Wifi_NotConnected" xml:space="preserve">
+    <value>Not connected to a Wi-Fi network.</value>
+    <comment>Mensagem</comment>
+  </data>
+  <data name="Wifi_PermissionNeeded" xml:space="preserve">
+    <value>Windows only shows Wi-Fi network data to apps with Location permission.</value>
+    <comment>Mensagem</comment>
+  </data>
+  <data name="Wifi_OpenLocationSettings" xml:space="preserve">
+    <value>Open Location settings</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Wifi_Unavailable" xml:space="preserve">
+    <value>Wi-Fi data unavailable.</value>
+    <comment>Mensagem</comment>
+  </data>
+  <data name="Format_Signal" xml:space="preserve">
+    <value>{0}% ({1} dBm)</value>
+    <comment>{0} = qualidade %; {1} = intensidade em dBm</comment>
+  </data>
+  <data name="Format_BandChannel" xml:space="preserve">
+    <value>{0:0.#} GHz · channel {1}</value>
+    <comment>{0} = banda em GHz; {1} = canal</comment>
+  </data>
+  <data name="Format_LinkRate" xml:space="preserve">
+    <value>{0:0} Mbps</value>
+    <comment>{0} = taxa em Mbps</comment>
+  </data>
+  <data name="Format_UpDown" xml:space="preserve">
+    <value>↓ {0}   ↑ {1}</value>
+    <comment>{0} = recebido; {1} = enviado</comment>
+  </data>
+  <data name="PublicIp_Label" xml:space="preserve">
+    <value>Public IP:</value>
+    <comment>Rótulo</comment>
+  </data>
+  <data name="PublicIp_Discover" xml:space="preserve">
+    <value>Discover</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="PublicIp_Hint" xml:space="preserve">
+    <value>Asks Cloudflare which address your traffic leaves through (main route). Only when you click.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="PublicIp_Searching" xml:space="preserve">
+    <value>Asking…</value>
+    <comment>Durante a consulta</comment>
+  </data>
+  <data name="Format_PublicIpError" xml:space="preserve">
+    <value>Could not get it: {0}</value>
+    <comment>{0} = mensagem de erro</comment>
+  </data>
+  <data name="Section_AppearanceShape" xml:space="preserve">
+    <value>Size and shape</value>
+    <comment>Grupo da aba Aparência e título da janela de edição</comment>
+  </data>
+  <data name="Section_AppearanceColors" xml:space="preserve">
+    <value>Colors and text</value>
+    <comment>Grupo da aba Aparência e título da janela de edição</comment>
+  </data>
+  <data name="Section_AppearanceUsage" xml:space="preserve">
+    <value>Usage colors</value>
+    <comment>Grupo da aba Aparência e título da janela de edição</comment>
+  </data>
+  <data name="Appearance_Shape" xml:space="preserve">
+    <value>Shape</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="Appearance_Edit" xml:space="preserve">
+    <value>Edit…</value>
+    <comment>Botão que abre a janela de edição de um grupo</comment>
+  </data>
+  <data name="Appearance_GroupsHint" xml:space="preserve">
+    <value>Each group opens in its own window. The widget shows the changes before they are saved.</value>
+    <comment>Dica embaixo dos grupos da aba Aparência</comment>
+  </data>
+  <data name="Appearance_EditorHint" xml:space="preserve">
+    <value>The widget shows each change right away. Apply saves; Cancel undoes.</value>
+    <comment>Dica no topo da janela de edição</comment>
+  </data>
+  <data name="Format_ShapeSummary" xml:space="preserve">
+    <value>{0}% · corners {1} px · bars {2} px · {3}</value>
+    <comment>Resumo; {0} = tamanho em %; {1} = cantos em px; {2} = arredondamento das barras em px; {3} = borda</comment>
+  </data>
+  <data name="Format_BorderSummary" xml:space="preserve">
+    <value>border {0} px ({1})</value>
+    <comment>Resumo da borda; {0} = espessura em px; {1} = quando aparece</comment>
+  </data>
+  <data name="Appearance_NoBorder" xml:space="preserve">
+    <value>no border</value>
+    <comment>Resumo da borda desligada</comment>
+  </data>
+  <data name="Format_TextColorsSummary" xml:space="preserve">
+    <value>Background {0}, {1}% transparent · text {2}, {3}</value>
+    <comment>Resumo; {0} = cor do fundo; {1} = transparência em %; {2} = cor do texto; {3} = espessura</comment>
+  </data>
+  <data name="Format_UsageSummary" xml:space="preserve">
+    <value>On · {0}</value>
+    <comment>Resumo das cores por uso ligadas; {0} = limites</comment>
+  </data>
+  <data name="Format_UsageThreshold" xml:space="preserve">
+    <value>{0} {1}/{2}</value>
+    <comment>Limites de um item no resumo; {0} = item; {1} = atenção; {2} = crítico</comment>
+  </data>
+  <data name="Appearance_UsageOff" xml:space="preserve">
+    <value>Off</value>
+    <comment>Resumo das cores por uso desligadas</comment>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Appearance_BarRadius" xml:space="preserve">
+    <value>Usage bar rounding:</value>
+    <comment>Rótulo do controle deslizante</comment>
+  </data>
+  <data name="Appearance_BarRadiusHint" xml:space="preserve">
+    <value>0 keeps the usage bars square; 3 makes the ends fully round.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Format_TrayLine" xml:space="preserve">
+    <value>{0} {1} · {2}</value>
+    <comment>Linha da dica do ícone da bandeja; {0} = item; {1} = %; {2} = detalhe</comment>
+  </data>
+  <data name="Format_TrayValue" xml:space="preserve">
+    <value>{0} {1}</value>
+    <comment>Linha da dica do ícone da bandeja sem detalhe; {0} = item; {1} = valor</comment>
+  </data>
+  <data name="Format_TrayNetwork" xml:space="preserve">
+    <value>{0} ↓{1} ↑{2} Mbps · ping {3}</value>
+    <comment>Linha da rede na dica do ícone (limite de 127 caracteres no total); {0} = item; {1} = download; {2} = upload; {3} = ping</comment>
   </data>
 </root>

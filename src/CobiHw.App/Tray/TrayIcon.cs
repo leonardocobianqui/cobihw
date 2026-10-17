@@ -8,8 +8,6 @@ namespace CobiHw.App.Tray;
 
 internal sealed class TrayIcon : IDisposable
 {
-    private const string TooltipText = "cobihw";
-
     private readonly Drawing.Icon _icon;
     private readonly Forms.NotifyIcon _notifyIcon;
     private readonly Forms.ContextMenuStrip _menu;
@@ -24,6 +22,7 @@ internal sealed class TrayIcon : IDisposable
     private readonly Forms.ToolStripMenuItem _speedTestItem;
     private readonly Forms.ToolStripMenuItem _layoutMenu;
     private readonly Forms.ToolStripMenuItem _settingsItem;
+    private readonly Forms.ToolStripMenuItem _networkDevicesItem;
     private readonly Forms.ToolStripMenuItem _resetNetworkItem;
     private readonly Forms.ToolStripMenuItem _exitItem;
     private bool _speedTestRunning;
@@ -43,6 +42,7 @@ internal sealed class TrayIcon : IDisposable
         _speedTestItem = new Forms.ToolStripMenuItem(string.Empty, null, (_, _) => SpeedTestRequested?.Invoke(this, EventArgs.Empty));
 
         _settingsItem = new Forms.ToolStripMenuItem(string.Empty, null, (_, _) => SettingsRequested?.Invoke(this, EventArgs.Empty));
+        _networkDevicesItem = new Forms.ToolStripMenuItem(string.Empty, null, (_, _) => NetworkDevicesRequested?.Invoke(this, EventArgs.Empty));
         _resetNetworkItem = new Forms.ToolStripMenuItem(string.Empty, null, (_, _) => ResetNetworkRequested?.Invoke(this, EventArgs.Empty));
         _exitItem = new Forms.ToolStripMenuItem(string.Empty, null, (_, _) => ExitRequested?.Invoke(this, EventArgs.Empty));
 
@@ -66,6 +66,7 @@ internal sealed class TrayIcon : IDisposable
             _clickThroughItem,
             new Forms.ToolStripSeparator(),
             _settingsItem,
+            _networkDevicesItem,
             _speedTestItem,
             _resetNetworkItem,
             new Forms.ToolStripSeparator(),
@@ -75,7 +76,7 @@ internal sealed class TrayIcon : IDisposable
         _notifyIcon = new Forms.NotifyIcon
         {
             Icon = _icon,
-            Text = TooltipText,
+            Text = TrayTooltip.Title,
             ContextMenuStrip = _menu,
             Visible = true,
         };
@@ -90,6 +91,7 @@ internal sealed class TrayIcon : IDisposable
     public event EventHandler<bool>? LockPositionToggled;
     public event EventHandler<bool>? ClickThroughToggled;
     public event EventHandler? SettingsRequested;
+    public event EventHandler? NetworkDevicesRequested;
     public event EventHandler? SpeedTestRequested;
     public event EventHandler? ResetNetworkRequested;
     public event EventHandler? ExitRequested;
@@ -133,10 +135,13 @@ internal sealed class TrayIcon : IDisposable
         _lockPositionItem.Text = Strings.Tray_LockPosition;
         _clickThroughItem.Text = Strings.Tray_ClickThrough;
         _settingsItem.Text = Strings.Tray_Settings;
+        _networkDevicesItem.Text = Strings.Tray_NetworkDevices;
         _speedTestItem.Text = _speedTestRunning ? Strings.Tray_SpeedTestRunning : Strings.Tray_SpeedTest;
         _resetNetworkItem.Text = Strings.Tray_ResetNetwork;
         _exitItem.Text = Strings.Tray_Exit;
     }
+
+    public void SetTooltip(string text) => _notifyIcon.Text = text;
 
     public void SetSpeedTestRunning(bool running)
     {

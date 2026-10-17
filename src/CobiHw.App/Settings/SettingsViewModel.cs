@@ -5,40 +5,29 @@ using CommunityToolkit.Mvvm.Input;
 using CobiHw.App.Localization;
 using CobiHw.App.Resources;
 using CobiHw.Core;
+using CobiHw.Core.Network;
 
 namespace CobiHw.App.Settings;
 
 public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 {
-    private readonly ThresholdRowViewModel _cpu;
-    private readonly ThresholdRowViewModel _gpu;
-    private readonly ThresholdRowViewModel _memory;
-    private readonly ThresholdRowViewModel _disk;
     private readonly Dictionary<MetricItem, MetricRowViewModel> _metricRows;
-    private readonly ColorChoiceViewModel _normalColor;
-    private readonly ColorChoiceViewModel _warningColor;
-    private readonly ColorChoiceViewModel _criticalColor;
     private readonly IReadOnlyList<DiskActivity> _availableDisks;
     private readonly IReadOnlyList<DisplayMonitor> _monitors;
     private SavedSettings _applied;
+    private AppearancePreview? _pendingAppearance;
+    private IReadOnlyList<NetworkDeviceChoice> _absentDeviceChoices = [];
     private string? _fpsNoticeKey;
     private bool _ready;
 
-    public SettingsViewModel(SavedSettings current, IReadOnlyList<DiskActivity> availableDisks, IReadOnlyList<DisplayMonitor> monitors, SpeedTestViewModel speedTest)
+    public SettingsViewModel(SavedSettings current, IReadOnlyList<DiskActivity> availableDisks, IReadOnlyList<DisplayMonitor> monitors, IReadOnlyList<NetworkDeviceInfo> networkDevices, SpeedTestViewModel speedTest)
     {
         SpeedTest = speedTest;
+        NetworkDevices = [.. networkDevices.Select(device => new NetworkDeviceRowViewModel(device))];
 
-        ColorsEnabled = current.Colors.Enabled;
-        _cpu = new ThresholdRowViewModel(MetricItem.Cpu, current.Colors.Cpu);
-        _gpu = new ThresholdRowViewModel(MetricItem.Gpu, current.Colors.Gpu);
-        _memory = new ThresholdRowViewModel(MetricItem.Memory, current.Colors.Memory);
-        _disk = new ThresholdRowViewModel(MetricItem.Disk, current.Colors.Disk);
-
-        Thresholds = [_cpu, _gpu, _memory, _disk];
-
-        foreach (ThresholdRowViewModel row in Thresholds)
+        foreach (NetworkDeviceRowViewModel row in NetworkDevices)
         {
-            row.PropertyChanged += OnRowPropertyChanged;
+            row.PropertyChanged += OnNetworkDeviceRowPropertyChanged;
         }
 
         _metricRows = MetricOrder.Orderable.ToDictionary(item => item, item => new MetricRowViewModel(item));
@@ -49,48 +38,30 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
             row.PropertyChanged += OnMetricRowPropertyChanged;
         }
 
-        BackgroundColor = new ColorChoiceViewModel(nameof(Strings.Appearance_BackgroundColor), AppearanceSettings.DefaultBackgroundColor, current.Appearance.BackgroundColor);
-        TextColor = new ColorChoiceViewModel(nameof(Strings.Appearance_TextColor), AppearanceSettings.DefaultTextColor, current.Appearance.TextColor);
-        BorderColor = new ColorChoiceViewModel(nameof(Strings.Appearance_BorderColor), AppearanceSettings.DefaultTextColor, current.Appearance.BorderColor);
-        _normalColor = new ColorChoiceViewModel(nameof(Strings.Level_Normal), ColorSettings.DefaultNormalColor, current.Colors.NormalColor);
-        _warningColor = new ColorChoiceViewModel(nameof(Strings.Level_Warning), ColorSettings.DefaultWarningColor, current.Colors.WarningColor);
-        _criticalColor = new ColorChoiceViewModel(nameof(Strings.Level_Critical), ColorSettings.DefaultCriticalColor, current.Colors.CriticalColor);
-        LevelColors = [_normalColor, _warningColor, _criticalColor];
-
-        foreach (ColorChoiceViewModel choice in AllColors)
-        {
-            choice.PropertyChanged += OnRowPropertyChanged;
-        }
-
-        Transparency = Math.Clamp(current.Appearance.Transparency, 0, AppearanceSettings.MaximumTransparency);
-        TextWeight = Enum.IsDefined(current.Appearance.TextWeight) ? current.Appearance.TextWeight : TextWeight.Normal;
-        Scale = ResizeRule.ClampPercent(current.Appearance.Scale);
-        BorderMode = Enum.IsDefined(current.Appearance.BorderMode) ? current.Appearance.BorderMode : BorderMode.Off;
-        BorderThickness = Math.Clamp(current.Appearance.BorderThickness, AppearanceSettings.MinimumBorderThickness, AppearanceSettings.MaximumBorderThickness);
-        BorderTransparency = Math.Clamp(current.Appearance.BorderTransparency, 0, AppearanceSettings.MaximumTransparency);
-        CornerRadius = CornerRule.Clamp(current.Appearance.CornerRadius);
-
         _availableDisks = availableDisks;
         _diskOptions = BuildDiskOptions(availableDisks, current.Display);
-        _weightOptions = BuildWeightOptions();
         _languageOptions = Localizer.Languages();
         _monitors = monitors;
         _monitorOptions = BuildMonitorOptions(monitors);
         _modeOptions = BuildModeOptions();
         LoadGeneral(current.General);
         LoadDisplay(current.Display);
-        PingHostText = current.Network.PingHost;
+        LoadNetwork(current.Network);
+        ShowInternalDevices = NetworkDevices.Any(row => row.IsInternal && row.IsMonitored);
+        UpdateDeviceVisibility();
         Localizer.Instance.CultureChanged += OnCultureChanged;
 
-        _applied = new SavedSettings(BuildDisplay(), HasColorsError ? current.Colors : BuildColors(), BuildNetwork(), BuildAppearance(), BuildGeneral());
+        _applied = new SavedSettings(BuildDisplay(), current.Colors, BuildNetwork(), current.Appearance, BuildGeneral());
         _ready = true;
     }
 
     public event EventHandler<SavedSettings>? Applied;
 
-    [ObservableProperty] private IReadOnlyList<DiskOption> _diskOptions;
+    public event EventHandler<AppearanceGroup>? AppearanceEditRequested;
 
-    [ObservableProperty] private IReadOnlyList<WeightOption> _weightOptions;
+    public event EventHandler<AppearancePreview>? AppearancePreviewed;
+
+    [ObservableProperty] private IReadOnlyList<DiskOption> _diskOptions;
 
     [ObservableProperty] private IReadOnlyList<LanguageOption> _languageOptions;
 
@@ -102,24 +73,33 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     [ObservableProperty] private IReadOnlyList<ThemeOption> _themeOptions = BuildThemeOptions();
 
-    [ObservableProperty] private IReadOnlyList<BorderModeOption> _borderModeOptions = BuildBorderModeOptions();
-
     [ObservableProperty]
     private SettingsTab _selectedTab;
 
-    public ObservableCollection<ThresholdRowViewModel> Thresholds { get; }
-
     public ObservableCollection<MetricRowViewModel> Metrics { get; }
 
-    public ColorChoiceViewModel BackgroundColor { get; }
+    public ObservableCollection<NetworkDeviceRowViewModel> NetworkDevices { get; }
 
-    public ColorChoiceViewModel TextColor { get; }
+    public bool HasNoNetworkDevices => NetworkDevices.Count == 0;
 
-    public ColorChoiceViewModel BorderColor { get; }
+    [ObservableProperty]
+    private bool _showInternalDevices;
 
-    public IReadOnlyList<ColorChoiceViewModel> LevelColors { get; }
+    [ObservableProperty]
+    private IReadOnlyList<NetworkDefaultOption> _defaultDeviceOptions = [];
 
-    private IEnumerable<ColorChoiceViewModel> AllColors => [BackgroundColor, TextColor, BorderColor, .. LevelColors];
+    [ObservableProperty]
+    private NetworkDefaultOption? _selectedDefaultDevice;
+
+    public AppearancePreview? PendingAppearance => _pendingAppearance;
+
+    public AppearancePreview ShownAppearance => _pendingAppearance ?? new AppearancePreview(_applied.Appearance, _applied.Colors);
+
+    public string ShapeSummary => AppearanceSummary.Shape(ShownAppearance.Appearance);
+
+    public string TextColorsSummary => AppearanceSummary.TextColors(ShownAppearance.Appearance);
+
+    public string UsageColorsSummary => AppearanceSummary.UsageColors(ShownAppearance.Colors);
 
 
     public IReadOnlyList<string> PingSuggestions { get; } = [NetworkSettings.GooglePingHost, NetworkSettings.CloudflarePingHost];
@@ -140,35 +120,6 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     private InteractionKey _interactionKey;
-
-    [ObservableProperty]
-    private bool _colorsEnabled;
-
-    [ObservableProperty]
-    private int _transparency;
-
-    [ObservableProperty]
-    private TextWeight _textWeight;
-
-    [ObservableProperty]
-    private int _scale = AppearanceSettings.DefaultScale;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasBorder))]
-    private BorderMode _borderMode;
-
-    [ObservableProperty]
-    private int _borderThickness = AppearanceSettings.MinimumBorderThickness;
-
-    [ObservableProperty]
-    private int _borderTransparency = AppearanceSettings.DefaultBorderTransparency;
-
-    [ObservableProperty]
-    private int _cornerRadius;
-
-    public int MaximumCornerRadius => CornerRule.MaximumRadius;
-
-    public string CornerRadiusHint => Localizer.Format(Strings.Format_CornerRadiusHint, CornerRule.MaximumRadius);
 
     [ObservableProperty]
     private string _language = Localizer.AutomaticLanguage;
@@ -201,8 +152,6 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     public bool HasSeveralMonitors => _monitors.Count > 1;
 
-    public bool HasBorder => BorderMode != BorderMode.Off;
-
     public string? FpsNotice => _fpsNoticeKey is null ? null : Localizer.Instance[_fpsNoticeKey];
 
     public bool HasFpsNotice => _fpsNoticeKey is not null;
@@ -211,13 +160,13 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     public bool IsDisplayPending => BuildDisplay() != _applied.Display;
 
-    public bool IsAppearancePending => BuildAppearance() != _applied.Appearance || HasColorsError || BuildColors() != _applied.Colors;
-
     public bool IsNetworkPending => BuildNetwork() != _applied.Network;
+
+    public bool IsAppearancePending => _pendingAppearance is not null;
 
     public bool HasPendingChanges => IsGeneralPending || IsDisplayPending || IsAppearancePending || IsNetworkPending;
 
-    public bool CanApplyAll => !HasDisplayError && !HasPingHostError && !HasColorsError && HasPendingChanges;
+    public bool CanApplyAll => !HasDisplayError && !HasPingHostError && HasPendingChanges;
 
     public string PendingTabNames => string.Join(", ", new (bool Pending, string Name)[]
     {
@@ -227,12 +176,10 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         (IsNetworkPending, Strings.Tab_Network),
     }.Where(tab => tab.Pending).Select(tab => tab.Name));
 
-    private bool HasColorsError => Thresholds.Any(row => row.HasError);
-
     private bool CanApply() => SelectedTab switch
     {
         SettingsTab.Display => !HasDisplayError && IsDisplayPending,
-        SettingsTab.Appearance => !HasColorsError && IsAppearancePending,
+        SettingsTab.Appearance => IsAppearancePending,
         SettingsTab.Network => !HasPingHostError && IsNetworkPending,
         _ => IsGeneralPending,
     };
@@ -241,7 +188,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     private void Apply() => Commit(SelectedTab switch
     {
         SettingsTab.Display => _applied with { Display = BuildDisplay() },
-        SettingsTab.Appearance => _applied with { Appearance = BuildAppearance(), Colors = BuildColors() },
+        SettingsTab.Appearance => _applied with { Appearance = ShownAppearance.Appearance, Colors = ShownAppearance.Colors },
         SettingsTab.Network => _applied with { Network = BuildNetwork() },
         _ => _applied with { General = BuildGeneral() },
     });
@@ -267,7 +214,7 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void ResetScale() => Scale = AppearanceSettings.DefaultScale;
+    private void EditAppearance(AppearanceGroup group) => AppearanceEditRequested?.Invoke(this, group);
 
     [RelayCommand]
     private void RestoreDefaults()
@@ -279,10 +226,9 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
                 break;
             case SettingsTab.Appearance:
                 RestoreAppearance();
-                RestoreColors();
                 break;
             case SettingsTab.Network:
-                PingHostText = new NetworkSettings().PingHost;
+                LoadNetwork(new NetworkSettings());
                 break;
             default:
                 LoadGeneral(new GeneralSettings());
@@ -292,41 +238,26 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     private void RestoreAppearance()
     {
-        BackgroundColor.Reset();
-        Transparency = 0;
-        TextColor.Reset();
-        TextWeight = TextWeight.Normal;
-        Scale = AppearanceSettings.DefaultScale;
-        BorderMode = BorderMode.Off;
-        BorderColor.Reset();
-        BorderThickness = AppearanceSettings.MinimumBorderThickness;
-        BorderTransparency = AppearanceSettings.DefaultBorderTransparency;
-        CornerRadius = 0;
-    }
-
-    private void RestoreColors()
-    {
-        ColorsEnabled = true;
-
-        foreach (ColorChoiceViewModel choice in LevelColors)
-        {
-            choice.Reset();
-        }
-
-        foreach (ThresholdRowViewModel row in Thresholds)
-        {
-            row.Reset(UsageThresholds.Default);
-        }
+        var defaults = new AppearancePreview(new AppearanceSettings(), new ColorSettings());
+        _pendingAppearance = defaults == new AppearancePreview(_applied.Appearance, _applied.Colors) ? null : defaults;
+        RefreshAppearance();
+        AppearancePreviewed?.Invoke(this, ShownAppearance);
     }
 
     private void Commit(SavedSettings settings)
     {
         _applied = settings;
+
+        if (_pendingAppearance == new AppearancePreview(settings.Appearance, settings.Colors))
+        {
+            _pendingAppearance = null;
+        }
+
         Applied?.Invoke(this, settings);
-        RefreshPending();
+        RefreshAppearance();
     }
 
-    private SavedSettings BuildSettings() => new(BuildDisplay(), BuildColors(), BuildNetwork(), BuildAppearance(), BuildGeneral());
+    private SavedSettings BuildSettings() => new(BuildDisplay(), ShownAppearance.Colors, BuildNetwork(), ShownAppearance.Appearance, BuildGeneral());
 
     private GeneralSettings BuildGeneral() => new()
     {
@@ -355,33 +286,65 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         DetailedTooltip = DetailedTooltip,
     };
 
-    private ColorSettings BuildColors() => new()
+    private NetworkSettings BuildNetwork() => new()
     {
-        Enabled = ColorsEnabled,
-        NormalColor = _normalColor.Color,
-        WarningColor = _warningColor.Color,
-        CriticalColor = _criticalColor.Color,
-        Cpu = _cpu.ToThresholds(),
-        Gpu = _gpu.ToThresholds(),
-        Memory = _memory.ToThresholds(),
-        Disk = _disk.ToThresholds(),
+        PingHost = PingHostText.Trim(),
+        Devices = new NetworkDeviceChoices([
+            .. _absentDeviceChoices,
+            .. NetworkDevices
+                .Where(row => row.IsMonitored == row.IsInternal)
+                .Select(row => new NetworkDeviceChoice(row.Id, row.IsMonitored)),
+        ]),
+        DefaultDevice = SelectedDefaultDevice?.ToReference(),
     };
 
-    private NetworkSettings BuildNetwork() => new() { PingHost = PingHostText.Trim() };
-
-    private AppearanceSettings BuildAppearance() => new()
+    private void LoadNetwork(NetworkSettings network)
     {
-        BackgroundColor = BackgroundColor.Color,
-        Transparency = Transparency,
-        TextColor = TextColor.Color,
-        TextWeight = TextWeight,
-        Scale = Scale,
-        BorderMode = BorderMode,
-        BorderColor = BorderColor.Color,
-        BorderThickness = BorderThickness,
-        BorderTransparency = BorderTransparency,
-        CornerRadius = CornerRadius,
-    };
+        PingHostText = network.PingHost;
+        _absentDeviceChoices = [.. network.Devices.Overrides.Where(choice => NetworkDevices.All(row => row.Id != choice.Id))];
+
+        foreach (NetworkDeviceRowViewModel row in NetworkDevices)
+        {
+            row.IsMonitored = network.Devices.IsMonitored(row.Id, row.IsInternal);
+        }
+
+        BuildDefaultDeviceOptions(network.DefaultDevice);
+    }
+
+    private void BuildDefaultDeviceOptions(NetworkDeviceRef? selected)
+    {
+        List<NetworkDefaultOption> options =
+        [
+            new NetworkDefaultOption(null, Strings.Network_PhysicalSum, Strings.Network_PhysicalSum),
+            .. NetworkDevices.Where(row => row.IsMonitored).Select(row => new NetworkDefaultOption(row.Id, row.Name, row.Name)),
+        ];
+
+        if (selected is not null && NetworkDevices.All(row => row.Id != selected.Id))
+        {
+            options.Add(new NetworkDefaultOption(selected.Id, selected.Name, Localizer.Format(Strings.Format_NetworkDeviceMissing, selected.Name)));
+        }
+
+        DefaultDeviceOptions = options;
+        SelectedDefaultDevice = options.FirstOrDefault(option => option.Id == selected?.Id) ?? options[0];
+    }
+
+    private void OnNetworkDeviceRowPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(NetworkDeviceRowViewModel.IsMonitored))
+        {
+            BuildDefaultDeviceOptions(SelectedDefaultDevice?.ToReference());
+        }
+    }
+
+    partial void OnShowInternalDevicesChanged(bool value) => UpdateDeviceVisibility();
+
+    private void UpdateDeviceVisibility()
+    {
+        foreach (NetworkDeviceRowViewModel row in NetworkDevices)
+        {
+            row.IsShown = ShowInternalDevices || !row.IsInternal;
+        }
+    }
 
     private static List<DiskOption> BuildDiskOptions(IReadOnlyList<DiskActivity> availableDisks, DisplaySettings saved)
     {
@@ -409,15 +372,6 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         return options;
     }
 
-    private static List<WeightOption> BuildWeightOptions() =>
-    [
-        new(TextWeight.Light, Strings.Weight_Light),
-        new(TextWeight.Normal, Strings.Weight_Normal),
-        new(TextWeight.Medium, Strings.Weight_Medium),
-        new(TextWeight.SemiBold, Strings.Weight_SemiBold),
-        new(TextWeight.Bold, Strings.Weight_Bold),
-    ];
-
     private static List<KeyOption> BuildKeyOptions() =>
         [.. Enum.GetValues<InteractionKey>().Select(key => new KeyOption(key, ClickThroughRule.LabelOf(key)))];
 
@@ -432,13 +386,6 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         new(AppTheme.System, Strings.Theme_System),
         new(AppTheme.Light, Strings.Theme_Light),
         new(AppTheme.Dark, Strings.Theme_Dark),
-    ];
-
-    private static List<BorderModeOption> BuildBorderModeOptions() =>
-    [
-        new(BorderMode.Off, Strings.BorderMode_Off),
-        new(BorderMode.Always, Strings.BorderMode_Always),
-        new(BorderMode.Hover, Strings.BorderMode_Hover),
     ];
 
     private static List<MonitorOption> BuildMonitorOptions(IReadOnlyList<DisplayMonitor> monitors) =>
@@ -503,8 +450,28 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     public void SyncScale(int percent)
     {
-        Scale = percent;
         _applied = _applied with { Appearance = _applied.Appearance with { Scale = percent } };
+
+        if (_pendingAppearance is not null)
+        {
+            _pendingAppearance = _pendingAppearance with { Appearance = _pendingAppearance.Appearance with { Scale = percent } };
+        }
+
+        RefreshAppearance();
+    }
+
+    public void SyncAppearance(AppearanceSettings appearance, ColorSettings colors)
+    {
+        _applied = _applied with { Appearance = appearance, Colors = colors };
+        _pendingAppearance = null;
+        RefreshAppearance();
+    }
+
+    private void RefreshAppearance()
+    {
+        OnPropertyChanged(nameof(ShapeSummary));
+        OnPropertyChanged(nameof(TextColorsSummary));
+        OnPropertyChanged(nameof(UsageColorsSummary));
         RefreshPending();
     }
 
@@ -543,56 +510,46 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
 
     private void OnCultureChanged(object? sender, EventArgs e)
     {
-        foreach (ThresholdRowViewModel row in Thresholds)
-        {
-            row.RefreshTexts();
-        }
-
         foreach (MetricRowViewModel row in Metrics)
         {
             row.RefreshName();
         }
 
-        foreach (ColorChoiceViewModel choice in AllColors)
+        foreach (NetworkDeviceRowViewModel row in NetworkDevices)
         {
-            choice.RefreshLabel();
+            row.RefreshTexts();
         }
 
         OnPropertyChanged(nameof(FpsNotice));
-        OnPropertyChanged(nameof(CornerRadiusHint));
+        OnPropertyChanged(nameof(ShapeSummary));
+        OnPropertyChanged(nameof(TextColorsSummary));
+        OnPropertyChanged(nameof(UsageColorsSummary));
 
         DiskOption? disk = SelectedDisk;
-        TextWeight weight = TextWeight;
         string language = Language;
         InteractionKey interactionKey = InteractionKey;
         string? monitor = Monitor;
         WidgetMode mode = Mode;
-        BorderMode borderMode = BorderMode;
         AppTheme theme = Theme;
 
         DiskOptions = BuildDiskOptions(_availableDisks, _applied.Display);
-        WeightOptions = BuildWeightOptions();
+        BuildDefaultDeviceOptions(SelectedDefaultDevice?.ToReference());
         LanguageOptions = Localizer.Languages();
         KeyOptions = BuildKeyOptions();
         MonitorOptions = BuildMonitorOptions(_monitors);
         ModeOptions = BuildModeOptions();
-        BorderModeOptions = BuildBorderModeOptions();
         ThemeOptions = BuildThemeOptions();
 
         SelectedDisk = (disk is null ? null : DiskOptions.FirstOrDefault(option => option.Source == disk.Source && option.Number == disk.Number)) ?? DiskOptions[0];
-        TextWeight = weight;
         Language = language;
         InteractionKey = interactionKey;
         Monitor = monitor;
         Mode = mode;
-        BorderMode = borderMode;
         Theme = theme;
-        OnPropertyChanged(nameof(TextWeight));
         OnPropertyChanged(nameof(Language));
         OnPropertyChanged(nameof(InteractionKey));
         OnPropertyChanged(nameof(Monitor));
         OnPropertyChanged(nameof(Mode));
-        OnPropertyChanged(nameof(BorderMode));
         OnPropertyChanged(nameof(Theme));
     }
 
@@ -625,9 +582,6 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
         DetailedTooltip = display.DetailedTooltip;
     }
 
-    private void OnRowPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
-        RefreshPending();
-
     private void OnMetricRowPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(MetricRowViewModel.IsVisible))
@@ -648,8 +602,6 @@ public enum SettingsTab
 }
 
 public sealed record ModeOption(WidgetMode Mode, string Label);
-
-public sealed record BorderModeOption(BorderMode Mode, string Label);
 
 public sealed record ThemeOption(AppTheme Theme, string Label);
 

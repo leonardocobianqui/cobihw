@@ -9,6 +9,7 @@ public sealed class NetworkSessionState
     public ulong ReceivedBytes { get; set; }
     public ulong SentBytes { get; set; }
     public Dictionary<ulong, InterfaceCounters> LastCounters { get; set; } = [];
+    public Dictionary<Guid, DeviceSession> Devices { get; set; } = [];
 
     public static NetworkSessionState CreateForCurrentBoot() => new()
     {
@@ -34,6 +35,7 @@ public sealed class NetworkSessionState
         ReceivedBytes = ReceivedBytes,
         SentBytes = SentBytes,
         LastCounters = new Dictionary<ulong, InterfaceCounters>(LastCounters),
+        Devices = Devices.ToDictionary(device => device.Key, device => device.Value.Copy()),
     };
 
     private static DateTime CurrentBootTimeUtc() =>
@@ -41,3 +43,11 @@ public sealed class NetworkSessionState
 }
 
 public sealed record InterfaceCounters(ulong ReceivedBytes, ulong SentBytes);
+
+public sealed class DeviceSession
+{
+    public ulong ReceivedBytes { get; set; }
+    public ulong SentBytes { get; set; }
+
+    public DeviceSession Copy() => new() { ReceivedBytes = ReceivedBytes, SentBytes = SentBytes };
+}

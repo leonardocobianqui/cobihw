@@ -1046,15 +1046,6 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Colors by usage level.
-        /// </summary>
-        internal static string Appearance_UsageColors {
-            get {
-                return ResourceManager.GetString("Appearance_UsageColors", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Background.
         /// </summary>
         internal static string Appearance_Background {
@@ -1474,6 +1465,663 @@ namespace CobiHw.App.Resources {
         internal static string Format_CornerRadiusHint {
             get {
                 return ResourceManager.GetString("Format_CornerRadiusHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Network devices.
+        /// </summary>
+        internal static string Tray_NetworkDevices {
+            get {
+                return ResourceManager.GetString("Tray_NetworkDevices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Network devices.
+        /// </summary>
+        internal static string NetworkDevices_Title {
+            get {
+                return ResourceManager.GetString("NetworkDevices_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No device is checked. Choose them in Settings → Network..
+        /// </summary>
+        internal static string NetworkDevices_None {
+            get {
+                return ResourceManager.GetString("NetworkDevices_None", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading devices….
+        /// </summary>
+        internal static string NetworkDevices_Loading {
+            get {
+                return ResourceManager.GetString("NetworkDevices_Loading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Network devices.
+        /// </summary>
+        internal static string Network_Devices {
+            get {
+                return ResourceManager.GetString("Network_Devices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor:.
+        /// </summary>
+        internal static string Network_Monitor {
+            get {
+                return ResourceManager.GetString("Network_Monitor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show Windows internal devices.
+        /// </summary>
+        internal static string Network_ShowInternal {
+            get {
+                return ResourceManager.GetString("Network_ShowInternal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Default (shown in the widget):.
+        /// </summary>
+        internal static string Network_Default {
+            get {
+                return ResourceManager.GetString("Network_Default", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sum of physical adapters.
+        /// </summary>
+        internal static string Network_PhysicalSum {
+            get {
+                return ResourceManager.GetString("Network_PhysicalSum", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Checked devices appear in Network devices (tray icon menu) and can be the default. The sum of physical adapters leaves VPNs out so the same traffic is not counted twice..
+        /// </summary>
+        internal static string Network_DevicesHint {
+            get {
+                return ResourceManager.GetString("Network_DevicesHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No network device found..
+        /// </summary>
+        internal static string Network_NoDevices {
+            get {
+                return ResourceManager.GetString("Network_NoDevices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (not found).
+        /// </summary>
+        internal static string Format_NetworkDeviceMissing {
+            get {
+                return ResourceManager.GetString("Format_NetworkDeviceMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (disconnected).
+        /// </summary>
+        internal static string Format_Disconnected {
+            get {
+                return ResourceManager.GetString("Format_Disconnected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Connected.
+        /// </summary>
+        internal static string Status_Connected {
+            get {
+                return ResourceManager.GetString("Status_Connected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnected.
+        /// </summary>
+        internal static string Status_Disconnected {
+            get {
+                return ResourceManager.GetString("Status_Disconnected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ethernet (cable).
+        /// </summary>
+        internal static string Kind_Ethernet {
+            get {
+                return ResourceManager.GetString("Kind_Ethernet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wi-Fi.
+        /// </summary>
+        internal static string Kind_WiFi {
+            get {
+                return ResourceManager.GetString("Kind_WiFi", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bluetooth.
+        /// </summary>
+        internal static string Kind_Bluetooth {
+            get {
+                return ResourceManager.GetString("Kind_Bluetooth", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual (VPN, app tunnel).
+        /// </summary>
+        internal static string Kind_Virtual {
+            get {
+                return ResourceManager.GetString("Kind_Virtual", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile broadband.
+        /// </summary>
+        internal static string Kind_Cellular {
+            get {
+                return ResourceManager.GetString("Kind_Cellular", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Windows tunnel (IPv6).
+        /// </summary>
+        internal static string Kind_Tunnel {
+            get {
+                return ResourceManager.GetString("Kind_Tunnel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loopback.
+        /// </summary>
+        internal static string Kind_Loopback {
+            get {
+                return ResourceManager.GetString("Kind_Loopback", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string Kind_Other {
+            get {
+                return ResourceManager.GetString("Kind_Other", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Adapter.
+        /// </summary>
+        internal static string Device_Adapter {
+            get {
+                return ResourceManager.GetString("Device_Adapter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} · {1}.
+        /// </summary>
+        internal static string Format_StatusKind {
+            get {
+                return ResourceManager.GetString("Format_StatusKind", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        internal static string Device_Status {
+            get {
+                return ResourceManager.GetString("Device_Status", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Link speed.
+        /// </summary>
+        internal static string Device_LinkSpeed {
+            get {
+                return ResourceManager.GetString("Device_LinkSpeed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Physical address (MAC).
+        /// </summary>
+        internal static string Device_Mac {
+            get {
+                return ResourceManager.GetString("Device_Mac", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to IPv4.
+        /// </summary>
+        internal static string Device_IPv4 {
+            get {
+                return ResourceManager.GetString("Device_IPv4", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to IPv6.
+        /// </summary>
+        internal static string Device_IPv6 {
+            get {
+                return ResourceManager.GetString("Device_IPv6", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Gateway.
+        /// </summary>
+        internal static string Device_Gateway {
+            get {
+                return ResourceManager.GetString("Device_Gateway", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to DNS.
+        /// </summary>
+        internal static string Device_Dns {
+            get {
+                return ResourceManager.GetString("Device_Dns", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Traffic now.
+        /// </summary>
+        internal static string Device_CurrentSpeed {
+            get {
+                return ResourceManager.GetString("Device_CurrentSpeed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to cobihw session.
+        /// </summary>
+        internal static string Device_Session {
+            get {
+                return ResourceManager.GetString("Device_Session", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wi-Fi network.
+        /// </summary>
+        internal static string Wifi_Section {
+            get {
+                return ResourceManager.GetString("Wifi_Section", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Network (SSID).
+        /// </summary>
+        internal static string Wifi_Ssid {
+            get {
+                return ResourceManager.GetString("Wifi_Ssid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Signal.
+        /// </summary>
+        internal static string Wifi_Signal {
+            get {
+                return ResourceManager.GetString("Wifi_Signal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Band · channel.
+        /// </summary>
+        internal static string Wifi_BandChannel {
+            get {
+                return ResourceManager.GetString("Wifi_BandChannel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Standard.
+        /// </summary>
+        internal static string Wifi_Standard {
+            get {
+                return ResourceManager.GetString("Wifi_Standard", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Link rate (receive / send).
+        /// </summary>
+        internal static string Wifi_LinkRates {
+            get {
+                return ResourceManager.GetString("Wifi_LinkRates", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not connected to a Wi-Fi network..
+        /// </summary>
+        internal static string Wifi_NotConnected {
+            get {
+                return ResourceManager.GetString("Wifi_NotConnected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Windows only shows Wi-Fi network data to apps with Location permission..
+        /// </summary>
+        internal static string Wifi_PermissionNeeded {
+            get {
+                return ResourceManager.GetString("Wifi_PermissionNeeded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open Location settings.
+        /// </summary>
+        internal static string Wifi_OpenLocationSettings {
+            get {
+                return ResourceManager.GetString("Wifi_OpenLocationSettings", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wi-Fi data unavailable..
+        /// </summary>
+        internal static string Wifi_Unavailable {
+            get {
+                return ResourceManager.GetString("Wifi_Unavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}% ({1} dBm).
+        /// </summary>
+        internal static string Format_Signal {
+            get {
+                return ResourceManager.GetString("Format_Signal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0:0.#} GHz · channel {1}.
+        /// </summary>
+        internal static string Format_BandChannel {
+            get {
+                return ResourceManager.GetString("Format_BandChannel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0:0} Mbps.
+        /// </summary>
+        internal static string Format_LinkRate {
+            get {
+                return ResourceManager.GetString("Format_LinkRate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ↓ {0}   ↑ {1}.
+        /// </summary>
+        internal static string Format_UpDown {
+            get {
+                return ResourceManager.GetString("Format_UpDown", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Public IP:.
+        /// </summary>
+        internal static string PublicIp_Label {
+            get {
+                return ResourceManager.GetString("PublicIp_Label", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Discover.
+        /// </summary>
+        internal static string PublicIp_Discover {
+            get {
+                return ResourceManager.GetString("PublicIp_Discover", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Asks Cloudflare which address your traffic leaves through (main route). Only when you click..
+        /// </summary>
+        internal static string PublicIp_Hint {
+            get {
+                return ResourceManager.GetString("PublicIp_Hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Asking….
+        /// </summary>
+        internal static string PublicIp_Searching {
+            get {
+                return ResourceManager.GetString("PublicIp_Searching", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get it: {0}.
+        /// </summary>
+        internal static string Format_PublicIpError {
+            get {
+                return ResourceManager.GetString("Format_PublicIpError", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Size and shape.
+        /// </summary>
+        internal static string Section_AppearanceShape {
+            get {
+                return ResourceManager.GetString("Section_AppearanceShape", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Colors and text.
+        /// </summary>
+        internal static string Section_AppearanceColors {
+            get {
+                return ResourceManager.GetString("Section_AppearanceColors", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Usage colors.
+        /// </summary>
+        internal static string Section_AppearanceUsage {
+            get {
+                return ResourceManager.GetString("Section_AppearanceUsage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Shape.
+        /// </summary>
+        internal static string Appearance_Shape {
+            get {
+                return ResourceManager.GetString("Appearance_Shape", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Edit….
+        /// </summary>
+        internal static string Appearance_Edit {
+            get {
+                return ResourceManager.GetString("Appearance_Edit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Each group opens in its own window. The widget shows the changes before they are saved..
+        /// </summary>
+        internal static string Appearance_GroupsHint {
+            get {
+                return ResourceManager.GetString("Appearance_GroupsHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The widget shows each change right away. Apply saves; Cancel undoes..
+        /// </summary>
+        internal static string Appearance_EditorHint {
+            get {
+                return ResourceManager.GetString("Appearance_EditorHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}% · corners {1} px · bars {2} px · {3}.
+        /// </summary>
+        internal static string Format_ShapeSummary {
+            get {
+                return ResourceManager.GetString("Format_ShapeSummary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to border {0} px ({1}).
+        /// </summary>
+        internal static string Format_BorderSummary {
+            get {
+                return ResourceManager.GetString("Format_BorderSummary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to no border.
+        /// </summary>
+        internal static string Appearance_NoBorder {
+            get {
+                return ResourceManager.GetString("Appearance_NoBorder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Background {0}, {1}% transparent · text {2}, {3}.
+        /// </summary>
+        internal static string Format_TextColorsSummary {
+            get {
+                return ResourceManager.GetString("Format_TextColorsSummary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to On · {0}.
+        /// </summary>
+        internal static string Format_UsageSummary {
+            get {
+                return ResourceManager.GetString("Format_UsageSummary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1}/{2}.
+        /// </summary>
+        internal static string Format_UsageThreshold {
+            get {
+                return ResourceManager.GetString("Format_UsageThreshold", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        internal static string Appearance_UsageOff {
+            get {
+                return ResourceManager.GetString("Appearance_UsageOff", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Common_Cancel {
+            get {
+                return ResourceManager.GetString("Common_Cancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Usage bar rounding:.
+        /// </summary>
+        internal static string Appearance_BarRadius {
+            get {
+                return ResourceManager.GetString("Appearance_BarRadius", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 0 keeps the usage bars square; 3 makes the ends fully round..
+        /// </summary>
+        internal static string Appearance_BarRadiusHint {
+            get {
+                return ResourceManager.GetString("Appearance_BarRadiusHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} · {2}.
+        /// </summary>
+        internal static string Format_TrayLine {
+            get {
+                return ResourceManager.GetString("Format_TrayLine", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1}.
+        /// </summary>
+        internal static string Format_TrayValue {
+            get {
+                return ResourceManager.GetString("Format_TrayValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ↓{1} ↑{2} Mbps · ping {3}.
+        /// </summary>
+        internal static string Format_TrayNetwork {
+            get {
+                return ResourceManager.GetString("Format_TrayNetwork", resourceCulture);
             }
         }
     }

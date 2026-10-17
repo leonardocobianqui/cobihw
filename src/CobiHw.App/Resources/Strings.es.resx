@@ -371,9 +371,6 @@
   <data name="Appearance_BorderHint" xml:space="preserve">
     <value>El borde ocupa la franja que se puede arrastrar para cambiar el tamaño del widget.</value>
   </data>
-  <data name="Appearance_UsageColors" xml:space="preserve">
-    <value>Colores por nivel de uso</value>
-  </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Fondo</value>
   </data>
@@ -514,5 +511,224 @@
   </data>
   <data name="Format_CornerRadiusHint" xml:space="preserve">
     <value>0 deja las esquinas rectas. El máximo ({0} px) es el mayor redondeo que nunca toca el texto. Sigue el tamaño del widget y también se aplica a los detalles.</value>
+  </data>
+  <data name="Tray_NetworkDevices" xml:space="preserve">
+    <value>Dispositivos de red</value>
+  </data>
+  <data name="NetworkDevices_Title" xml:space="preserve">
+    <value>Dispositivos de red</value>
+  </data>
+  <data name="NetworkDevices_None" xml:space="preserve">
+    <value>Ningún dispositivo marcado. Elígelos en Configuración → Red.</value>
+  </data>
+  <data name="NetworkDevices_Loading" xml:space="preserve">
+    <value>Leyendo dispositivos…</value>
+  </data>
+  <data name="Network_Devices" xml:space="preserve">
+    <value>Dispositivos de red</value>
+  </data>
+  <data name="Network_Monitor" xml:space="preserve">
+    <value>Supervisar:</value>
+  </data>
+  <data name="Network_ShowInternal" xml:space="preserve">
+    <value>Mostrar dispositivos internos de Windows</value>
+  </data>
+  <data name="Network_Default" xml:space="preserve">
+    <value>Predeterminado (se muestra en el widget):</value>
+  </data>
+  <data name="Network_PhysicalSum" xml:space="preserve">
+    <value>Suma de los adaptadores físicos</value>
+  </data>
+  <data name="Network_DevicesHint" xml:space="preserve">
+    <value>Los marcados aparecen en Dispositivos de red (menú del icono) y pueden ser el predeterminado. La suma de los adaptadores físicos deja fuera las VPN para no contar el mismo tráfico dos veces.</value>
+  </data>
+  <data name="Network_NoDevices" xml:space="preserve">
+    <value>No se encontró ningún dispositivo de red.</value>
+  </data>
+  <data name="Format_NetworkDeviceMissing" xml:space="preserve">
+    <value>{0} (no encontrado)</value>
+  </data>
+  <data name="Format_Disconnected" xml:space="preserve">
+    <value>{0} (desconectado)</value>
+  </data>
+  <data name="Status_Connected" xml:space="preserve">
+    <value>Conectado</value>
+  </data>
+  <data name="Status_Disconnected" xml:space="preserve">
+    <value>Desconectado</value>
+  </data>
+  <data name="Kind_Ethernet" xml:space="preserve">
+    <value>Ethernet (cable)</value>
+  </data>
+  <data name="Kind_WiFi" xml:space="preserve">
+    <value>Wi-Fi</value>
+  </data>
+  <data name="Kind_Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="Kind_Virtual" xml:space="preserve">
+    <value>Virtual (VPN, túnel de app)</value>
+  </data>
+  <data name="Kind_Cellular" xml:space="preserve">
+    <value>Banda ancha móvil</value>
+  </data>
+  <data name="Kind_Tunnel" xml:space="preserve">
+    <value>Túnel de Windows (IPv6)</value>
+  </data>
+  <data name="Kind_Loopback" xml:space="preserve">
+    <value>Loopback</value>
+  </data>
+  <data name="Kind_Other" xml:space="preserve">
+    <value>Otro</value>
+  </data>
+  <data name="Device_Adapter" xml:space="preserve">
+    <value>Adaptador</value>
+  </data>
+  <data name="Format_StatusKind" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Device_Status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Device_LinkSpeed" xml:space="preserve">
+    <value>Velocidad del enlace</value>
+  </data>
+  <data name="Device_Mac" xml:space="preserve">
+    <value>Dirección física (MAC)</value>
+  </data>
+  <data name="Device_IPv4" xml:space="preserve">
+    <value>IPv4</value>
+  </data>
+  <data name="Device_IPv6" xml:space="preserve">
+    <value>IPv6</value>
+  </data>
+  <data name="Device_Gateway" xml:space="preserve">
+    <value>Puerta de enlace</value>
+  </data>
+  <data name="Device_Dns" xml:space="preserve">
+    <value>DNS</value>
+  </data>
+  <data name="Device_CurrentSpeed" xml:space="preserve">
+    <value>Tráfico ahora</value>
+  </data>
+  <data name="Device_Session" xml:space="preserve">
+    <value>Sesión de cobihw</value>
+  </data>
+  <data name="Wifi_Section" xml:space="preserve">
+    <value>Red Wi-Fi</value>
+  </data>
+  <data name="Wifi_Ssid" xml:space="preserve">
+    <value>Red (SSID)</value>
+  </data>
+  <data name="Wifi_Signal" xml:space="preserve">
+    <value>Señal</value>
+  </data>
+  <data name="Wifi_BandChannel" xml:space="preserve">
+    <value>Banda · canal</value>
+  </data>
+  <data name="Wifi_Standard" xml:space="preserve">
+    <value>Estándar</value>
+  </data>
+  <data name="Wifi_LinkRates" xml:space="preserve">
+    <value>Tasa del enlace (recepción / envío)</value>
+  </data>
+  <data name="Wifi_NotConnected" xml:space="preserve">
+    <value>No conectado a una red Wi-Fi.</value>
+  </data>
+  <data name="Wifi_PermissionNeeded" xml:space="preserve">
+    <value>Windows solo muestra los datos de la red Wi-Fi a las apps con permiso de Ubicación.</value>
+  </data>
+  <data name="Wifi_OpenLocationSettings" xml:space="preserve">
+    <value>Abrir configuración de Ubicación</value>
+  </data>
+  <data name="Wifi_Unavailable" xml:space="preserve">
+    <value>Datos de Wi-Fi no disponibles.</value>
+  </data>
+  <data name="Format_Signal" xml:space="preserve">
+    <value>{0}% ({1} dBm)</value>
+  </data>
+  <data name="Format_BandChannel" xml:space="preserve">
+    <value>{0:0.#} GHz · canal {1}</value>
+  </data>
+  <data name="Format_LinkRate" xml:space="preserve">
+    <value>{0:0} Mbps</value>
+  </data>
+  <data name="Format_UpDown" xml:space="preserve">
+    <value>↓ {0}   ↑ {1}</value>
+  </data>
+  <data name="PublicIp_Label" xml:space="preserve">
+    <value>IP pública:</value>
+  </data>
+  <data name="PublicIp_Discover" xml:space="preserve">
+    <value>Descubrir</value>
+  </data>
+  <data name="PublicIp_Hint" xml:space="preserve">
+    <value>Pregunta a Cloudflare por qué dirección sale tu tráfico (ruta principal). Solo cuando haces clic.</value>
+  </data>
+  <data name="PublicIp_Searching" xml:space="preserve">
+    <value>Consultando…</value>
+  </data>
+  <data name="Format_PublicIpError" xml:space="preserve">
+    <value>No se pudo obtener: {0}</value>
+  </data>
+  <data name="Section_AppearanceShape" xml:space="preserve">
+    <value>Tamaño y forma</value>
+  </data>
+  <data name="Section_AppearanceColors" xml:space="preserve">
+    <value>Colores y texto</value>
+  </data>
+  <data name="Section_AppearanceUsage" xml:space="preserve">
+    <value>Colores por uso</value>
+  </data>
+  <data name="Appearance_Shape" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="Appearance_Edit" xml:space="preserve">
+    <value>Editar…</value>
+  </data>
+  <data name="Appearance_GroupsHint" xml:space="preserve">
+    <value>Cada grupo se abre en su propia ventana. El widget muestra los cambios antes de guardarlos.</value>
+  </data>
+  <data name="Appearance_EditorHint" xml:space="preserve">
+    <value>El widget muestra cada cambio al instante. Aplicar guarda; Cancelar deshace.</value>
+  </data>
+  <data name="Format_ShapeSummary" xml:space="preserve">
+    <value>{0}% · esquinas {1} px · barras {2} px · {3}</value>
+  </data>
+  <data name="Format_BorderSummary" xml:space="preserve">
+    <value>borde {0} px ({1})</value>
+  </data>
+  <data name="Appearance_NoBorder" xml:space="preserve">
+    <value>sin borde</value>
+  </data>
+  <data name="Format_TextColorsSummary" xml:space="preserve">
+    <value>Fondo {0}, {1}% transparente · texto {2}, {3}</value>
+  </data>
+  <data name="Format_UsageSummary" xml:space="preserve">
+    <value>Activados · {0}</value>
+  </data>
+  <data name="Format_UsageThreshold" xml:space="preserve">
+    <value>{0} {1}/{2}</value>
+  </data>
+  <data name="Appearance_UsageOff" xml:space="preserve">
+    <value>Desactivados</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Appearance_BarRadius" xml:space="preserve">
+    <value>Redondeo de las barras:</value>
+  </data>
+  <data name="Appearance_BarRadiusHint" xml:space="preserve">
+    <value>0 deja las barras de uso rectas; 3 redondea por completo los extremos.</value>
+  </data>
+  <data name="Format_TrayLine" xml:space="preserve">
+    <value>{0} {1} · {2}</value>
+  </data>
+  <data name="Format_TrayValue" xml:space="preserve">
+    <value>{0} {1}</value>
+  </data>
+  <data name="Format_TrayNetwork" xml:space="preserve">
+    <value>{0} ↓{1} ↑{2} Mbps · ping {3}</value>
   </data>
 </root>

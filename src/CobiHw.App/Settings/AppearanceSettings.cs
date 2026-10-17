@@ -27,6 +27,7 @@ public sealed record AppearanceSettings
     public const int MinimumBorderThickness = 1;
     public const int MaximumBorderThickness = 6;
     public const int DefaultBorderTransparency = 50;
+    public const int MaximumBarRadius = 3;
 
     public string BackgroundColor { get; set; } = DefaultBackgroundColor;
     public int Transparency { get; set; }
@@ -38,4 +39,5 @@ public sealed record AppearanceSettings
     public int BorderThickness { get; set; } = MinimumBorderThickness;
     public int BorderTransparency { get; set; } = DefaultBorderTransparency;
     public int CornerRadius { get; set; }
+    public int BarRadius { get; set; }
 }
