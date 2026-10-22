@@ -3,7 +3,7 @@
   <PropertyGroup>
     <!-- Shared by every project. Update Version and ReleaseDate for each release. -->
     <Version>1.0.0</Version>
-    <ReleaseDate>2026-10-19</ReleaseDate>
+    <ReleaseDate>2026-10-22</ReleaseDate>
     <Product>cobihw</Product>
     <Authors>Leonardo Cobianqui</Authors>
     <Company>Leonardo Cobianqui</Company>

@@ -43,1197 +43,1197 @@
   </resheader>
   <data name="Metric_Cpu" xml:space="preserve">
     <value>CPU</value>
-    <comment>Nome curto do processador</comment>
+    <comment>Short name of the processor</comment>
   </data>
   <data name="Metric_Gpu" xml:space="preserve">
     <value>GPU</value>
-    <comment>Nome curto da placa de vídeo</comment>
+    <comment>Short name of the graphics card</comment>
   </data>
   <data name="Metric_Memory" xml:space="preserve">
     <value>RAM</value>
-    <comment>Nome curto da memória RAM</comment>
+    <comment>Short name of the RAM</comment>
   </data>
   <data name="Metric_Disk" xml:space="preserve">
     <value>Disk</value>
-    <comment>Item disco</comment>
+    <comment>Disk item</comment>
   </data>
   <data name="Metric_Network" xml:space="preserve">
     <value>Network</value>
-    <comment>Item rede</comment>
+    <comment>Network item</comment>
   </data>
   <data name="Widget_Disks" xml:space="preserve">
     <value>Disks</value>
-    <comment>Grupo de discos no detalhamento</comment>
+    <comment>Disks group in the details</comment>
   </data>
   <data name="Widget_Speed" xml:space="preserve">
     <value>Speed</value>
-    <comment>Grupo do teste de velocidade no detalhamento</comment>
+    <comment>Speed test group in the details</comment>
   </data>
   <data name="Widget_Test" xml:space="preserve">
     <value>Test</value>
-    <comment>Rótulo do teste em andamento na visualização vertical</comment>
+    <comment>Label of the running test in the compact vertical view</comment>
   </data>
   <data name="Format_Ping" xml:space="preserve">
     <value>Ping {0}</value>
-    <comment>{0} = tempo, ex.: 23 ms</comment>
+    <comment>{0} = time, e.g. 23 ms</comment>
   </data>
   <data name="Format_PingDetail" xml:space="preserve">
     <value>Ping {0} ({1})</value>
-    <comment>{0} = tempo; {1} = endereço</comment>
+    <comment>{0} = time; {1} = address</comment>
   </data>
   <data name="Format_LiveTest" xml:space="preserve">
     <value>Test {0}</value>
-    <comment>{0} = velocidade ao vivo, ex.: ↓ 245,3 Mbps</comment>
+    <comment>{0} = live speed, e.g. ↓ 245.3 Mbps</comment>
   </data>
   <data name="Format_Session" xml:space="preserve">
     <value>Session ↓ {0} · ↑ {1}</value>
-    <comment>{0} = recebido; {1} = enviado desde que ligou</comment>
+    <comment>{0} = received; {1} = sent in the current session</comment>
   </data>
   <data name="Format_DiskNumber" xml:space="preserve">
     <value>Disk {0}</value>
-    <comment>{0} = número e letras, ex.: 1 (D:)</comment>
+    <comment>{0} = number and letters, e.g. 1 (D:)</comment>
   </data>
   <data name="Disk_SystemNotFound" xml:space="preserve">
     <value>(Windows disk not found)</value>
-    <comment>Mostrado ao lado do rótulo do disco</comment>
+    <comment>Shown next to the disk label</comment>
   </data>
   <data name="Format_DiskNotFound" xml:space="preserve">
     <value>{0} (not found)</value>
-    <comment>{0} = número do disco; mostrado ao lado do rótulo do disco</comment>
+    <comment>{0} = disk number; shown next to the disk label</comment>
   </data>
   <data name="Format_Gigahertz" xml:space="preserve">
     <value>{0:0.00} GHz</value>
-    <comment>{0} = frequência</comment>
+    <comment>{0} = clock speed</comment>
   </data>
   <data name="Format_UsedOfTotal" xml:space="preserve">
     <value>{0:0.0} / {1:0.0} GB</value>
-    <comment>{0} = usado; {1} = total, em GB</comment>
+    <comment>{0} = used; {1} = total, in GB</comment>
   </data>
   <data name="Format_NetworkRate" xml:space="preserve">
     <value>{0} Mbps</value>
-    <comment>Tráfego atual da rede; {0} = número já formatado (3 algarismos)</comment>
+    <comment>Current network traffic; {0} = number already formatted (3 digits)</comment>
   </data>
   <data name="Format_Milliseconds" xml:space="preserve">
     <value>{0:0} ms</value>
-    <comment>Tempo em milissegundos</comment>
+    <comment>Time in milliseconds</comment>
   </data>
   <data name="Format_Size" xml:space="preserve">
     <value>{0} {1}</value>
-    <comment>{0} = número já formatado (3 algarismos); {1} = unidade</comment>
+    <comment>{0} = number already formatted (3 digits); {1} = unit</comment>
   </data>
   <data name="Unit_Bytes" xml:space="preserve">
     <value>B</value>
-    <comment>Unidade</comment>
+    <comment>Unit</comment>
   </data>
   <data name="Unit_Kilobytes" xml:space="preserve">
     <value>KB</value>
-    <comment>Unidade</comment>
+    <comment>Unit</comment>
   </data>
   <data name="Unit_Megabytes" xml:space="preserve">
     <value>MB</value>
-    <comment>Unidade</comment>
+    <comment>Unit</comment>
   </data>
   <data name="Unit_Gigabytes" xml:space="preserve">
     <value>GB</value>
-    <comment>Unidade</comment>
+    <comment>Unit</comment>
   </data>
   <data name="Unit_Terabytes" xml:space="preserve">
     <value>TB</value>
-    <comment>Unidade</comment>
+    <comment>Unit</comment>
   </data>
   <data name="SpeedTest_Title" xml:space="preserve">
     <value>Internet speed test</value>
-    <comment>Título das notificações e da seção na aba Rede</comment>
+    <comment>Title of the notifications and of the section in the Network tab</comment>
   </data>
   <data name="SpeedTest_NoneYet" xml:space="preserve">
     <value>No test run</value>
-    <comment>Detalhamento, sem nenhum teste</comment>
+    <comment>Details, before any test</comment>
   </data>
   <data name="SpeedTest_NoneYetStatus" xml:space="preserve">
     <value>No test run.</value>
-    <comment>Linha de status, sem nenhum teste</comment>
+    <comment>Status line, before any test</comment>
   </data>
   <data name="SpeedTest_HowTo" xml:space="preserve">
     <value>Tray icon menu › Test internet speed</value>
-    <comment>Onde encontrar o teste</comment>
+    <comment>Where to find the test</comment>
   </data>
   <data name="Format_SpeedTestLatency" xml:space="preserve">
     <value>Latency {0} · jitter {1}</value>
-    <comment>{0} = latência; {1} = jitter</comment>
+    <comment>{0} = latency; {1} = jitter</comment>
   </data>
   <data name="Format_MeasuredAt" xml:space="preserve">
     <value>{0} · Cloudflare</value>
-    <comment>{0} = data e hora do teste</comment>
+    <comment>{0} = date and time of the test</comment>
   </data>
   <data name="Format_LastTest" xml:space="preserve">
     <value>Last test ({0}): {1} · {2}</value>
-    <comment>{0} = data; {1} = velocidades; {2} = latência</comment>
+    <comment>{0} = date; {1} = speeds; {2} = latency</comment>
   </data>
   <data name="SpeedTest_Starting" xml:space="preserve">
     <value>Starting...</value>
-    <comment>Antes da primeira medição</comment>
+    <comment>Before the first measurement</comment>
   </data>
   <data name="SpeedTest_Cancelled" xml:space="preserve">
     <value>Test cancelled.</value>
-    <comment>Teste cancelado pelo usuário</comment>
+    <comment>Test cancelled by the user</comment>
   </data>
   <data name="Format_LatencyLive" xml:space="preserve">
     <value>Latency {0}</value>
-    <comment>{0} = latência medida agora</comment>
+    <comment>{0} = latency measured now</comment>
   </data>
   <data name="Stage_Latency" xml:space="preserve">
     <value>Measuring latency...</value>
-    <comment>Etapa em andamento</comment>
+    <comment>Step in progress</comment>
   </data>
   <data name="Stage_Download" xml:space="preserve">
     <value>Measuring download...</value>
-    <comment>Etapa em andamento</comment>
+    <comment>Step in progress</comment>
   </data>
   <data name="Stage_Upload" xml:space="preserve">
     <value>Measuring upload...</value>
-    <comment>Etapa em andamento</comment>
+    <comment>Step in progress</comment>
   </data>
   <data name="Format_TestFailed" xml:space="preserve">
     <value>The test failed {0}: {1}.</value>
-    <comment>{0} = etapa (Step_*); {1} = motivo (Reason_*)</comment>
+    <comment>{0} = step (Step_*); {1} = reason (Reason_*)</comment>
   </data>
   <data name="SpeedTest_FailedNoMeasurement" xml:space="preserve">
     <value>The test failed because no measurement was valid.</value>
-    <comment>Nenhuma medição válida</comment>
+    <comment>No valid measurement</comment>
   </data>
   <data name="Step_Latency" xml:space="preserve">
     <value>during the latency measurement</value>
-    <comment>Completa Format_TestFailed</comment>
+    <comment>Completes Format_TestFailed</comment>
   </data>
   <data name="Format_StepDownload" xml:space="preserve">
     <value>during the {0} download</value>
-    <comment>{0} = tamanho, ex.: 50 MB; completa Format_TestFailed</comment>
+    <comment>{0} = size, e.g. 50 MB; completes Format_TestFailed</comment>
   </data>
   <data name="Format_StepUpload" xml:space="preserve">
     <value>during the {0} upload</value>
-    <comment>{0} = tamanho; completa Format_TestFailed</comment>
+    <comment>{0} = size; completes Format_TestFailed</comment>
   </data>
   <data name="Format_ReasonRefused" xml:space="preserve">
     <value>the server refused the request ({0})</value>
-    <comment>{0} = código HTTP, ex.: 403 Forbidden</comment>
+    <comment>{0} = HTTP status, e.g. 403 Forbidden</comment>
   </data>
   <data name="Format_ReasonServerError" xml:space="preserve">
     <value>the server returned an error ({0})</value>
-    <comment>{0} = código HTTP</comment>
+    <comment>{0} = HTTP status</comment>
   </data>
   <data name="Format_ReasonUnreachable" xml:space="preserve">
     <value>could not reach the server ({0})</value>
-    <comment>{0} = detalhe técnico do Windows</comment>
+    <comment>{0} = technical detail from Windows</comment>
   </data>
   <data name="Format_ReasonConnectionLost" xml:space="preserve">
     <value>the connection dropped during the transfer ({0})</value>
-    <comment>{0} = detalhe técnico do Windows</comment>
+    <comment>{0} = technical detail from Windows</comment>
   </data>
   <data name="Reason_Timeout" xml:space="preserve">
     <value>the server took too long to respond</value>
-    <comment>Motivo</comment>
+    <comment>Reason</comment>
   </data>
   <data name="Tray_AlwaysOnTop" xml:space="preserve">
     <value>Always on top</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="Tray_Desktop" xml:space="preserve">
     <value>On the desktop</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="Tray_Layout" xml:space="preserve">
     <value>View</value>
-    <comment>Menu do ícone: submenu das visualizações</comment>
+    <comment>Tray icon menu: views submenu</comment>
   </data>
   <data name="Layout_Full" xml:space="preserve">
     <value>Full</value>
-    <comment>Visualização</comment>
+    <comment>View</comment>
   </data>
   <data name="Layout_Horizontal" xml:space="preserve">
     <value>Compact horizontal</value>
-    <comment>Visualização</comment>
+    <comment>View</comment>
   </data>
   <data name="Layout_Vertical" xml:space="preserve">
     <value>Compact vertical</value>
-    <comment>Visualização</comment>
+    <comment>View</comment>
   </data>
   <data name="Tray_SnapToEdges" xml:space="preserve">
     <value>Snap to edges</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="Tray_LockPosition" xml:space="preserve">
     <value>Lock position and size</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="General_StartWithWindows" xml:space="preserve">
     <value>Start with Windows</value>
-    <comment>Caixa de marcar na aba Geral</comment>
+    <comment>Check box in the General tab</comment>
   </data>
   <data name="Tray_Network" xml:space="preserve">
     <value>Network</value>
-    <comment>Menu do ícone: submenu da rede</comment>
+    <comment>Tray icon menu: network submenu</comment>
   </data>
   <data name="Tray_Settings" xml:space="preserve">
     <value>Settings...</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="Tray_SpeedTest" xml:space="preserve">
     <value>Test internet speed</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="Tray_SpeedTestRunning" xml:space="preserve">
     <value>Testing speed...</value>
-    <comment>Menu do ícone, durante o teste</comment>
+    <comment>Tray icon menu, while the test runs</comment>
   </data>
   <data name="Tray_ResetNetwork" xml:space="preserve">
     <value>Reset network counter</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="Tray_Exit" xml:space="preserve">
     <value>Exit</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="Error_Message" xml:space="preserve">
     <value>Something went wrong and cobihw needs to close. If you want to report the problem, copy the details and send them along.</value>
-    <comment>Janela de erro inesperado</comment>
+    <comment>Unexpected error window</comment>
   </data>
   <data name="Error_Details" xml:space="preserve">
     <value>Technical details</value>
-    <comment>Janela de erro: título da parte técnica</comment>
+    <comment>Error window: title of the technical part</comment>
   </data>
   <data name="Error_CopyDetails" xml:space="preserve">
     <value>Copy details</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Error_Copied" xml:space="preserve">
     <value>Copied</value>
-    <comment>Botão depois de copiar</comment>
+    <comment>Button after copying</comment>
   </data>
   <data name="Task_Description" xml:space="preserve">
     <value>cobihw: opens the widget with administrator permission to measure FPS.</value>
-    <comment>Descrição da tarefa agendada do FPS (aparece no Agendador de Tarefas)</comment>
+    <comment>Description of the FPS scheduled task (shown in Task Scheduler)</comment>
   </data>
   <data name="App_UnexpectedError" xml:space="preserve">
     <value>cobihw: unexpected error</value>
-    <comment>Título da janela de erro inesperado</comment>
+    <comment>Title of the unexpected error window</comment>
   </data>
   <data name="Settings_Title" xml:space="preserve">
     <value>cobihw settings</value>
-    <comment>Título da janela</comment>
+    <comment>Window title</comment>
   </data>
   <data name="Settings_ChooseColor" xml:space="preserve">
     <value>Choose...</value>
-    <comment>Botão que abre o seletor de cores</comment>
+    <comment>Button that opens the color picker</comment>
   </data>
   <data name="Settings_RestoreDefaults" xml:space="preserve">
     <value>Restore defaults</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Settings_Close" xml:space="preserve">
     <value>Close</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Settings_Apply" xml:space="preserve">
     <value>Apply</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Tab_General" xml:space="preserve">
     <value>General</value>
-    <comment>Aba</comment>
+    <comment>Tab</comment>
   </data>
   <data name="General_Language" xml:space="preserve">
     <value>Language:</value>
-    <comment>Título da caixa de idioma</comment>
+    <comment>Title of the language box</comment>
   </data>
   <data name="General_Theme" xml:space="preserve">
     <value>Theme</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Theme_System" xml:space="preserve">
     <value>Automatic (same as Windows)</value>
-    <comment>Opção de tema</comment>
+    <comment>Theme option</comment>
   </data>
   <data name="Theme_Light" xml:space="preserve">
     <value>Light</value>
-    <comment>Opção de tema</comment>
+    <comment>Theme option</comment>
   </data>
   <data name="Theme_Dark" xml:space="preserve">
     <value>Dark</value>
-    <comment>Opção de tema</comment>
+    <comment>Theme option</comment>
   </data>
   <data name="General_ThemeHint" xml:space="preserve">
     <value>Applies to this window and the tray icon menu. The widget has its own colors, on the Appearance tab.</value>
-    <comment>Dica do tema</comment>
+    <comment>Theme hint</comment>
   </data>
   <data name="General_Widget" xml:space="preserve">
     <value>Widget</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="General_Monitor" xml:space="preserve">
     <value>Monitor:</value>
-    <comment>Rótulo da caixa de monitor</comment>
+    <comment>Label of the monitor box</comment>
   </data>
   <data name="General_Mode" xml:space="preserve">
     <value>Show the widget:</value>
-    <comment>Rótulo da caixa de modo</comment>
+    <comment>Label of the mode box</comment>
   </data>
   <data name="General_ModeHint" xml:space="preserve">
     <value>Always on top: the widget stays in front of other windows. On the desktop: it stays behind everything, with the desktop icons.</value>
-    <comment>Dica do modo</comment>
+    <comment>Mode hint</comment>
   </data>
   <data name="General_SnapHint" xml:space="preserve">
     <value>When you drag the widget close to a screen edge, it sticks to it.</value>
-    <comment>Dica do encaixe</comment>
+    <comment>Snap hint</comment>
   </data>
   <data name="General_LockHint" xml:space="preserve">
     <value>Prevents moving the widget and resizing it by its edges.</value>
-    <comment>Dica da trava</comment>
+    <comment>Lock hint</comment>
   </data>
   <data name="Format_Monitor" xml:space="preserve">
     <value>Monitor {0} — {1} × {2}</value>
-    <comment>Opção de monitor: {0} = número, {1} × {2} = resolução</comment>
+    <comment>Monitor option: {0} = number, {1} × {2} = resolution</comment>
   </data>
   <data name="Format_MonitorPrimary" xml:space="preserve">
     <value>Monitor {0} — {1} × {2} (main)</value>
-    <comment>Opção do monitor principal</comment>
+    <comment>Option for the main monitor</comment>
   </data>
   <data name="Settings_UnappliedTitle" xml:space="preserve">
     <value>Unapplied changes</value>
-    <comment>Título do aviso ao fechar</comment>
+    <comment>Title of the warning shown on close</comment>
   </data>
   <data name="Format_UnappliedMessage" xml:space="preserve">
     <value>There are unapplied changes in: {0}. Apply them before closing?</value>
-    <comment>Aviso ao fechar (Sim/Não/Cancelar); {0} = abas com mudanças</comment>
+    <comment>Warning on close (Yes/No/Cancel); {0} = tabs with changes</comment>
   </data>
   <data name="Format_UnappliedInvalid" xml:space="preserve">
     <value>There are unapplied changes in: {0}, and some have errors, so they can't be applied. Discard them and close?</value>
-    <comment>Aviso ao fechar com erro (OK/Cancelar); {0} = abas com mudanças</comment>
+    <comment>Warning on close with errors (OK/Cancel); {0} = tabs with changes</comment>
   </data>
   <data name="Tab_Display" xml:space="preserve">
     <value>Display</value>
-    <comment>Aba</comment>
+    <comment>Tab</comment>
   </data>
   <data name="Display_ShowInWidget" xml:space="preserve">
     <value>Show in the widget:</value>
-    <comment>Título da lista de itens</comment>
+    <comment>Title of the item list</comment>
   </data>
   <data name="Display_DragHint" xml:space="preserve">
     <value>Drag the rows to change the order. Applies to all three views and to the details.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Display_SelectOne" xml:space="preserve">
     <value>Select at least one item.</value>
-    <comment>Erro</comment>
+    <comment>Error</comment>
   </data>
   <data name="Display_MonitoredDisk" xml:space="preserve">
     <value>Monitored disk:</value>
-    <comment>Título da caixa de discos</comment>
+    <comment>Title of the disk box</comment>
   </data>
   <data name="Display_DetailedTooltip" xml:space="preserve">
     <value>Show details on mouse hover</value>
-    <comment>Caixa de marcar</comment>
+    <comment>Check box</comment>
   </data>
   <data name="Display_DetailsHint" xml:space="preserve">
     <value>The details show every item, including the hidden ones.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Disk_Windows" xml:space="preserve">
     <value>Windows disk</value>
-    <comment>Opção de disco, sem identificar qual</comment>
+    <comment>Disk option, when the disk can't be identified</comment>
   </data>
   <data name="Format_DiskWindows" xml:space="preserve">
     <value>Windows disk — Disk {0}</value>
-    <comment>{0} = número e letras do disco do Windows</comment>
+    <comment>{0} = number and letters of the Windows disk</comment>
   </data>
   <data name="Format_DiskOptionNotFound" xml:space="preserve">
     <value>Disk {0} (not found)</value>
-    <comment>{0} = número do disco salvo que sumiu</comment>
+    <comment>{0} = number of a saved disk that is gone</comment>
   </data>
   <data name="Tab_Appearance" xml:space="preserve">
     <value>Appearance</value>
-    <comment>Aba</comment>
+    <comment>Tab</comment>
   </data>
   <data name="Language_Automatic" xml:space="preserve">
     <value>Automatic (Windows language)</value>
-    <comment>Opção de idioma</comment>
+    <comment>Language option</comment>
   </data>
   <data name="General_Clicks" xml:space="preserve">
     <value>Clicks</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="General_SettingsFile" xml:space="preserve">
     <value>Settings file</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="General_RemoveOtherProfiles" xml:space="preserve">
     <value>Remove settings from other computers…</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="General_RemoveOtherProfilesHint" xml:space="preserve">
     <value>Deletes from the settings file the entries of other computers and Windows users and keeps only those of this computer and user.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="RemoveProfiles_Question" xml:space="preserve">
     <value>Remove the settings saved for these computers and users?</value>
-    <comment>Confirmação, antes da lista</comment>
+    <comment>Confirmation, before the list</comment>
   </data>
   <data name="RemoveProfiles_Keep" xml:space="preserve">
     <value>This computer's settings stay.</value>
-    <comment>Confirmação, depois da lista</comment>
+    <comment>Confirmation, after the list</comment>
   </data>
   <data name="RemoveProfiles_Failed" xml:space="preserve">
     <value>Could not remove them now: the settings file is in use by another program.</value>
-    <comment>Aviso</comment>
+    <comment>Warning</comment>
   </data>
   <data name="Format_StoredProfile" xml:space="preserve">
     <value>• {0} · {1} (last used: {2})</value>
-    <comment>{0} = computador; {1} = usuário; {2} = data</comment>
+    <comment>{0} = computer; {1} = user; {2} = date</comment>
   </data>
   <data name="Settings_FolderReadOnly" xml:space="preserve">
     <value>This folder doesn't allow writing the settings file. Move the cobihw folder somewhere else (for example, Documents) and open it again. No settings from this session will be saved.</value>
-    <comment>Aviso no ícone ao abrir</comment>
+    <comment>Tray warning on startup</comment>
   </data>
   <data name="General_Startup" xml:space="preserve">
     <value>Startup</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Appearance_Border" xml:space="preserve">
     <value>Border</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Appearance_BorderMode" xml:space="preserve">
     <value>Show the border:</value>
-    <comment>Título da caixa da borda</comment>
+    <comment>Title of the border box</comment>
   </data>
   <data name="BorderMode_Off" xml:space="preserve">
     <value>Off</value>
-    <comment>Opção da borda</comment>
+    <comment>Border option</comment>
   </data>
   <data name="BorderMode_Always" xml:space="preserve">
     <value>Always</value>
-    <comment>Opção da borda</comment>
+    <comment>Border option</comment>
   </data>
   <data name="BorderMode_Hover" xml:space="preserve">
     <value>When the mouse is over the widget</value>
-    <comment>Opção da borda</comment>
+    <comment>Border option</comment>
   </data>
   <data name="Appearance_BorderColor" xml:space="preserve">
     <value>Border color</value>
-    <comment>Cor escolhível</comment>
+    <comment>Color the user can pick</comment>
   </data>
   <data name="Appearance_BorderThickness" xml:space="preserve">
     <value>Border thickness:</value>
-    <comment>Rótulo do controle deslizante</comment>
+    <comment>Slider label</comment>
   </data>
   <data name="Appearance_BorderTransparency" xml:space="preserve">
     <value>Border transparency:</value>
-    <comment>Rótulo do controle deslizante</comment>
+    <comment>Slider label</comment>
   </data>
   <data name="Appearance_BorderHint" xml:space="preserve">
     <value>You can resize the widget by dragging its edges.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Background</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Appearance_BackgroundColor" xml:space="preserve">
     <value>Background color</value>
-    <comment>Cor escolhível</comment>
+    <comment>Color the user can pick</comment>
   </data>
   <data name="Appearance_Transparency" xml:space="preserve">
     <value>Background transparency:</value>
-    <comment>Rótulo do controle deslizante</comment>
+    <comment>Slider label</comment>
   </data>
   <data name="Appearance_TransparencyHint" xml:space="preserve">
     <value>Only the background becomes transparent; text and bars stay solid.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Appearance_Text" xml:space="preserve">
     <value>Text</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Appearance_TextColor" xml:space="preserve">
     <value>Text color</value>
-    <comment>Cor escolhível</comment>
+    <comment>Color the user can pick</comment>
   </data>
   <data name="Appearance_Weight" xml:space="preserve">
     <value>Weight:</value>
-    <comment>Título da caixa de espessura</comment>
+    <comment>Title of the weight box</comment>
   </data>
   <data name="Appearance_Size" xml:space="preserve">
     <value>Size</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Appearance_Scale" xml:space="preserve">
     <value>Widget size:</value>
-    <comment>Rótulo do controle deslizante</comment>
+    <comment>Slider label</comment>
   </data>
   <data name="Appearance_ScaleHint" xml:space="preserve">
     <value>You can also resize the widget by its edges.
 "Lock position and size" (icon menu) prevents changes.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Weight_Light" xml:space="preserve">
     <value>Light</value>
-    <comment>Espessura</comment>
+    <comment>Text weight</comment>
   </data>
   <data name="Weight_Normal" xml:space="preserve">
     <value>Normal</value>
-    <comment>Espessura</comment>
+    <comment>Text weight</comment>
   </data>
   <data name="Weight_Medium" xml:space="preserve">
     <value>Medium</value>
-    <comment>Espessura</comment>
+    <comment>Text weight</comment>
   </data>
   <data name="Weight_SemiBold" xml:space="preserve">
     <value>Semibold</value>
-    <comment>Espessura</comment>
+    <comment>Text weight</comment>
   </data>
   <data name="Weight_Bold" xml:space="preserve">
     <value>Bold</value>
-    <comment>Espessura</comment>
+    <comment>Text weight</comment>
   </data>
   <data name="Tab_Network" xml:space="preserve">
     <value>Network</value>
-    <comment>Aba</comment>
+    <comment>Tab</comment>
   </data>
   <data name="Network_Ping" xml:space="preserve">
     <value>Ping</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Network_Address" xml:space="preserve">
     <value>Address (IP or name):</value>
-    <comment>Rótulo da caixa do ping</comment>
+    <comment>Label of the ping box</comment>
   </data>
   <data name="Network_AddressError" xml:space="preserve">
     <value>Use an IP (e.g. 8.8.8.8) or a name (e.g. dns.google).</value>
-    <comment>Erro</comment>
+    <comment>Error</comment>
   </data>
   <data name="Network_PingHint" xml:space="preserve">
     <value>cobihw uses this address only for the ping test (like running ping 8.8.8.8 in PowerShell or Command Prompt).
 
 8.8.8.8 -&gt; Google (default). 1.1.1.1 -&gt; Cloudflare, the same network used by the speed test. With ping measurement off, cobihw makes no other automatic network connection.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Network_TestNow" xml:space="preserve">
     <value>Test now</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Network_CancelTest" xml:space="preserve">
     <value>Cancel test</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Network_DataHint" xml:space="preserve">
     <value>Uses Cloudflare servers. Uses about 200 MB on a 100 Mbps connection and 700 MB on a 1 Gbps one. The internet may be slow or unstable during the test, which takes 10 to 30 seconds depending on the connection.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Colors_Enabled" xml:space="preserve">
     <value>Color by usage</value>
-    <comment>Caixa de marcar</comment>
+    <comment>Check box</comment>
   </data>
   <data name="Colors_ThresholdsHeader" xml:space="preserve">
     <value>The color changes when usage reaches (%):</value>
-    <comment>Título dos limites</comment>
+    <comment>Title of the thresholds</comment>
   </data>
   <data name="Level_Normal" xml:space="preserve">
     <value>Normal</value>
-    <comment>Nível de uso</comment>
+    <comment>Usage level</comment>
   </data>
   <data name="Level_Warning" xml:space="preserve">
     <value>Warning</value>
-    <comment>Nível de uso</comment>
+    <comment>Usage level</comment>
   </data>
   <data name="Level_Critical" xml:space="preserve">
     <value>Critical</value>
-    <comment>Nível de uso</comment>
+    <comment>Usage level</comment>
   </data>
   <data name="Colors_BelowHint" xml:space="preserve">
     <value>Below "Warning", the "Normal" color is used.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Colors_LevelColors" xml:space="preserve">
     <value>Color of each level:</value>
-    <comment>Título da lista de cores</comment>
+    <comment>Title of the color list</comment>
   </data>
   <data name="Format_ThresholdRangeError" xml:space="preserve">
     <value>Use whole numbers from {0} to {1}.</value>
-    <comment>{0} = mínimo; {1} = máximo</comment>
+    <comment>{0} = minimum; {1} = maximum</comment>
   </data>
   <data name="Threshold_OrderError" xml:space="preserve">
     <value>Warning must start before Critical.</value>
-    <comment>Erro</comment>
+    <comment>Error</comment>
   </data>
   <data name="Tray_ClickThrough" xml:space="preserve">
     <value>Click through</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="General_ClickThrough" xml:space="preserve">
     <value>Let clicks pass through the widget</value>
-    <comment>Caixa de marcar</comment>
+    <comment>Check box</comment>
   </data>
   <data name="General_InteractionKey" xml:space="preserve">
     <value>Hold to interact (drag, details):</value>
-    <comment>Título da caixa de tecla</comment>
+    <comment>Title of the key box</comment>
   </data>
   <data name="General_ClickThroughHint" xml:space="preserve">
     <value>While it's on, the widget ignores the mouse. Hold the key above to move it or see the details, or turn it off in the tray icon menu.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Key_None" xml:space="preserve">
     <value>None (tray icon menu only)</value>
-    <comment>Opção de tecla</comment>
+    <comment>Key option</comment>
   </data>
   <data name="Metric_Fps" xml:space="preserve">
     <value>FPS</value>
-    <comment>Item FPS (quadros por segundo); igual em todos os idiomas</comment>
+    <comment>FPS item (frames per second); the same in every language</comment>
   </data>
   <data name="Display_FpsHint" xml:space="preserve">
     <value>FPS is read automatically when the app in the foreground is drawing frames. For now, only DirectX 9 to 12 are read. Windows requires administrator permission for this: it asks for confirmation only once, when you turn FPS on.</value>
-    <comment>Dica do FPS na aba Exibição</comment>
+    <comment>FPS hint in the Display tab</comment>
   </data>
   <data name="Fps_Denied" xml:space="preserve">
     <value>Windows did not grant administrator permission. FPS stays off.</value>
-    <comment>Aviso: UAC recusado</comment>
+    <comment>Warning: UAC prompt declined</comment>
   </data>
   <data name="Fps_RequiresAdmin" xml:space="preserve">
     <value>FPS needs administrator permission, and this Windows account is not an administrator. FPS stays off.</value>
-    <comment>Aviso: conta sem administrador</comment>
+    <comment>Warning: the account isn't an administrator</comment>
   </data>
   <data name="Fps_Failed" xml:space="preserve">
     <value>Could not set up the FPS permission. FPS stays off.</value>
-    <comment>Aviso: falha ao criar a tarefa agendada</comment>
+    <comment>Warning: the scheduled task couldn't be created</comment>
   </data>
   <data name="Fps_RestartPending" xml:space="preserve">
     <value>FPS starts being measured the next time cobihw opens.</value>
-    <comment>Aviso: FPS ligado, mas o programa não reiniciou</comment>
+    <comment>Warning: FPS is on, but the app hasn't restarted yet</comment>
   </data>
   <data name="Format_FpsUnavailable" xml:space="preserve">
     <value>Could not start reading FPS: {0}</value>
-    <comment>{0} = mensagem de erro do Windows</comment>
+    <comment>{0} = error message from Windows</comment>
   </data>
   <data name="Appearance_CornerRadius" xml:space="preserve">
     <value>Rounded corners:</value>
-    <comment>Rótulo do controle deslizante</comment>
+    <comment>Slider label</comment>
   </data>
   <data name="Format_CornerRadiusHint" xml:space="preserve">
     <value>0 keeps the corners square. The maximum ({0} px) is the largest rounding that never touches the text. It follows the widget size and also applies to the details.</value>
-    <comment>Dica; {0} = raio máximo em px</comment>
+    <comment>Hint; {0} = maximum radius in px</comment>
   </data>
   <data name="Tray_NetworkDevices" xml:space="preserve">
     <value>Network devices</value>
-    <comment>Menu do ícone</comment>
+    <comment>Tray icon menu</comment>
   </data>
   <data name="NetworkDevices_Title" xml:space="preserve">
     <value>Network devices</value>
-    <comment>Título da janela</comment>
+    <comment>Window title</comment>
   </data>
   <data name="NetworkDevices_None" xml:space="preserve">
     <value>No device is checked. Choose them in Settings → Network.</value>
-    <comment>Janela sem dispositivos marcados</comment>
+    <comment>Window with no checked devices</comment>
   </data>
   <data name="NetworkDevices_Loading" xml:space="preserve">
     <value>Reading devices…</value>
-    <comment>Janela enquanto lê a lista</comment>
+    <comment>Window while the list is read</comment>
   </data>
   <data name="Network_Devices" xml:space="preserve">
     <value>Network devices</value>
-    <comment>Seção da aba Rede</comment>
+    <comment>Section of the Network tab</comment>
   </data>
   <data name="Network_Monitor" xml:space="preserve">
     <value>Monitor:</value>
-    <comment>Rótulo da lista</comment>
+    <comment>List label</comment>
   </data>
   <data name="Network_ShowInternal" xml:space="preserve">
     <value>Show Windows internal devices</value>
-    <comment>Caixa de marcar</comment>
+    <comment>Check box</comment>
   </data>
   <data name="Network_Default" xml:space="preserve">
     <value>Default device (shown in the widget):</value>
-    <comment>Rótulo da caixa de seleção</comment>
+    <comment>Label of the selection box</comment>
   </data>
   <data name="Network_PhysicalSum" xml:space="preserve">
     <value>Sum of devices</value>
-    <comment>Opção do padrão</comment>
+    <comment>Default option</comment>
   </data>
   <data name="Network_DevicesHint" xml:space="preserve">
     <value>Checked devices appear in Network devices (taskbar icon menu). The total ignores VPNs so the same traffic isn't counted twice.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Network_NoDevices" xml:space="preserve">
     <value>No network device found.</value>
-    <comment>Lista vazia</comment>
+    <comment>Empty list</comment>
   </data>
   <data name="Format_NetworkDeviceMissing" xml:space="preserve">
     <value>{0} (not found)</value>
-    <comment>{0} = nome do dispositivo salvo que sumiu</comment>
+    <comment>{0} = name of a saved device that is gone</comment>
   </data>
   <data name="Format_Disconnected" xml:space="preserve">
     <value>{0} (disconnected)</value>
-    <comment>{0} = nome do dispositivo</comment>
+    <comment>{0} = device name</comment>
   </data>
   <data name="Status_Connected" xml:space="preserve">
     <value>Connected</value>
-    <comment>Status do dispositivo</comment>
+    <comment>Device status</comment>
   </data>
   <data name="Status_Disconnected" xml:space="preserve">
     <value>Disconnected</value>
-    <comment>Status do dispositivo</comment>
+    <comment>Device status</comment>
   </data>
   <data name="Kind_Ethernet" xml:space="preserve">
     <value>Ethernet (cable)</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Kind_WiFi" xml:space="preserve">
     <value>Wi-Fi</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Kind_Bluetooth" xml:space="preserve">
     <value>Bluetooth</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Kind_Virtual" xml:space="preserve">
     <value>Virtual (VPN, app tunnel)</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Kind_Cellular" xml:space="preserve">
     <value>Mobile broadband</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Kind_Tunnel" xml:space="preserve">
     <value>Windows tunnel (IPv6)</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Kind_Loopback" xml:space="preserve">
     <value>Loopback</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Kind_Other" xml:space="preserve">
     <value>Other</value>
-    <comment>Tipo de dispositivo</comment>
+    <comment>Device type</comment>
   </data>
   <data name="Device_Adapter" xml:space="preserve">
     <value>Adapter</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Format_StatusKind" xml:space="preserve">
     <value>{0} · {1}</value>
-    <comment>{0} = Conectado/Desconectado; {1} = tipo</comment>
+    <comment>{0} = Connected/Disconnected; {1} = type</comment>
   </data>
   <data name="Device_Status" xml:space="preserve">
     <value>Status</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_LinkSpeed" xml:space="preserve">
     <value>Link speed</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_Mac" xml:space="preserve">
     <value>Physical address (MAC)</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_IPv4" xml:space="preserve">
     <value>IPv4</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_IPv6" xml:space="preserve">
     <value>IPv6</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_Gateway" xml:space="preserve">
     <value>Gateway</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_Dns" xml:space="preserve">
     <value>DNS</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_CurrentSpeed" xml:space="preserve">
     <value>Traffic now</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Device_Session" xml:space="preserve">
     <value>cobihw session</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Wifi_Section" xml:space="preserve">
     <value>Wi-Fi network</value>
-    <comment>Título da seção</comment>
+    <comment>Section title</comment>
   </data>
   <data name="Wifi_Ssid" xml:space="preserve">
     <value>Network (SSID)</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Wifi_Signal" xml:space="preserve">
     <value>Signal</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Wifi_BandChannel" xml:space="preserve">
     <value>Band · channel</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Wifi_Standard" xml:space="preserve">
     <value>Standard</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Wifi_LinkRates" xml:space="preserve">
     <value>Link rate (receive / send)</value>
-    <comment>Rótulo do detalhe</comment>
+    <comment>Detail label</comment>
   </data>
   <data name="Wifi_NotConnected" xml:space="preserve">
     <value>Not connected to a Wi-Fi network.</value>
-    <comment>Mensagem</comment>
+    <comment>Message</comment>
   </data>
   <data name="Wifi_PermissionNeeded" xml:space="preserve">
     <value>Windows only shows Wi-Fi network data to apps with Location permission.</value>
-    <comment>Mensagem</comment>
+    <comment>Message</comment>
   </data>
   <data name="Wifi_OpenLocationSettings" xml:space="preserve">
     <value>Open Location settings</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Wifi_Unavailable" xml:space="preserve">
     <value>Wi-Fi data unavailable.</value>
-    <comment>Mensagem</comment>
+    <comment>Message</comment>
   </data>
   <data name="Format_Signal" xml:space="preserve">
     <value>{0}% ({1} dBm)</value>
-    <comment>{0} = qualidade %; {1} = intensidade em dBm</comment>
+    <comment>{0} = quality %; {1} = strength in dBm</comment>
   </data>
   <data name="Format_BandChannel" xml:space="preserve">
     <value>{0:0.#} GHz · channel {1}</value>
-    <comment>{0} = banda em GHz; {1} = canal</comment>
+    <comment>{0} = band in GHz; {1} = channel</comment>
   </data>
   <data name="Format_LinkRate" xml:space="preserve">
     <value>{0:0} Mbps</value>
-    <comment>{0} = taxa em Mbps</comment>
+    <comment>{0} = rate in Mbps</comment>
   </data>
   <data name="Format_UpDown" xml:space="preserve">
     <value>↓ {0} · ↑ {1}</value>
-    <comment>{0} = recebido; {1} = enviado</comment>
+    <comment>{0} = received; {1} = sent</comment>
   </data>
   <data name="PublicIp_Label" xml:space="preserve">
     <value>Public IP:</value>
-    <comment>Rótulo</comment>
+    <comment>Label</comment>
   </data>
   <data name="PublicIp_Discover" xml:space="preserve">
     <value>Discover</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="PublicIp_Hint" xml:space="preserve">
     <value>Asks Cloudflare which address your traffic leaves from (main route). No query is made automatically.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="PublicIp_Searching" xml:space="preserve">
     <value>Asking…</value>
-    <comment>Durante a consulta</comment>
+    <comment>While the lookup runs</comment>
   </data>
   <data name="Format_PublicIpError" xml:space="preserve">
     <value>Could not get it: {0}</value>
-    <comment>{0} = mensagem de erro</comment>
+    <comment>{0} = error message</comment>
   </data>
   <data name="Section_AppearanceShape" xml:space="preserve">
     <value>Size and shape</value>
-    <comment>Grupo da aba Aparência e título da janela de edição</comment>
+    <comment>Group of the Appearance tab and title of its editor window</comment>
   </data>
   <data name="Section_AppearanceColors" xml:space="preserve">
     <value>Colors and text</value>
-    <comment>Grupo da aba Aparência e título da janela de edição</comment>
+    <comment>Group of the Appearance tab and title of its editor window</comment>
   </data>
   <data name="Section_AppearanceUsage" xml:space="preserve">
     <value>Usage colors</value>
-    <comment>Grupo da aba Aparência e título da janela de edição</comment>
+    <comment>Group of the Appearance tab and title of its editor window</comment>
   </data>
   <data name="Appearance_Shape" xml:space="preserve">
     <value>Shape</value>
-    <comment>Seção</comment>
+    <comment>Section</comment>
   </data>
   <data name="Appearance_Edit" xml:space="preserve">
     <value>Edit…</value>
-    <comment>Botão que abre a janela de edição de um grupo</comment>
+    <comment>Button that opens the editor window of a group</comment>
   </data>
   <data name="Appearance_GroupsHint" xml:space="preserve">
     <value>Each group opens in its own window for customization. The widget shows the changes before they are saved.</value>
-    <comment>Dica embaixo dos grupos da aba Aparência</comment>
+    <comment>Hint below the groups of the Appearance tab</comment>
   </data>
   <data name="Appearance_EditorHint" xml:space="preserve">
     <value>The widget shows each change right away. Apply saves; Cancel undoes.</value>
-    <comment>Dica no topo da janela de edição</comment>
+    <comment>Hint at the top of the editor window</comment>
   </data>
   <data name="Format_ShapeSummary" xml:space="preserve">
     <value>{0}% · corners {1} px · bars {2} px · {3}</value>
-    <comment>Resumo; {0} = tamanho em %; {1} = cantos em px; {2} = arredondamento das barras em px; {3} = borda</comment>
+    <comment>Summary; {0} = size in %; {1} = corners in px; {2} = bar rounding in px; {3} = border</comment>
   </data>
   <data name="Format_BorderSummary" xml:space="preserve">
     <value>border {0} px ({1})</value>
-    <comment>Resumo da borda; {0} = espessura em px; {1} = quando aparece</comment>
+    <comment>Border summary; {0} = thickness in px; {1} = when it shows</comment>
   </data>
   <data name="Appearance_NoBorder" xml:space="preserve">
     <value>no border</value>
-    <comment>Resumo da borda desligada</comment>
+    <comment>Summary when the border is off</comment>
   </data>
   <data name="Format_TextColorsSummary" xml:space="preserve">
     <value>Background {0}, {1}% transparent · text {2}, {3}</value>
-    <comment>Resumo; {0} = cor do fundo; {1} = transparência em %; {2} = cor do texto; {3} = espessura</comment>
+    <comment>Summary; {0} = background color; {1} = transparency in %; {2} = text color; {3} = text weight</comment>
   </data>
   <data name="Format_UsageSummary" xml:space="preserve">
     <value>On · {0}</value>
-    <comment>Resumo das cores por uso ligadas; {0} = limites</comment>
+    <comment>Summary when usage colors are on; {0} = thresholds</comment>
   </data>
   <data name="Format_UsageThreshold" xml:space="preserve">
     <value>{0} {1}/{2}</value>
-    <comment>Limites de um item no resumo; {0} = item; {1} = atenção; {2} = crítico</comment>
+    <comment>Thresholds of one item in the summary; {0} = item; {1} = warning; {2} = critical</comment>
   </data>
   <data name="Appearance_UsageOff" xml:space="preserve">
     <value>Off</value>
-    <comment>Resumo das cores por uso desligadas</comment>
+    <comment>Summary when usage colors are off</comment>
   </data>
   <data name="Common_Cancel" xml:space="preserve">
     <value>Cancel</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Appearance_BarRadius" xml:space="preserve">
     <value>Usage bar rounding:</value>
-    <comment>Rótulo do controle deslizante</comment>
+    <comment>Slider label</comment>
   </data>
   <data name="Appearance_BarRadiusHint" xml:space="preserve">
     <value>0 keeps the usage bars square; 3 makes the ends fully round.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Format_TrayLine" xml:space="preserve">
     <value>{0} {1} · {2}</value>
-    <comment>Linha da dica do ícone da bandeja; {0} = item; {1} = %; {2} = detalhe</comment>
+    <comment>Line of the tray icon tooltip; {0} = item; {1} = %; {2} = detail</comment>
   </data>
   <data name="Format_TrayValue" xml:space="preserve">
     <value>{0} {1}</value>
-    <comment>Linha da dica do ícone da bandeja sem detalhe; {0} = item; {1} = valor</comment>
+    <comment>Line of the tray icon tooltip without detail; {0} = item; {1} = value</comment>
   </data>
   <data name="Format_TrayNetwork" xml:space="preserve">
     <value>{0} ↓{1} ↑{2} Mbps · ping {3}</value>
-    <comment>Linha da rede na dica do ícone (limite de 127 caracteres no total); {0} = item; {1} = download; {2} = upload; {3} = ping</comment>
+    <comment>Network line of the tray tooltip (127 characters in total); {0} = item; {1} = download; {2} = upload; {3} = ping</comment>
   </data>
   <data name="Format_Gigabytes" xml:space="preserve">
     <value>{0:0.0} GB</value>
-    <comment>{0} = quantidade em GB</comment>
+    <comment>{0} = amount in GB</comment>
   </data>
   <data name="Format_GpuDedicatedMemory" xml:space="preserve">
     <value>VRAM {0}</value>
-    <comment>Detalhamento da GPU dedicada; {0} = usado / total</comment>
+    <comment>Details of a dedicated GPU; {0} = used / total</comment>
   </data>
   <data name="Format_GpuIntegratedMemory" xml:space="preserve">
     <value>Dedicated {0} · Shared {1}</value>
-    <comment>Detalhamento da GPU integrada; {0} = reserva usada / total; {1} = compartilhada em uso</comment>
+    <comment>Details of an integrated GPU; {0} = reserved memory used / total; {1} = shared memory in use</comment>
   </data>
   <data name="Format_GpuSharedMemory" xml:space="preserve">
     <value>Shared {0}</value>
-    <comment>Detalhamento da GPU integrada sem reserva; {0} = compartilhada em uso</comment>
+    <comment>Details of an integrated GPU without reserved memory; {0} = shared memory in use</comment>
   </data>
   <data name="Display_MonitoredGpu" xml:space="preserve">
     <value>Monitored GPU:</value>
-    <comment>Título da caixa de GPUs</comment>
+    <comment>Title of the GPU box</comment>
   </data>
   <data name="Gpu_Automatic" xml:space="preserve">
     <value>Automatic</value>
-    <comment>Opção de GPU, sem nenhuma encontrada</comment>
+    <comment>GPU option when none was found</comment>
   </data>
   <data name="Format_GpuAutomatic" xml:space="preserve">
     <value>Automatic — {0}</value>
-    <comment>{0} = nome da GPU escolhida automaticamente</comment>
+    <comment>{0} = name of the GPU picked automatically</comment>
   </data>
   <data name="Format_GpuOptionNotFound" xml:space="preserve">
     <value>{0} (not found)</value>
-    <comment>{0} = nome da GPU salva que sumiu</comment>
+    <comment>{0} = name of a saved GPU that is gone</comment>
   </data>
   <data name="Display_GpuHint" xml:space="preserve">
     <value>Automatic follows the order Windows uses for high performance: external GPU, then dedicated, then integrated.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Tray_About" xml:space="preserve">
     <value>About cobihw</value>
-    <comment>Item do menu do ícone</comment>
+    <comment>Tray icon menu item</comment>
   </data>
   <data name="About_Title" xml:space="preserve">
     <value>About cobihw</value>
-    <comment>Título da janela Sobre</comment>
+    <comment>About window title</comment>
   </data>
   <data name="Format_AboutVersion" xml:space="preserve">
     <value>Version {0} ({1})</value>
-    <comment>{0} = versão; {1} = data da versão</comment>
+    <comment>{0} = version; {1} = release date</comment>
   </data>
   <data name="Format_AboutVersionOnly" xml:space="preserve">
     <value>Version {0}</value>
-    <comment>{0} = versão, sem data</comment>
+    <comment>{0} = version, without a date</comment>
   </data>
   <data name="About_Tagline" xml:space="preserve">
     <value>Free and open-source hardware monitor.</value>
-    <comment>Frase da janela Sobre</comment>
+    <comment>Tagline in the About window</comment>
   </data>
   <data name="Format_AboutCopyright" xml:space="preserve">
     <value>{0} · MIT License</value>
-    <comment>{0} = © ano e autor</comment>
+    <comment>{0} = © year and author</comment>
   </data>
   <data name="About_Website" xml:space="preserve">
     <value>Website (cobihw.com)</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="About_GitHub" xml:space="preserve">
     <value>GitHub</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="About_CheckUpdates" xml:space="preserve">
     <value>Check for updates</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="About_Checking" xml:space="preserve">
     <value>Checking…</value>
-    <comment>Enquanto consulta o GitHub</comment>
+    <comment>While GitHub is being checked</comment>
   </data>
   <data name="About_UpToDate" xml:space="preserve">
     <value>You have the latest version.</value>
-    <comment>Resultado</comment>
+    <comment>Result</comment>
   </data>
   <data name="Format_AboutUpdateAvailable" xml:space="preserve">
     <value>Version {0} is available.</value>
-    <comment>{0} = versão nova</comment>
+    <comment>{0} = new version</comment>
   </data>
   <data name="About_Download" xml:space="preserve">
     <value>Download</value>
-    <comment>Botão ao lado da versão nova</comment>
+    <comment>Button next to the new version</comment>
   </data>
   <data name="About_NoRelease" xml:space="preserve">
     <value>No version has been published on GitHub yet.</value>
-    <comment>Resultado, nenhuma versão publicada</comment>
+    <comment>Result: no version published</comment>
   </data>
   <data name="About_CheckFailed" xml:space="preserve">
     <value>Could not check right now. Try again later.</value>
-    <comment>Resultado, falha</comment>
+    <comment>Result: failure</comment>
   </data>
   <data name="About_Services" xml:space="preserve">
     <value>cobihw uses the internet for the speed test and the public IP (Cloudflare), the ping (configurable address) and the update check (GitHub). It is not affiliated with these companies.</value>
-    <comment>Transparência sobre o uso da internet</comment>
+    <comment>What the app uses the internet for</comment>
   </data>
   <data name="About_License" xml:space="preserve">
     <value>License</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="About_Notices" xml:space="preserve">
     <value>Third-party components</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="Format_OpenFailed" xml:space="preserve">
     <value>Could not open {0}</value>
-    <comment>{0} = endereço ou arquivo</comment>
+    <comment>{0} = address or file</comment>
   </data>
   <data name="Metric_Battery" xml:space="preserve">
     <value>Battery</value>
-    <comment>Item bateria</comment>
+    <comment>Battery item</comment>
   </data>
   <data name="Battery_Charging" xml:space="preserve">
     <value>Charging</value>
-    <comment>Estado da bateria</comment>
+    <comment>Battery state</comment>
   </data>
   <data name="Battery_OnPower" xml:space="preserve">
     <value>Plugged in</value>
-    <comment>Estado da bateria, carregada e na tomada</comment>
+    <comment>Battery state: charged and plugged in</comment>
   </data>
   <data name="Battery_OnBattery" xml:space="preserve">
     <value>On battery</value>
-    <comment>Estado da bateria, sem estimativa de tempo</comment>
+    <comment>Battery state, without a time estimate</comment>
   </data>
   <data name="Format_BatteryRemaining" xml:space="preserve">
     <value>{0} h {1:00} min left</value>
-    <comment>{0} = horas; {1} = minutos (estimativa do Windows)</comment>
+    <comment>{0} = hours; {1} = minutes (Windows estimate)</comment>
   </data>
   <data name="Display_ShowDiskSpeed" xml:space="preserve">
     <value>Show read (R) and write (W) speed</value>
-    <comment>Caixa de seleção abaixo do disco monitorado</comment>
+    <comment>Check box below the monitored disk</comment>
   </data>
   <data name="Format_TrayNetworkWithoutPing" xml:space="preserve">
     <value>{0} ↓{1} ↑{2} Mbps</value>
-    <comment>Linha da rede na dica do ícone, sem ping; {0} = item; {1} = download; {2} = upload</comment>
+    <comment>Network line of the tray tooltip, without ping; {0} = item; {1} = download; {2} = upload</comment>
   </data>
   <data name="Network_PingEnabled" xml:space="preserve">
     <value>Measure ping</value>
-    <comment>Caixa de seleção da seção Ping</comment>
+    <comment>Check box of the Ping section</comment>
   </data>
   <data name="General_RemoveFromWindows" xml:space="preserve">
     <value>Remove cobihw from Windows…</value>
-    <comment>Botão</comment>
+    <comment>Button</comment>
   </data>
   <data name="General_RemoveFromWindowsHint" xml:space="preserve">
     <value>Deletes the entries created inside Windows when FPS reading and start with Windows were turned on. Nothing else is written outside the cobihw folder.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="RemoveFromWindows_Question" xml:space="preserve">
     <value>Remove what cobihw registered in Windows?</value>
-    <comment>Confirmação, antes da lista</comment>
+    <comment>Confirmation, before the list</comment>
   </data>
   <data name="RemoveFromWindows_Startup" xml:space="preserve">
     <value>Start with Windows</value>
-    <comment>Item da lista</comment>
+    <comment>List item</comment>
   </data>
   <data name="RemoveFromWindows_FpsTask" xml:space="preserve">
     <value>FPS scheduled task</value>
-    <comment>Item da lista</comment>
+    <comment>List item</comment>
   </data>
   <data name="RemoveFromWindows_Note" xml:space="preserve">
     <value>"Start with Windows" and FPS are also turned off in this computer's settings.</value>
-    <comment>Confirmação, depois da lista</comment>
+    <comment>Confirmation, after the list</comment>
   </data>
   <data name="RemoveFromWindows_Nothing" xml:space="preserve">
     <value>cobihw has nothing registered in Windows. To remove it, just close the program and delete its folder.</value>
-    <comment>Aviso</comment>
+    <comment>Warning</comment>
   </data>
   <data name="RemoveFromWindows_Done" xml:space="preserve">
     <value>Done: nothing from cobihw is registered in Windows. To remove it, close the program and delete its folder.</value>
-    <comment>Aviso</comment>
+    <comment>Warning</comment>
   </data>
   <data name="RemoveFromWindows_Failed" xml:space="preserve">
     <value>Could not delete the FPS scheduled task. Try again; if it keeps failing, delete the "cobihw" task in Windows Task Scheduler.</value>
-    <comment>Aviso</comment>
+    <comment>Warning</comment>
   </data>
   <data name="Format_ListItem" xml:space="preserve">
     <value>• {0}</value>
-    <comment>Item de lista em mensagens; {0} = texto</comment>
+    <comment>List item in messages; {0} = text</comment>
   </data>
   <data name="Display_ShowGpuTemperature" xml:space="preserve">
     <value>Show temperature</value>
-    <comment>Caixa de seleção abaixo da GPU monitorada</comment>
+    <comment>Check box below the monitored GPU</comment>
   </data>
   <data name="Display_GpuTemperatureHint" xml:space="preserve">
     <value>Reads the temperature reported by the graphics driver itself. If it doesn't appear, try updating the driver. Integrated GPUs and virtual machines usually don't report it.</value>
-    <comment>Dica</comment>
+    <comment>Hint</comment>
   </data>
   <data name="Format_Celsius" xml:space="preserve">
     <value>{0:0} °C</value>
-    <comment>{0} = temperatura em °C, sem casas</comment>
+    <comment>{0} = temperature in °C, no decimals</comment>
   </data>
   <data name="Format_GpuTemperature" xml:space="preserve">
     <value>Temperature {0}</value>
-    <comment>Detalhamento da GPU; {0} = temperatura</comment>
+    <comment>GPU details; {0} = temperature</comment>
   </data>
   <data name="Format_TrayLineExtra" xml:space="preserve">
     <value>{0} {1} · {2} · {3}</value>
-    <comment>Linha da dica do ícone com mais um detalhe; {0} = item; {1} = %; {2} = detalhe; {3} = outro detalhe</comment>
+    <comment>Line of the tray icon tooltip with one more detail; {0} = item; {1} = %; {2} = detail; {3} = second detail</comment>
   </data>
   <data name="Format_NetworkRateGigabits" xml:space="preserve">
     <value>{0} Gbps</value>
-    <comment>Tráfego atual da rede, a partir de 1000 Mbps; {0} = número já formatado</comment>
+    <comment>Current network traffic from 1000 Mbps; {0} = number already formatted</comment>
   </data>
   <data name="Format_DiskRates" xml:space="preserve">
     <value>R {0} · W {1}</value>
-    <comment>Velocidade do disco; {0} = leitura; {1} = escrita, cada uma com a sua unidade</comment>
+    <comment>Disk speed; {0} = read; {1} = write, each with its own unit</comment>
   </data>
   <data name="Format_KilobytesPerSecond" xml:space="preserve">
     <value>{0} KB/s</value>
-    <comment>{0} = número já formatado</comment>
+    <comment>{0} = number already formatted</comment>
   </data>
   <data name="Format_MegabytesPerSecond" xml:space="preserve">
     <value>{0} MB/s</value>
-    <comment>{0} = número já formatado</comment>
+    <comment>{0} = number already formatted</comment>
   </data>
   <data name="Format_GigabytesPerSecond" xml:space="preserve">
     <value>{0} GB/s</value>
-    <comment>{0} = número já formatado (a partir de 1000 MB/s)</comment>
+    <comment>{0} = number already formatted (from 1000 MB/s)</comment>
   </data>
 </root>

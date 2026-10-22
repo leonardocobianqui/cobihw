@@ -1,0 +1,14 @@
+# Git stores text files with LF and checks them out with the line ending of each system (CRLF on Windows),
+# whatever the local core.autocrlf setting is.
+* text=auto
+
+# Better diffs for C# and Markdown.
+*.cs diff=csharp
+*.md diff=markdown
+
+# Binary files are never converted.
+*.ico binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.zip binary
