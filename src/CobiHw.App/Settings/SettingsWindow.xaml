@@ -1,3 +1,4 @@
+<!-- Settings window: four tabs (General, Display, Appearance, Network). Logic in SettingsViewModel; "Apply" acts on the open tab. -->
 <Window x:Class="CobiHw.App.Settings.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -22,6 +23,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
+        <!-- Content of each tab; the minimum height keeps the window from jumping when switching tabs. -->
         <Style x:Key="TabContent" TargetType="StackPanel">
             <Setter Property="Margin" Value="14" />
             <Setter Property="MinHeight" Value="270" />
@@ -32,6 +34,7 @@
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
+        <!-- Draggable item row; faded while being dragged. -->
         <Style x:Key="MetricRow" TargetType="Border">
             <Setter Property="Padding" Value="0,3" />
             <Setter Property="Background" Value="Transparent" />
@@ -44,24 +47,28 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Secondary explanation under a control. -->
         <Style x:Key="Hint" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
             <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
+        <!-- Divider between sections. -->
         <Style x:Key="SectionLine" TargetType="Border">
             <Setter Property="Height" Value="1" />
             <Setter Property="Margin" Value="0,14" />
             <Setter Property="Background" Value="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
         </Style>
 
+        <!-- Dot next to a tab name when it has changes not applied. -->
         <Style x:Key="PendingDot" TargetType="TextBlock">
             <Setter Property="Margin" Value="4,0,0,0" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Text" Value="•" />
         </Style>
 
+        <!-- Validation message. -->
         <Style x:Key="ErrorText" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
             <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
@@ -70,6 +77,7 @@
     </Window.Resources>
 
     <DockPanel Margin="16">
+        <!-- Buttons: Restore defaults (open tab), Close (asks about pending changes), Apply (open tab). -->
         <StackPanel DockPanel.Dock="Bottom" Margin="0,16,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button MinWidth="120" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
             <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_Close}" IsCancel="True" Click="OnCloseClick" />
@@ -77,6 +85,7 @@
         </StackPanel>
 
         <TabControl SelectedValuePath="Tag" SelectedValue="{Binding SelectedTab}">
+            <!-- General tab: language, theme, widget behavior, clicks, startup and settings file. -->
             <TabItem Tag="{x:Static settings:SettingsTab.General}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -95,6 +104,7 @@
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text General_ThemeHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
+                        <!-- Mode, monitor, snapping and position lock. -->
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text General_Widget}" />
                         <TextBlock Margin="0,0,0,4" Text="{loc:Text General_Monitor}" />
                         <ComboBox IsEnabled="{Binding HasSeveralMonitors}" ItemsSource="{Binding MonitorOptions}" SelectedValuePath="Device" SelectedValue="{Binding Monitor}" DisplayMemberPath="Label" />
@@ -107,6 +117,7 @@
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text General_LockHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
+                        <!-- Click-through and the key that temporarily disables it. -->
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text General_Clicks}" />
                         <CheckBox Content="{loc:Text General_ClickThrough}" IsChecked="{Binding ClickThrough}" />
                         <TextBlock Margin="0,8,0,4" Text="{loc:Text General_InteractionKey}" />
@@ -116,10 +127,19 @@
                         <Border Style="{StaticResource SectionLine}" />
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text General_Startup}" />
                         <CheckBox Content="{loc:Text General_StartWithWindows}" IsChecked="{Binding StartWithWindows}" />
+
+                        <Border Style="{StaticResource SectionLine}" />
+                        <!-- Where settings are saved, and cleanup of other computers' sections and of what was registered in Windows. -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text General_SettingsFile}" />
+                        <Button HorizontalAlignment="Left" Padding="10,4" Content="{loc:Text General_RemoveOtherProfiles}" Command="{Binding RemoveOtherProfilesCommand}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text General_RemoveOtherProfilesHint}" />
+                        <Button Margin="0,12,0,0" HorizontalAlignment="Left" Padding="10,4" Content="{loc:Text General_RemoveFromWindows}" Command="{Binding RemoveFromWindowsCommand}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text General_RemoveFromWindowsHint}" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
 
+            <!-- Display tab: items and their order, disk, GPU and details popup. -->
             <TabItem Tag="{x:Static settings:SettingsTab.Display}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -134,6 +154,7 @@
                             <TextBlock Width="22" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="&#xE72E;" />
                             <CheckBox VerticalAlignment="Center" Content="{loc:Text Metric_Fps}" IsChecked="{Binding ShowFps}" />
                         </StackPanel>
+                        <!-- Item list: checkbox shows the item; drag a row to reorder (handled in code-behind). -->
                         <ItemsControl x:Name="MetricList" AllowDrop="True" Focusable="False" ItemsSource="{Binding Metrics}"
                                       PreviewMouseLeftButtonDown="OnMetricPreviewMouseLeftButtonDown"
                                       PreviewMouseMove="OnMetricPreviewMouseMove"
@@ -141,7 +162,7 @@
                                       Drop="OnMetricDrop">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type settings:MetricRowViewModel}">
-                                    <Border Style="{StaticResource MetricRow}">
+                                    <Border Style="{StaticResource MetricRow}" Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibility}}">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Width="22" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="&#xE76F;" />
                                             <CheckBox VerticalAlignment="Center" Cursor="Arrow" Content="{Binding Name}" IsChecked="{Binding IsVisible}" />
@@ -158,8 +179,18 @@
                                    Visibility="{Binding HasFpsNotice, Converter={StaticResource BooleanToVisibility}}" />
 
                         <Border Style="{StaticResource SectionLine}" />
+                        <!-- Disk shown in the widget, plus the optional read/write speed. -->
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Display_MonitoredDisk}" />
                         <ComboBox ItemsSource="{Binding DiskOptions}" SelectedItem="{Binding SelectedDisk}" DisplayMemberPath="Label" />
+                        <CheckBox Margin="0,8,0,0" Content="{loc:Text Display_ShowDiskSpeed}" IsChecked="{Binding ShowDiskSpeed}" />
+
+                        <Border Style="{StaticResource SectionLine}" />
+                        <!-- GPU shown in the widget, plus the optional temperature. -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Display_MonitoredGpu}" />
+                        <ComboBox ItemsSource="{Binding GpuOptions}" SelectedItem="{Binding SelectedGpu}" DisplayMemberPath="Label" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Display_GpuHint}" />
+                        <CheckBox Margin="0,8,0,0" Content="{loc:Text Display_ShowGpuTemperature}" IsChecked="{Binding ShowGpuTemperature}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Display_GpuTemperatureHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
                         <CheckBox Content="{loc:Text Display_DetailedTooltip}" IsChecked="{Binding DetailedTooltip}" />
@@ -168,6 +199,7 @@
                 </ScrollViewer>
             </TabItem>
 
+            <!-- Appearance tab: one summary per group; "Edit" opens the group's editor window. -->
             <TabItem Tag="{x:Static settings:SettingsTab.Appearance}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -212,6 +244,7 @@
                 </ScrollViewer>
             </TabItem>
 
+            <!-- Network tab: monitored devices, default device, ping and speed test. -->
             <TabItem Tag="{x:Static settings:SettingsTab.Network}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -221,6 +254,7 @@
                 </TabItem.Header>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
                     <StackPanel Style="{StaticResource TabContent}">
+                        <!-- Devices listed in "Network devices"; hidden ones only with "show hidden". -->
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Network_Devices}" />
                         <TextBlock Margin="0,0,0,4" Text="{loc:Text Network_Monitor}" />
                         <ItemsControl Focusable="False" ItemsSource="{Binding NetworkDevices}">
@@ -243,14 +277,17 @@
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Network_DevicesHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
+                        <!-- Ping is off by default; with it off, the app makes no automatic connections. -->
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Network_Ping}" />
-                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Network_Address}" />
-                        <ComboBox IsEditable="True" ItemsSource="{Binding PingSuggestions}" Text="{Binding PingHostText, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox Margin="0,0,0,8" Content="{loc:Text Network_PingEnabled}" IsChecked="{Binding PingEnabled}" />
+                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Network_Address}" IsEnabled="{Binding PingEnabled}" />
+                        <ComboBox IsEditable="True" ItemsSource="{Binding PingSuggestions}" Text="{Binding PingHostText, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding PingEnabled}" />
                         <TextBlock Style="{StaticResource ErrorText}" Text="{loc:Text Network_AddressError}"
                                    Visibility="{Binding HasPingHostError, Converter={StaticResource BooleanToVisibility}}" />
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Network_PingHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
+                        <!-- Speed test: buttons, live speed while testing, then the last result. -->
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text SpeedTest_Title}" />
                         <StackPanel Orientation="Horizontal">
                             <Button MinWidth="110" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Network_TestNow}" Command="{Binding SpeedTest.RunCommand}" />

@@ -8,11 +8,16 @@ using CobiHw.App.Resources;
 
 namespace CobiHw.App.Settings;
 
+/// <summary>
+/// Settings window. Logic lives in <see cref="SettingsViewModel"/>; this class handles the close confirmation and dragging rows in the item list.
+/// </summary>
 public partial class SettingsWindow : Window
 {
+    // Row under the mouse when the button went down; a drag starts only after the mouse moves far enough.
     private MetricRowViewModel? _pressedRow;
     private Point _pressPoint;
 
+    /// <summary>Creates the window with the given theme.</summary>
     public SettingsWindow(AppTheme theme)
     {
         ApplyTheme(theme);
@@ -20,12 +25,14 @@ public partial class SettingsWindow : Window
         Closing += OnClosing;
     }
 
+    /// <summary>Switches the window theme (light, dark or Windows').</summary>
     public void ApplyTheme(AppTheme theme) => WindowTheme.Apply(this, theme);
 
     private SettingsViewModel ViewModel => (SettingsViewModel)DataContext;
 
     private void OnCloseClick(object sender, RoutedEventArgs e) => Close();
 
+    // Pending changes: apply, discard or keep editing. Invalid changes can only be discarded.
     private void OnClosing(object? sender, CancelEventArgs e)
     {
         if (!ViewModel.HasPendingChanges)
@@ -58,6 +65,7 @@ public partial class SettingsWindow : Window
 
     private void OnMetricPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        // Clicking the checkbox toggles it instead of starting a drag.
         _pressedRow = IsInside<ToggleButton>(e.OriginalSource) ? null : RowOf(e.OriginalSource);
         _pressPoint = e.GetPosition(MetricList);
     }
@@ -86,6 +94,7 @@ public partial class SettingsWindow : Window
         {
             DragDropEffects result = DragDrop.DoDragDrop(MetricList, new DataObject(typeof(MetricRowViewModel), row), DragDropEffects.Move);
 
+            // Dropped outside the list: back to where it was.
             if (result == DragDropEffects.None)
             {
                 ViewModel.MoveMetric(row, originalIndex);
@@ -109,6 +118,7 @@ public partial class SettingsWindow : Window
 
         e.Effects = DragDropEffects.Move;
 
+        // Rows move live while dragging, so the list shows where the item will land.
         if (RowOf(e.OriginalSource) is MetricRowViewModel target && target != dragged)
         {
             ViewModel.MoveMetric(dragged, ViewModel.Metrics.IndexOf(target));
@@ -121,9 +131,11 @@ public partial class SettingsWindow : Window
         e.Effects = e.Data.GetDataPresent(typeof(MetricRowViewModel)) ? DragDropEffects.Move : DragDropEffects.None;
     }
 
+    // Row of the element under the mouse.
     private static MetricRowViewModel? RowOf(object source) =>
         (source as FrameworkElement)?.DataContext as MetricRowViewModel;
 
+    // True when the element is inside a control of type T (walks up the visual and logical trees).
     private static bool IsInside<T>(object source)
         where T : DependencyObject
     {

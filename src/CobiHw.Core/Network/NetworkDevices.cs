@@ -5,10 +5,14 @@ using CobiHw.Core.Interop;
 
 namespace CobiHw.Core.Network;
 
+/// <summary>
+/// Builds the list of network devices with addresses, gateways and DNS for the settings and details windows.
+/// </summary>
 public static class NetworkDevices
 {
     private static readonly AdapterVisibility Visibility = new(NetAdapterQuery.Read);
 
+    /// <summary>Lists every interface: visible ones first, then connected first, then by name.</summary>
     public static IReadOnlyList<NetworkDeviceInfo> List()
     {
         List<IfRow> rows = [.. IfTable.Read().DistinctBy(row => row.Id)];
@@ -26,20 +30,26 @@ public static class NetworkDevices
             .ThenBy(device => device.Name, StringComparer.CurrentCultureIgnoreCase)];
     }
 
+    /// <summary>Formats a MAC address as "AA-BB-CC-DD-EE-FF"; null when empty or all zeros.</summary>
     public static string? MacAddress(IReadOnlyList<byte> bytes) =>
         bytes.Count == 0 || bytes.All(value => value == 0) ? null : string.Join('-', bytes.Select(value => value.ToString("X2")));
 
+    /// <summary>Link speed in bits per second; null when unknown (0) or out of range.</summary>
     public static long? LinkSpeed(ulong bitsPerSecond) =>
         bitsPerSecond is 0 or > long.MaxValue ? null : (long)bitsPerSecond;
 
+    /// <summary>Keeps global IPv6 addresses; link-local, site-local and loopback aren't useful to show.</summary>
     public static bool IsUsefulIPv6(IPAddress address) =>
         !address.IsIPv6LinkLocal && !address.IsIPv6SiteLocal && !IPAddress.IsLoopback(address);
 
+    /// <summary>Leaves out the deprecated site-local DNS placeholders (fec0::/10).</summary>
     public static bool IsUsefulDns(IPAddress address) => !address.IsIPv6SiteLocal;
 
+    /// <summary>Leaves out the "any" placeholder (0.0.0.0 / ::).</summary>
     public static bool IsUsefulGateway(IPAddress address) =>
         !address.Equals(IPAddress.Any) && !address.Equals(IPAddress.IPv6Any);
 
+    /// <summary>IPv6 text without the "%12" scope id suffix.</summary>
     public static string WithoutScope(IPAddress address) =>
         address.AddressFamily == AddressFamily.InterNetworkV6 ? new IPAddress(address.GetAddressBytes()).ToString() : address.ToString();
 
@@ -49,6 +59,7 @@ public static class NetworkDevices
         IPInterfaceProperties? properties = row.IsUp ? adapter?.GetIPProperties() : null;
         List<UnicastIPAddressInformation> unicast = properties is null
             ? []
+            // Only addresses in use; tentative or deprecated ones are skipped.
             : [.. properties.UnicastAddresses.Where(address => address.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred)];
         IEnumerable<IPAddress> gateways = properties?.GatewayAddresses.Select(gateway => gateway.Address) ?? Enumerable.Empty<IPAddress>();
         IEnumerable<IPAddress> dnsServers = properties?.DnsAddresses ?? Enumerable.Empty<IPAddress>();

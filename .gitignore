@@ -480,3 +480,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# cobihw publish profiles (no secrets): tracked so publish.ps1 works in any clone
+!src/CobiHw.App/Properties/PublishProfiles/Portable.pubxml
+!src/CobiHw.App/Properties/PublishProfiles/FrameworkDependent.pubxml

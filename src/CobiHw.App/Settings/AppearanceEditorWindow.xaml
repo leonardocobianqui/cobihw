@@ -1,3 +1,4 @@
+<!-- Appearance editor: shows only the section of the group being edited; every change is previewed on the widget. -->
 <Window x:Class="CobiHw.App.Settings.AppearanceEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -21,6 +22,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
+        <!-- Same visual language as the settings window. -->
         <Style x:Key="SectionHeader" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,0,0,8" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -55,6 +57,7 @@
     </Window.Resources>
 
     <DockPanel Margin="16">
+        <!-- Buttons: Restore defaults (this group), Close, Apply. -->
         <DockPanel DockPanel.Dock="Bottom" Margin="0,16,0,0">
             <Button DockPanel.Dock="Left" MinWidth="120" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
@@ -67,6 +70,7 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
             <Grid Margin="0,0,16,0" Grid.IsSharedSizeScope="True">
+                <!-- Shape group: size, corners, bar corners and border. -->
                 <StackPanel Visibility="{Binding IsShape, Converter={StaticResource BooleanToVisibility}}">
                     <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Size}" />
                     <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_Scale}" />
@@ -112,6 +116,7 @@
                     <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_BorderHint}" />
                 </StackPanel>
 
+                <!-- Colors and text group: background, transparency, text color and weight. -->
                 <StackPanel Visibility="{Binding IsTextColors, Converter={StaticResource BooleanToVisibility}}">
                     <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Background}" />
                     <ContentControl Focusable="False" Content="{Binding BackgroundColor}" />
@@ -133,9 +138,9 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_LabelsHint}" />
                 </StackPanel>
 
+                <!-- Usage colors group: on/off, the three colors and each item's thresholds. -->
                 <StackPanel Visibility="{Binding IsUsageColors, Converter={StaticResource BooleanToVisibility}}">
                     <CheckBox Content="{loc:Text Colors_Enabled}" IsChecked="{Binding ColorsEnabled}" />
 

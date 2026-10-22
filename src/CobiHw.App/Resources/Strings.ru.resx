@@ -75,7 +75,7 @@
     <value>Тест {0}</value>
   </data>
   <data name="Format_Session" xml:space="preserve">
-    <value>Сеанс   ↓ {0}   ↑ {1}</value>
+    <value>Сеанс ↓ {0} · ↑ {1}</value>
   </data>
   <data name="Format_DiskNumber" xml:space="preserve">
     <value>Диск {0}</value>
@@ -92,17 +92,14 @@
   <data name="Format_UsedOfTotal" xml:space="preserve">
     <value>{0:0.0} / {1:0.0} ГБ</value>
   </data>
-  <data name="Format_Bandwidth" xml:space="preserve">
-    <value>{0:0.0} Мбит/с</value>
-  </data>
   <data name="Format_NetworkRate" xml:space="preserve">
-    <value>{0:0.00} Мбит/с</value>
+    <value>{0} Мбит/с</value>
   </data>
   <data name="Format_Milliseconds" xml:space="preserve">
     <value>{0:0} мс</value>
   </data>
   <data name="Format_Size" xml:space="preserve">
-    <value>{0:0.##} {1}</value>
+    <value>{0} {1}</value>
   </data>
   <data name="Unit_Bytes" xml:space="preserve">
     <value>Б</value>
@@ -120,13 +117,13 @@
     <value>ТБ</value>
   </data>
   <data name="SpeedTest_Title" xml:space="preserve">
-    <value>Тест скорости</value>
+    <value>Тест скорости интернета</value>
   </data>
   <data name="SpeedTest_NoneYet" xml:space="preserve">
-    <value>Тест ещё не проводился</value>
+    <value>Тест не проводился</value>
   </data>
   <data name="SpeedTest_NoneYetStatus" xml:space="preserve">
-    <value>Тест ещё не проводился.</value>
+    <value>Тест не проводился.</value>
   </data>
   <data name="SpeedTest_HowTo" xml:space="preserve">
     <value>Меню значка › Проверить скорость интернета</value>
@@ -215,6 +212,9 @@
   <data name="General_StartWithWindows" xml:space="preserve">
     <value>Запускать вместе с Windows</value>
   </data>
+  <data name="Tray_Network" xml:space="preserve">
+    <value>Сеть</value>
+  </data>
   <data name="Tray_Settings" xml:space="preserve">
     <value>Настройки...</value>
   </data>
@@ -229,6 +229,21 @@
   </data>
   <data name="Tray_Exit" xml:space="preserve">
     <value>Выход</value>
+  </data>
+  <data name="Error_Message" xml:space="preserve">
+    <value>Что-то пошло не так, и cobihw нужно закрыть. Чтобы сообщить о проблеме, скопируйте сведения и отправьте их.</value>
+  </data>
+  <data name="Error_Details" xml:space="preserve">
+    <value>Технические сведения</value>
+  </data>
+  <data name="Error_CopyDetails" xml:space="preserve">
+    <value>Копировать сведения</value>
+  </data>
+  <data name="Error_Copied" xml:space="preserve">
+    <value>Скопировано</value>
+  </data>
+  <data name="Task_Description" xml:space="preserve">
+    <value>cobihw: открывает виджет с правами администратора для измерения FPS.</value>
   </data>
   <data name="App_UnexpectedError" xml:space="preserve">
     <value>cobihw: непредвиденная ошибка</value>
@@ -341,6 +356,30 @@
   <data name="General_Clicks" xml:space="preserve">
     <value>Клики</value>
   </data>
+  <data name="General_SettingsFile" xml:space="preserve">
+    <value>Файл настроек</value>
+  </data>
+  <data name="General_RemoveOtherProfiles" xml:space="preserve">
+    <value>Удалить настройки других компьютеров…</value>
+  </data>
+  <data name="General_RemoveOtherProfilesHint" xml:space="preserve">
+    <value>Удаляет из файла настроек записи других компьютеров и пользователей Windows и оставляет только записи этого компьютера и пользователя.</value>
+  </data>
+  <data name="RemoveProfiles_Question" xml:space="preserve">
+    <value>Удалить настройки, сохранённые для этих компьютеров и пользователей?</value>
+  </data>
+  <data name="RemoveProfiles_Keep" xml:space="preserve">
+    <value>Настройки этого компьютера останутся.</value>
+  </data>
+  <data name="RemoveProfiles_Failed" xml:space="preserve">
+    <value>Сейчас удалить не удалось: файл настроек используется другой программой.</value>
+  </data>
+  <data name="Format_StoredProfile" xml:space="preserve">
+    <value>• {0} · {1} (последнее использование: {2})</value>
+  </data>
+  <data name="Settings_FolderReadOnly" xml:space="preserve">
+    <value>В эту папку нельзя записать файл настроек. Переместите папку cobihw в другое место (например, в «Документы») и откройте программу снова. Настройки этого сеанса не будут сохранены.</value>
+  </data>
   <data name="General_Startup" xml:space="preserve">
     <value>Автозапуск</value>
   </data>
@@ -369,7 +408,7 @@
     <value>Прозрачность рамки:</value>
   </data>
   <data name="Appearance_BorderHint" xml:space="preserve">
-    <value>Рамка совпадает с полосой, за которую можно потянуть, чтобы изменить размер виджета.</value>
+    <value>Размер виджета можно изменить, потянув за его края.</value>
   </data>
   <data name="Appearance_Background" xml:space="preserve">
     <value>Фон</value>
@@ -392,9 +431,6 @@
   <data name="Appearance_Weight" xml:space="preserve">
     <value>Толщина:</value>
   </data>
-  <data name="Appearance_LabelsHint" xml:space="preserve">
-    <value>Подписи (ЦП, ОЗУ...) используют цвет текста чуть бледнее.</value>
-  </data>
   <data name="Appearance_Size" xml:space="preserve">
     <value>Размер</value>
   </data>
@@ -402,7 +438,8 @@
     <value>Размер виджета:</value>
   </data>
   <data name="Appearance_ScaleHint" xml:space="preserve">
-    <value>Также можно перетаскивать края или углы виджета. «Закрепить положение и размер» в меню значка запрещает изменения.</value>
+    <value>Размер виджета можно изменить и за его края.
+«Закрепить положение и размер» (меню значка) запрещает изменения.</value>
   </data>
   <data name="Weight_Light" xml:space="preserve">
     <value>Тонкий</value>
@@ -432,7 +469,9 @@
     <value>Укажите IP (например, 8.8.8.8) или имя (например, dns.google).</value>
   </data>
   <data name="Network_PingHint" xml:space="preserve">
-    <value>8.8.8.8 — это Google (по умолчанию). 1.1.1.1 — Cloudflare, та же сеть, что и у теста скорости.</value>
+    <value>cobihw использует этот адрес только для проверки пинга (как команда ping 8.8.8.8 в PowerShell или командной строке).
+
+8.8.8.8 -&gt; Google (по умолчанию). 1.1.1.1 -&gt; Cloudflare, та же сеть, что и в тесте скорости. Если измерение пинга выключено, cobihw не выполняет никаких других автоматических сетевых подключений.</value>
   </data>
   <data name="Network_TestNow" xml:space="preserve">
     <value>Проверить</value>
@@ -441,7 +480,7 @@
     <value>Отменить тест</value>
   </data>
   <data name="Network_DataHint" xml:space="preserve">
-    <value>Использует серверы Cloudflare. Расходует около 200 МБ при подключении 100 Мбит/с и 700 МБ при 1 Гбит/с и замедляет интернет до 30 секунд.</value>
+    <value>Использует серверы Cloudflare. Расходует около 200 МБ при подключении 100 Мбит/с и 700 МБ при 1 Гбит/с. Во время теста, который длится от 10 до 30 секунд в зависимости от подключения, интернет может работать медленно и нестабильно.</value>
   </data>
   <data name="Colors_Enabled" xml:space="preserve">
     <value>Окрашивать по нагрузке</value>
@@ -489,7 +528,7 @@
     <value>FPS</value>
   </data>
   <data name="Display_FpsHint" xml:space="preserve">
-    <value>Всегда первый в виджете и показывается, только пока приложение на переднем плане выводит кадры (игры и 3D-приложения с DirectX 9–12). Нужны права администратора: Windows запросит подтверждение только один раз.</value>
+    <value>FPS измеряется автоматически, когда приложение на переднем плане выводит кадры. Пока поддерживаются только DirectX 9–12. Windows требует для этого права администратора: подтверждение запрашивается только один раз, при включении FPS.</value>
   </data>
   <data name="Fps_Denied" xml:space="preserve">
     <value>Windows не предоставила права администратора. FPS остаётся выключенным.</value>
@@ -534,13 +573,13 @@
     <value>Показывать внутренние устройства Windows</value>
   </data>
   <data name="Network_Default" xml:space="preserve">
-    <value>По умолчанию (в виджете):</value>
+    <value>Устройство по умолчанию (в виджете):</value>
   </data>
   <data name="Network_PhysicalSum" xml:space="preserve">
-    <value>Сумма физических адаптеров</value>
+    <value>Сумма устройств</value>
   </data>
   <data name="Network_DevicesHint" xml:space="preserve">
-    <value>Отмеченные устройства появляются в «Сетевые устройства» (меню значка) и могут быть выбраны по умолчанию. Сумма физических адаптеров не включает VPN, чтобы один и тот же трафик не считался дважды.</value>
+    <value>Отмеченные устройства показываются в окне «Сетевые устройства» (меню значка на панели задач). Сумма не учитывает VPN, чтобы не считать один и тот же трафик дважды.</value>
   </data>
   <data name="Network_NoDevices" xml:space="preserve">
     <value>Сетевые устройства не найдены.</value>
@@ -654,7 +693,7 @@
     <value>{0:0} Мбит/с</value>
   </data>
   <data name="Format_UpDown" xml:space="preserve">
-    <value>↓ {0}   ↑ {1}</value>
+    <value>↓ {0} · ↑ {1}</value>
   </data>
   <data name="PublicIp_Label" xml:space="preserve">
     <value>Публичный IP:</value>
@@ -663,7 +702,7 @@
     <value>Узнать</value>
   </data>
   <data name="PublicIp_Hint" xml:space="preserve">
-    <value>Спрашивает у Cloudflare, через какой адрес выходит ваш трафик (основной маршрут). Только по нажатию.</value>
+    <value>Запрашивает у Cloudflare, через какой адрес выходит ваш трафик (основной маршрут). Автоматически запросы не выполняются.</value>
   </data>
   <data name="PublicIp_Searching" xml:space="preserve">
     <value>Запрос…</value>
@@ -687,7 +726,7 @@
     <value>Изменить…</value>
   </data>
   <data name="Appearance_GroupsHint" xml:space="preserve">
-    <value>Каждая группа открывается в отдельном окне. Виджет показывает изменения до сохранения.</value>
+    <value>Каждая группа открывается в отдельном окне для настройки. Виджет показывает изменения до сохранения.</value>
   </data>
   <data name="Appearance_EditorHint" xml:space="preserve">
     <value>Виджет сразу показывает каждое изменение. «Применить» сохраняет, «Отмена» отменяет.</value>
@@ -730,5 +769,173 @@
   </data>
   <data name="Format_TrayNetwork" xml:space="preserve">
     <value>{0} ↓{1} ↑{2} Мбит/с · пинг {3}</value>
+  </data>
+  <data name="Format_Gigabytes" xml:space="preserve">
+    <value>{0:0.0} ГБ</value>
+  </data>
+  <data name="Format_GpuDedicatedMemory" xml:space="preserve">
+    <value>VRAM {0}</value>
+  </data>
+  <data name="Format_GpuIntegratedMemory" xml:space="preserve">
+    <value>Выделенная {0} · Общая {1}</value>
+  </data>
+  <data name="Format_GpuSharedMemory" xml:space="preserve">
+    <value>Общая {0}</value>
+  </data>
+  <data name="Display_MonitoredGpu" xml:space="preserve">
+    <value>Отслеживаемый ГП:</value>
+  </data>
+  <data name="Gpu_Automatic" xml:space="preserve">
+    <value>Автоматически</value>
+  </data>
+  <data name="Format_GpuAutomatic" xml:space="preserve">
+    <value>Автоматически — {0}</value>
+  </data>
+  <data name="Format_GpuOptionNotFound" xml:space="preserve">
+    <value>{0} (не найден)</value>
+  </data>
+  <data name="Display_GpuHint" xml:space="preserve">
+    <value>Автоматически — в порядке, который Windows использует для высокой производительности: внешний ГП, затем дискретный, затем встроенный.</value>
+  </data>
+  <data name="Tray_About" xml:space="preserve">
+    <value>О программе cobihw</value>
+  </data>
+  <data name="About_Title" xml:space="preserve">
+    <value>О программе cobihw</value>
+  </data>
+  <data name="Format_AboutVersion" xml:space="preserve">
+    <value>Версия {0} ({1})</value>
+  </data>
+  <data name="Format_AboutVersionOnly" xml:space="preserve">
+    <value>Версия {0}</value>
+  </data>
+  <data name="About_Tagline" xml:space="preserve">
+    <value>Бесплатный монитор оборудования с открытым исходным кодом.</value>
+  </data>
+  <data name="Format_AboutCopyright" xml:space="preserve">
+    <value>{0} · Лицензия MIT</value>
+  </data>
+  <data name="About_Website" xml:space="preserve">
+    <value>Сайт (cobihw.com)</value>
+  </data>
+  <data name="About_GitHub" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="About_CheckUpdates" xml:space="preserve">
+    <value>Проверить обновления</value>
+  </data>
+  <data name="About_Checking" xml:space="preserve">
+    <value>Проверка…</value>
+  </data>
+  <data name="About_UpToDate" xml:space="preserve">
+    <value>У вас последняя версия.</value>
+  </data>
+  <data name="Format_AboutUpdateAvailable" xml:space="preserve">
+    <value>Доступна версия {0}.</value>
+  </data>
+  <data name="About_Download" xml:space="preserve">
+    <value>Скачать</value>
+  </data>
+  <data name="About_NoRelease" xml:space="preserve">
+    <value>На GitHub пока не опубликовано ни одной версии.</value>
+  </data>
+  <data name="About_CheckFailed" xml:space="preserve">
+    <value>Сейчас проверить не удалось. Попробуйте позже.</value>
+  </data>
+  <data name="About_Services" xml:space="preserve">
+    <value>cobihw использует интернет для теста скорости и определения публичного IP (Cloudflare), пинга (адрес настраивается) и проверки обновлений (GitHub). Программа не связана с этими компаниями.</value>
+  </data>
+  <data name="About_License" xml:space="preserve">
+    <value>Лицензия</value>
+  </data>
+  <data name="About_Notices" xml:space="preserve">
+    <value>Сторонние компоненты</value>
+  </data>
+  <data name="Format_OpenFailed" xml:space="preserve">
+    <value>Не удалось открыть {0}</value>
+  </data>
+  <data name="Metric_Battery" xml:space="preserve">
+    <value>Батарея</value>
+  </data>
+  <data name="Battery_Charging" xml:space="preserve">
+    <value>Заряжается</value>
+  </data>
+  <data name="Battery_OnPower" xml:space="preserve">
+    <value>От сети</value>
+  </data>
+  <data name="Battery_OnBattery" xml:space="preserve">
+    <value>От батареи</value>
+  </data>
+  <data name="Format_BatteryRemaining" xml:space="preserve">
+    <value>Осталось {0} ч {1:00} мин</value>
+  </data>
+  <data name="Display_ShowDiskSpeed" xml:space="preserve">
+    <value>Показывать скорость чтения (Ч) и записи (З)</value>
+  </data>
+  <data name="Format_TrayNetworkWithoutPing" xml:space="preserve">
+    <value>{0} ↓{1} ↑{2} Мбит/с</value>
+  </data>
+  <data name="Network_PingEnabled" xml:space="preserve">
+    <value>Измерять пинг</value>
+  </data>
+  <data name="General_RemoveFromWindows" xml:space="preserve">
+    <value>Удалить cobihw из Windows…</value>
+  </data>
+  <data name="General_RemoveFromWindowsHint" xml:space="preserve">
+    <value>Удаляет записи, созданные в Windows при включении измерения FPS и запуска вместе с Windows. Вне папки cobihw больше ничего не создаётся.</value>
+  </data>
+  <data name="RemoveFromWindows_Question" xml:space="preserve">
+    <value>Удалить из Windows то, что зарегистрировал cobihw?</value>
+  </data>
+  <data name="RemoveFromWindows_Startup" xml:space="preserve">
+    <value>Запуск вместе с Windows</value>
+  </data>
+  <data name="RemoveFromWindows_FpsTask" xml:space="preserve">
+    <value>Запланированная задача FPS</value>
+  </data>
+  <data name="RemoveFromWindows_Note" xml:space="preserve">
+    <value>«Запуск вместе с Windows» и FPS также будут выключены в настройках этого компьютера.</value>
+  </data>
+  <data name="RemoveFromWindows_Nothing" xml:space="preserve">
+    <value>cobihw ничего не зарегистрировал в Windows. Чтобы удалить его, просто закройте программу и удалите папку.</value>
+  </data>
+  <data name="RemoveFromWindows_Done" xml:space="preserve">
+    <value>Готово: в Windows ничего от cobihw не осталось. Чтобы удалить его, закройте программу и удалите папку.</value>
+  </data>
+  <data name="RemoveFromWindows_Failed" xml:space="preserve">
+    <value>Не удалось удалить запланированную задачу FPS. Попробуйте ещё раз; если не получится, удалите задачу «cobihw» в Планировщике заданий Windows.</value>
+  </data>
+  <data name="Format_ListItem" xml:space="preserve">
+    <value>• {0}</value>
+  </data>
+  <data name="Display_ShowGpuTemperature" xml:space="preserve">
+    <value>Показывать температуру</value>
+  </data>
+  <data name="Display_GpuTemperatureHint" xml:space="preserve">
+    <value>Показывает температуру, которую сообщает сам видеодрайвер. Если она не отображается, попробуйте обновить драйвер. Встроенные видеокарты и виртуальные машины обычно её не сообщают.</value>
+  </data>
+  <data name="Format_Celsius" xml:space="preserve">
+    <value>{0:0} °C</value>
+  </data>
+  <data name="Format_GpuTemperature" xml:space="preserve">
+    <value>Температура {0}</value>
+  </data>
+  <data name="Format_TrayLineExtra" xml:space="preserve">
+    <value>{0} {1} · {2} · {3}</value>
+  </data>
+  <data name="Format_NetworkRateGigabits" xml:space="preserve">
+    <value>{0} Гбит/с</value>
+  </data>
+  <data name="Format_DiskRates" xml:space="preserve">
+    <value>Ч {0} · З {1}</value>
+  </data>
+  <data name="Format_KilobytesPerSecond" xml:space="preserve">
+    <value>{0} КБ/с</value>
+  </data>
+  <data name="Format_MegabytesPerSecond" xml:space="preserve">
+    <value>{0} МБ/с</value>
+  </data>
+  <data name="Format_GigabytesPerSecond" xml:space="preserve">
+    <value>{0} ГБ/с</value>
   </data>
 </root>

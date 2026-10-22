@@ -10,6 +10,7 @@ using CobiHw.Core.Network;
 
 namespace CobiHw.App.Devices;
 
+/// <summary>State of the network devices window: one tab per monitored device, plus the public IP lookup.</summary>
 public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposable
 {
     private readonly Func<IReadOnlyList<NetworkDeviceInfo>> _listDevices;
@@ -18,10 +19,17 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
     private NetworkSettings _settings;
     private NetworkSnapshot? _traffic;
     private IReadOnlyList<NetworkDeviceInfo> _devices = [];
+    // Only the latest reload is applied when several overlap.
     private int _loadVersion;
+    // Skips a Wi-Fi read while the previous one is still running.
     private bool _readingWifi;
     private bool _disposed;
 
+    /// <summary>Creates the state; devices load with <see cref="ReloadAsync"/>.</summary>
+    /// <param name="settings">Network settings, which decide the monitored devices.</param>
+    /// <param name="listDevices">Lists the network devices.</param>
+    /// <param name="readWifi">Reads the Wi-Fi details of a device.</param>
+    /// <param name="fetchPublicAddress">Looks up the public IP address.</param>
     public NetworkDevicesViewModel(
         NetworkSettings settings,
         Func<IReadOnlyList<NetworkDeviceInfo>> listDevices,
@@ -35,20 +43,27 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
         Localizer.Instance.CultureChanged += OnCultureChanged;
     }
 
+    /// <summary>One tab per monitored device.</summary>
     public ObservableCollection<NetworkDeviceTabViewModel> Tabs { get; } = [];
 
+    /// <summary>True when there is a device to show.</summary>
     public bool HasTabs => Tabs.Count > 0;
 
+    /// <summary>True when loading finished without devices.</summary>
     public bool HasNoTabs => !IsLoading && Tabs.Count == 0;
 
+    /// <summary>True until the first list arrives.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasNoTabs))]
     private bool _isLoading = true;
 
+    /// <summary>Selected device.</summary>
     [ObservableProperty] private NetworkDeviceTabViewModel? _selectedTab;
 
+    /// <summary>Public IP, or the lookup status.</summary>
     [ObservableProperty] private string _publicAddressText = DisplayFormat.Unavailable;
 
+    /// <summary>Lists the devices again on a background thread.</summary>
     public async Task ReloadAsync()
     {
         int version = ++_loadVersion;
@@ -65,6 +80,8 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
         await RefreshWifiAsync();
     }
 
+    /// <summary>Shows new traffic data and refreshes the Wi-Fi details.</summary>
+    /// <param name="traffic">Latest network reading.</param>
     public async Task UpdateAsync(NetworkSnapshot traffic)
     {
         _traffic = traffic;
@@ -77,12 +94,15 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
         await RefreshWifiAsync();
     }
 
+    /// <summary>Applies new network settings; tabs may be added or removed.</summary>
+    /// <param name="settings">New network settings.</param>
     public void UpdateSettings(NetworkSettings settings)
     {
         _settings = settings;
         RebuildTabs();
     }
 
+    /// <summary>Stops updates and cancels a running public IP lookup.</summary>
     public void Dispose()
     {
         _disposed = true;
@@ -90,6 +110,7 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
         DiscoverPublicAddressCommand.Cancel();
     }
 
+    /// <summary>Looks up the public IP only when asked, since it contacts an outside service.</summary>
     [RelayCommand]
     private async Task DiscoverPublicAddressAsync(CancellationToken cancellationToken)
     {
@@ -109,6 +130,7 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
         }
     }
 
+    // Updates the tabs in place, so the selection survives.
     private void RebuildTabs()
     {
         List<NetworkDeviceInfo> monitored = [.. _devices.Where(device => _settings.Devices.IsMonitored(device.Id, device.IsInternal))];
@@ -149,6 +171,7 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
         OnPropertyChanged(nameof(HasNoTabs));
     }
 
+    // Reads Wi-Fi on a background thread; results for tabs removed meanwhile are dropped.
     private async Task RefreshWifiAsync()
     {
         List<NetworkDeviceTabViewModel> tabs = [.. Tabs.Where(tab => tab.NeedsWifiReading)];
@@ -179,6 +202,7 @@ public sealed partial class NetworkDevicesViewModel : ObservableObject, IDisposa
         }
     }
 
+    // A translated status message is cleared; a real IP address stays.
     private void OnCultureChanged(object? sender, EventArgs e)
     {
         foreach (NetworkDeviceTabViewModel tab in Tabs)

@@ -5,18 +5,30 @@ using System.Security.Cryptography;
 
 namespace CobiHw.Core.Network;
 
+/// <summary>
+/// Internet speed test against speed.cloudflare.com, following the same method as Cloudflare's own page.
+/// </summary>
+/// <remarks>
+/// Requests grow in size until one takes over a second, so slow connections stop early and fast ones
+/// are measured with large transfers. Server processing time (Server-Timing header) is subtracted.
+/// </remarks>
 public sealed class CloudflareSpeedTest
 {
     public const string DownloadUrl = "https://speed.cloudflare.com/__down";
     public const string UploadUrl = "https://speed.cloudflare.com/__up";
 
+    // Latency = median of 20 empty downloads; bandwidth = 90th percentile of the samples.
     private const int LatencySamples = 20;
     private const double BandwidthPercentile = 0.9;
     private const double LatencyPercentile = 0.5;
+    // Faster transfers are too short to measure reliably and are ignored.
     private const double MinRequestMilliseconds = 10;
+    // A transfer this long is big enough: that direction is done.
     private const double FinishRequestMilliseconds = 1000;
+    // Used when the response has no Server-Timing header.
     private const double DefaultServerMilliseconds = 10;
 
+    // Same steps as speed.cloudflare.com: size in bytes and how many requests of that size.
     private static readonly BandwidthStep[] Plan =
     [
         new(Direction.Download, 100_000, 9),
@@ -34,6 +46,7 @@ public sealed class CloudflareSpeedTest
 
     private readonly HttpClient _http;
 
+    /// <summary>Uses the given client, so tests can replace the network with a fake handler.</summary>
     public CloudflareSpeedTest(HttpClient http) => _http = http;
 
     private enum Direction
@@ -42,9 +55,14 @@ public sealed class CloudflareSpeedTest
         Upload,
     }
 
+    /// <summary>Runs latency, download and upload measurements.</summary>
+    /// <param name="progress">Receives live updates; may be null.</param>
+    /// <param name="cancellationToken">Stops the test.</param>
+    /// <exception cref="SpeedTestException">The test couldn't complete.</exception>
     public async Task<SpeedTestResult> RunAsync(IProgress<SpeedTestProgress>? progress, CancellationToken cancellationToken)
     {
         progress?.Report(new SpeedTestProgress(SpeedTestStage.Latency, null, null));
+        // Warm-up requests open the connection, so the first latency sample doesn't include the TLS handshake.
         await MeasureAsync(Direction.Download, 0, null, cancellationToken).ConfigureAwait(false);
         await MeasureAsync(Direction.Download, 100_000, null, cancellationToken).ConfigureAwait(false);
 
@@ -115,6 +133,7 @@ public sealed class CloudflareSpeedTest
             Jitter(latencies));
     }
 
+    /// <summary>Linear-interpolated percentile (0.5 = median).</summary>
     internal static double Percentile(IReadOnlyCollection<double> values, double percentile)
     {
         if (values.Count == 0)
@@ -130,6 +149,7 @@ public sealed class CloudflareSpeedTest
         return sorted[lower] + (sorted[upper] - sorted[lower]) * (position - lower);
     }
 
+    /// <summary>Mean absolute difference between consecutive latency samples.</summary>
     internal static double Jitter(IReadOnlyList<double> latencies)
     {
         if (latencies.Count < 2)
@@ -146,6 +166,7 @@ public sealed class CloudflareSpeedTest
         return total / (latencies.Count - 1);
     }
 
+    /// <summary>Server processing time from the "Server-Timing: …;dur=X" header.</summary>
     internal static double ServerMilliseconds(HttpResponseMessage response)
     {
         if (!response.Headers.TryGetValues("Server-Timing", out IEnumerable<string>? values))
@@ -166,9 +187,11 @@ public sealed class CloudflareSpeedTest
         return DefaultServerMilliseconds;
     }
 
+    /// <summary>Phase a request belongs to: empty downloads are latency probes.</summary>
     internal static SpeedTestStage StageOf(bool isDownload, long bytes) =>
         !isDownload ? SpeedTestStage.Upload : bytes == 0 ? SpeedTestStage.Latency : SpeedTestStage.Download;
 
+    // Runs one request and turns network exceptions into SpeedTestException with the phase and size.
     private async Task<Sample> MeasureAsync(Direction direction, long bytes, Action<double>? onLive, CancellationToken cancellationToken)
     {
         bool isDownload = direction == Direction.Download;
@@ -207,6 +230,7 @@ public sealed class CloudflareSpeedTest
         throw new SpeedTestException(failure, StageOf(isDownload, bytes), bytes, $"{(int)response.StatusCode} {response.ReasonPhrase}");
     }
 
+    // Time to first byte is the latency; total time minus server time is the transfer time.
     private async Task<Sample> DownloadAsync(long bytes, Action<double>? onLive, CancellationToken cancellationToken)
     {
         var uri = new Uri($"{DownloadUrl}?bytes={bytes.ToString(CultureInfo.InvariantCulture)}");
@@ -225,6 +249,7 @@ public sealed class CloudflareSpeedTest
         return new Sample(received, total - server, Math.Max(0, firstByte - server));
     }
 
+    // Uploads have no separate first byte, so latency is the whole transfer.
     private async Task<Sample> UploadAsync(long bytes, Action<double>? onLive, CancellationToken cancellationToken)
     {
         using var content = new RandomContent(bytes, new LiveMeter(onLive));
@@ -258,13 +283,16 @@ public sealed class CloudflareSpeedTest
         return received;
     }
 
+    // One step of the plan.
     private readonly record struct BandwidthStep(Direction Direction, long Bytes, int Count);
 
+    // One request's measurement.
     private readonly record struct Sample(long Bytes, double TransferMilliseconds, double FirstByteMilliseconds)
     {
         public double BitsPerSecond => Bytes * 8 / (TransferMilliseconds / 1000);
     }
 
+    // Reports the live speed at most every 250 ms while a transfer runs.
     private sealed class LiveMeter
     {
         private const double ReportMilliseconds = 250;
@@ -295,8 +323,10 @@ public sealed class CloudflareSpeedTest
         }
     }
 
+    // Upload body made of random bytes, so compression on the path can't inflate the result.
     private sealed class RandomContent : HttpContent
     {
+        // One random 64 KB block, reused so random data isn't generated for every chunk.
         private static readonly byte[] Block = RandomNumberGenerator.GetBytes(64 * 1024);
 
         private readonly long _length;

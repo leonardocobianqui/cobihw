@@ -7,17 +7,30 @@ using CobiHw.App.Resources;
 
 namespace CobiHw.App.Settings;
 
+/// <summary>Groups of the Appearance tab; each opens its own editor window.</summary>
 public enum AppearanceGroup
 {
+    /// <summary>Size, corners, bars and border.</summary>
     Shape,
+    /// <summary>Background, transparency, text color and weight.</summary>
     TextColors,
+    /// <summary>Usage colors and thresholds.</summary>
     UsageColors,
 }
 
+/// <summary>Appearance and usage colors shown together on the widget.</summary>
+/// <param name="Appearance">Look of the widget.</param>
+/// <param name="Colors">Usage colors.</param>
 public sealed record AppearancePreview(AppearanceSettings Appearance, ColorSettings Colors);
 
+/// <summary>One option of the border box.</summary>
+/// <param name="Mode">Border mode.</param>
+/// <param name="Label">Translated name.</param>
 public sealed record BorderModeOption(BorderMode Mode, string Label);
 
+/// <summary>
+/// State of one appearance editor window. Every change is previewed on the widget right away; nothing is saved until "Apply".
+/// </summary>
 public sealed partial class AppearanceEditorViewModel : ObservableObject
 {
     private readonly AppearancePreview _initial;
@@ -28,10 +41,16 @@ public sealed partial class AppearanceEditorViewModel : ObservableObject
     private readonly ColorChoiceViewModel _normalColor;
     private readonly ColorChoiceViewModel _warningColor;
     private readonly ColorChoiceViewModel _criticalColor;
+    // Last valid usage colors: while a threshold is invalid, the preview keeps these.
     private ColorSettings _previewColors;
+    // Avoids sending the same preview twice.
     private AppearancePreview _lastPreview;
     private readonly bool _ready;
 
+    /// <summary>Loads the values currently shown on the widget; out-of-range values are clamped.</summary>
+    /// <param name="group">Which group this window edits.</param>
+    /// <param name="appearance">Current appearance.</param>
+    /// <param name="colors">Current usage colors.</param>
     public AppearanceEditorViewModel(AppearanceGroup group, AppearanceSettings appearance, ColorSettings colors)
     {
         Group = group;
@@ -73,18 +92,25 @@ public sealed partial class AppearanceEditorViewModel : ObservableObject
         _ready = true;
     }
 
+    /// <summary>Raised on every change, so the widget can show it.</summary>
     public event EventHandler<AppearancePreview>? Previewed;
 
+    /// <summary>Raised by "Apply" with the final values.</summary>
     public event EventHandler<AppearancePreview>? Applied;
 
+    /// <summary>Group this window edits.</summary>
     public AppearanceGroup Group { get; }
 
+    /// <summary>Shows the shape section.</summary>
     public bool IsShape => Group == AppearanceGroup.Shape;
 
+    /// <summary>Shows the colors and text section.</summary>
     public bool IsTextColors => Group == AppearanceGroup.TextColors;
 
+    /// <summary>Shows the usage colors section.</summary>
     public bool IsUsageColors => Group == AppearanceGroup.UsageColors;
 
+    /// <summary>Window title for the group.</summary>
     public string Title => Group switch
     {
         AppearanceGroup.Shape => Strings.Section_AppearanceShape,
@@ -98,10 +124,13 @@ public sealed partial class AppearanceEditorViewModel : ObservableObject
 
     public ColorChoiceViewModel BorderColor { get; }
 
+    /// <summary>Normal, warning and critical colors.</summary>
     public IReadOnlyList<ColorChoiceViewModel> LevelColors { get; }
 
+    /// <summary>Warning/critical thresholds of CPU, GPU, RAM and disk.</summary>
     public ObservableCollection<ThresholdRowViewModel> Thresholds { get; }
 
+    /// <summary>Options of the text weight box.</summary>
     public IReadOnlyList<WeightOption> WeightOptions { get; } =
     [
         new(TextWeight.Light, Strings.Weight_Light),
@@ -111,6 +140,7 @@ public sealed partial class AppearanceEditorViewModel : ObservableObject
         new(TextWeight.Bold, Strings.Weight_Bold),
     ];
 
+    /// <summary>Options of the border box.</summary>
     public IReadOnlyList<BorderModeOption> BorderModeOptions { get; } =
     [
         new(BorderMode.Off, Strings.BorderMode_Off),
@@ -138,26 +168,33 @@ public sealed partial class AppearanceEditorViewModel : ObservableObject
 
     [ObservableProperty] private bool _colorsEnabled;
 
+    /// <summary>Shows the border color, thickness and transparency controls.</summary>
     public bool HasBorder => BorderMode != BorderMode.Off;
 
     public int MaximumCornerRadius => CornerRule.MaximumRadius;
 
     public int MaximumBarRadius => AppearanceSettings.MaximumBarRadius;
 
+    /// <summary>Hint with the maximum corner radius.</summary>
     public string CornerRadiusHint => Localizer.Format(Strings.Format_CornerRadiusHint, CornerRule.MaximumRadius);
 
+    /// <summary>True while any threshold is invalid.</summary>
     public bool HasColorsError => Thresholds.Any(row => row.HasError);
 
+    /// <summary>True when the values differ from those the window opened with.</summary>
     public bool IsPending => HasColorsError || Build() != _initial;
 
+    /// <summary>Enables "Apply".</summary>
     public bool CanApply => IsPending && !HasColorsError;
 
+    // Hands the result to the settings window, which applies it.
     [RelayCommand(CanExecute = nameof(CanApply))]
     private void Apply() => Applied?.Invoke(this, Build());
 
     [RelayCommand]
     private void ResetScale() => Scale = AppearanceSettings.DefaultScale;
 
+    // Restores only this group's values.
     [RelayCommand]
     private void RestoreDefaults()
     {
@@ -195,6 +232,7 @@ public sealed partial class AppearanceEditorViewModel : ObservableObject
         }
     }
 
+    // Every change (here or in a child row) refreshes the preview.
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
@@ -228,6 +266,7 @@ public sealed partial class AppearanceEditorViewModel : ObservableObject
         Previewed?.Invoke(this, preview);
     }
 
+    // With invalid thresholds, the last valid colors are used.
     private AppearancePreview Build() => new(BuildAppearance(), HasColorsError ? _previewColors : BuildColors());
 
     private AppearanceSettings BuildAppearance() => new()

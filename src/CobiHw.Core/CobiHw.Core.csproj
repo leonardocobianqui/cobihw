@@ -4,13 +4,21 @@
     <TargetFramework>net10.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Required by the LibraryImport source generator. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- ETW for the FPS reading. buildTransitive is excluded so the native helper DLLs (KernelTraceControl, msdia140) are not copied: real-time sessions don't use them. -->
     <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.2.8" ExcludeAssets="buildTransitive" />
+    <!-- WMI queries for network adapter details. -->
     <PackageReference Include="System.Management" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Lets the test project reach internal types without making them public. -->
+    <InternalsVisibleTo Include="CobiHw.Tests" />
   </ItemGroup>
 
 </Project>

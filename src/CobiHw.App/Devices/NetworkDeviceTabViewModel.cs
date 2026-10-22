@@ -6,6 +6,7 @@ using CobiHw.Core.Network;
 
 namespace CobiHw.App.Devices;
 
+/// <summary>One device in the network devices window: general details plus a Wi-Fi section.</summary>
 public sealed partial class NetworkDeviceTabViewModel : ObservableObject
 {
     private readonly DetailRow _status = new(nameof(Strings.Device_Status));
@@ -23,10 +24,13 @@ public sealed partial class NetworkDeviceTabViewModel : ObservableObject
     private readonly DetailRow _bandChannel = new(nameof(Strings.Wifi_BandChannel));
     private readonly DetailRow _standard = new(nameof(Strings.Wifi_Standard));
     private readonly DetailRow _linkRates = new(nameof(Strings.Wifi_LinkRates));
+    // Latest data from each source; each one can update on its own.
     private NetworkDeviceInfo? _device;
     private DeviceTraffic? _traffic;
     private WifiStatus? _wifi;
 
+    /// <summary>Creates the tab for a device.</summary>
+    /// <param name="id">Device id.</param>
     public NetworkDeviceTabViewModel(Guid id)
     {
         Id = id;
@@ -34,28 +38,44 @@ public sealed partial class NetworkDeviceTabViewModel : ObservableObject
         WifiRows = [_ssid, _signal, _bandChannel, _standard, _linkRates];
     }
 
+    /// <summary>Device id.</summary>
     public Guid Id { get; }
 
+    /// <summary>General rows, in display order.</summary>
     public IReadOnlyList<DetailRow> Rows { get; }
 
+    /// <summary>Wi-Fi rows, shown only while connected.</summary>
     public IReadOnlyList<DetailRow> WifiRows { get; }
 
+    /// <summary>True while the device is connected.</summary>
     public bool IsConnected => _device?.IsConnected == true;
 
+    /// <summary>True when the Wi-Fi details should be read.</summary>
     public bool NeedsWifiReading => IsWifi && IsConnected;
 
+    /// <summary>Connection name, e.g. "Wi-Fi".</summary>
     [ObservableProperty] private string _name = string.Empty;
 
+    /// <summary>Adapter model.</summary>
+    [ObservableProperty] private string _adapterName = string.Empty;
+
+    /// <summary>True for Wi-Fi devices.</summary>
     [ObservableProperty] private bool _isWifi;
 
+    /// <summary>Shows the Wi-Fi rows.</summary>
     [ObservableProperty] private bool _showWifiRows;
 
+    /// <summary>Shows the button that opens the location settings.</summary>
     [ObservableProperty] private bool _showLocationButton;
 
+    /// <summary>Why there are no Wi-Fi details, or null.</summary>
     [ObservableProperty] private string? _wifiMessage;
 
+    /// <summary>Shows new device data.</summary>
+    /// <param name="device">Device data.</param>
     public void Update(NetworkDeviceInfo device)
     {
+        // Connection changed: the old Wi-Fi reading no longer applies.
         if (_device?.IsConnected != device.IsConnected)
         {
             _wifi = null;
@@ -65,18 +85,23 @@ public sealed partial class NetworkDeviceTabViewModel : ObservableObject
         Refresh();
     }
 
+    /// <summary>Shows new traffic data.</summary>
+    /// <param name="traffic">Traffic of this device, or null.</param>
     public void UpdateTraffic(DeviceTraffic? traffic)
     {
         _traffic = traffic;
         RefreshTraffic();
     }
 
+    /// <summary>Shows a new Wi-Fi reading.</summary>
+    /// <param name="wifi">Wi-Fi state and details.</param>
     public void UpdateWifi(WifiStatus wifi)
     {
         _wifi = wifi;
         RefreshWifi();
     }
 
+    /// <summary>Rebuilds labels and values after a language change.</summary>
     public void RefreshTexts()
     {
         foreach (DetailRow row in Rows.Concat(WifiRows))
@@ -95,6 +120,7 @@ public sealed partial class NetworkDeviceTabViewModel : ObservableObject
         }
 
         Name = device.Name;
+        AdapterName = device.Description;
         _status.Value = Localizer.Format(
             Strings.Format_StatusKind,
             device.IsConnected ? Strings.Status_Connected : Strings.Status_Disconnected,
@@ -105,6 +131,7 @@ public sealed partial class NetworkDeviceTabViewModel : ObservableObject
         _gateway.Value = DisplayFormat.Lines(device.Gateways);
         _dns.Value = DisplayFormat.Lines(device.DnsServers);
         _mac.Value = device.MacAddress ?? string.Empty;
+        // Wi-Fi link rates are in the Wi-Fi section.
         _linkSpeed.Value = device.Kind == NetworkDeviceKind.Ethernet && device.LinkSpeedBitsPerSecond is long bits
             ? DisplayFormat.LinkRate(bits / 1_000_000.0)
             : string.Empty;
@@ -123,13 +150,14 @@ public sealed partial class NetworkDeviceTabViewModel : ObservableObject
         }
 
         _currentSpeed.Value = DisplayFormat.UpDown(
-            DisplayFormat.MegabitsPerSecond(_traffic?.DownloadBytesPerSecond),
-            DisplayFormat.MegabitsPerSecond(_traffic?.UploadBytesPerSecond));
+            DisplayFormat.NetworkRate(_traffic?.DownloadBytesPerSecond),
+            DisplayFormat.NetworkRate(_traffic?.UploadBytesPerSecond));
         _session.Value = _traffic is null
             ? DisplayFormat.Unavailable
             : DisplayFormat.UpDown(DisplayFormat.Size(_traffic.SessionReceivedBytes), DisplayFormat.Size(_traffic.SessionSentBytes));
     }
 
+    // Recent Windows versions need location permission to read Wi-Fi details.
     private void RefreshWifi()
     {
         WifiStatus? wifi = !IsWifi ? null : IsConnected ? _wifi : WifiStatus.Disconnected;

@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
+using CobiHw.App.About;
 using Microsoft.Win32;
 using CobiHw.App.Devices;
 using CobiHw.App.Localization;
@@ -18,14 +19,26 @@ using Forms = System.Windows.Forms;
 
 namespace CobiHw.App;
 
+/// <summary>
+/// Application entry: loads the settings, creates the widget, the tray icon and the background loops, and connects every window.
+/// Runs as a single instance per user session; launching it again just shows the widget.
+/// </summary>
 public partial class App : Application
 {
     private static readonly TimeSpan SampleInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan AutoSaveInterval = TimeSpan.FromMinutes(1);
+    // How long to wait for a settings file another process is writing.
+    private static readonly TimeSpan SettingsLoadPatience = TimeSpan.FromSeconds(5);
+    // While the file stays busy, checks it again at this interval.
+    private static readonly TimeSpan SettingsRetryInterval = TimeSpan.FromSeconds(5);
+    // The last save on exit waits at most this long for a busy file.
+    private static readonly TimeSpan ExitSavePatience = TimeSpan.FromSeconds(2);
     private static readonly TimeSpan PingInterval = TimeSpan.FromSeconds(5);
     private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(2);
+    // Long enough for the speed test transfers.
     private static readonly TimeSpan HttpRequestTimeout = TimeSpan.FromSeconds(60);
     private static readonly Uri IconResource = new("pack://application:,,,/Assets/app.ico");
+    // ERROR_CANCELLED: the user declined the UAC prompt.
     private const int ErrorCancelled = 1223;
 
     private readonly CancellationTokenSource _shutdown = new();
@@ -41,38 +54,54 @@ public partial class App : Application
     private SettingsWindow? _settingsWindow;
     private SettingsViewModel? _settingsViewModel;
     private NetworkDevicesWindow? _networkDevicesWindow;
+    private AboutWindow? _aboutWindow;
     private NetworkDevicesViewModel? _networkDevicesViewModel;
+    // Blocks a second open while the device list is loading.
     private bool _openingSettings;
+    // Only the first unhandled error is shown.
+    private bool _showingError;
     private DispatcherTimer? _autoSaveTimer;
     private FpsMonitor? _fps;
+    // True while the UAC prompt is open.
     private bool _fpsPermissionPending;
+    // Read by OnExit: restart elevated (FPS), or restart to load a settings file that was busy.
     private bool _relaunchElevated;
+    private bool _relaunchAfterLoad;
+    private string[] _startupArguments = [];
+    private DispatcherTimer? _settingsRetryTimer;
 
+    // Path of the running .exe; the scheduled task and the startup entry point to it.
     private static string ExecutablePath => Environment.ProcessPath
-        ?? throw new InvalidOperationException("O caminho do executável não está disponível.");
+        ?? throw new InvalidOperationException("The executable path is not available.");
 
+    /// <summary>Starts the app: settings, widget, tray icon and background loops.</summary>
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
         DispatcherUnhandledException += OnDispatcherUnhandledException;
 
+        _startupArguments = e.Args;
         string? settingsPath = ElevatedTask.SettingsPathFrom(e.Args);
 
+        // Elevated helper run: only registers the FPS task and exits with the result.
         if (e.Args.Contains(ElevatedTask.RegisterArgument))
         {
-            Shutdown(settingsPath is not null && ElevatedTask.Register(ExecutablePath, settingsPath) ? 0 : 1);
+            Shutdown(settingsPath is not null && RegisterTask(settingsPath) ? 0 : 1);
             return;
         }
 
-        _settingsStore = settingsPath is null ? SettingsStore.CreateBesideExecutable() : SettingsStore.At(settingsPath);
-        _settings = _settingsStore.Load();
+        ProfileIdentity identity = ProfileIdentity.Current();
+        _settingsStore = settingsPath is null ? SettingsStore.CreateBesideExecutable(identity) : SettingsStore.At(settingsPath, identity);
+        _settings = _settingsStore.Load(SettingsLoadPatience);
 
+        // With FPS on, a normal launch hands over to the elevated scheduled task (no UAC prompt) and exits.
         if (settingsPath is null && CanRelaunchElevated() && ElevatedTask.Run())
         {
             Shutdown();
             return;
         }
 
+        // Another instance is running and was asked to show its widget.
         _singleInstance = SingleInstance.TryAcquire();
         if (_singleInstance is null)
         {
@@ -99,7 +128,7 @@ public partial class App : Application
             SnapToEdges = _settings.SnapToEdges,
             ScalePercent = ResizeRule.ClampPercent(_settings.Appearance.Scale),
         };
-        _window.RestorePosition(_settings.WindowLeft, _settings.WindowTop);
+        _window.RestorePosition(_settings.WindowX, _settings.WindowY, _settings.WindowLeft, _settings.WindowTop);
         _window.ApplyMode(_settings.Mode);
         _window.ApplyClickThrough(_settings.ClickThrough, _settings.InteractionKey);
         _window.DragCompleted += (_, _) => AfterWindowMoved();
@@ -117,6 +146,7 @@ public partial class App : Application
         _trayIcon.LockPositionToggled += (_, locked) => ChangePositionLock(locked);
         _trayIcon.ClickThroughToggled += (_, enabled) => ChangeClickThrough(enabled);
         _trayIcon.SettingsRequested += (_, _) => OpenSettingsWindow();
+        _trayIcon.AboutRequested += (_, _) => OpenAboutWindow();
         _trayIcon.NetworkDevicesRequested += (_, _) => OpenNetworkDevicesWindow();
         _trayIcon.SpeedTestRequested += (_, _) => StartSpeedTest();
         _trayIcon.ResetNetworkRequested += (_, _) => ResetNetworkSession();
@@ -133,6 +163,12 @@ public partial class App : Application
         _autoSaveTimer.Tick += (_, _) => SaveSettings();
         _autoSaveTimer.Start();
 
+        // The file is busy: runs with defaults and relaunches once it can be read.
+        if (_settingsStore.Access == SettingsAccess.FileInUse)
+        {
+            WatchSettingsFile();
+        }
+
         if (_settings.Display.ShowFps)
         {
             EnableFps();
@@ -140,14 +176,21 @@ public partial class App : Application
 
         RunSamplingLoop(_monitor, _viewModel, _shutdown.Token);
         RunPingLoop(_viewModel, _shutdown.Token);
+
+        if (_settingsStore.Access == SettingsAccess.FolderNotWritable)
+        {
+            MessageBox.Show(Strings.Settings_FolderReadOnly, TrayTooltip.Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
+    /// <summary>Stops the loops, saves the settings, releases resources and relaunches if requested.</summary>
     protected override void OnExit(ExitEventArgs e)
     {
         _speedTest?.RunCancelCommand.Execute(null);
         _shutdown.Cancel();
         _autoSaveTimer?.Stop();
-        SaveSettings();
+        _settingsRetryTimer?.Stop();
+        SaveSettings(ExitSavePatience);
         SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
         _trayIcon?.Dispose();
         _fps?.Dispose();
@@ -156,14 +199,60 @@ public partial class App : Application
         _singleInstance?.Dispose();
         _shutdown.Dispose();
 
+        // Runs after the single-instance lock is released, so the new process can take it.
         if (_relaunchElevated)
         {
             ElevatedTask.Run();
+        }
+        else if (_relaunchAfterLoad)
+        {
+            Relaunch();
         }
 
         base.OnExit(e);
     }
 
+    // Runs in the elevated helper; the language is loaded so the task description is translated.
+    private static bool RegisterTask(string settingsPath)
+    {
+        Localizer.Instance.SetLanguage(SettingsStore.At(settingsPath, ProfileIdentity.Current()).Load().Language);
+        return ElevatedTask.Register(ExecutablePath, settingsPath);
+    }
+
+    private void WatchSettingsFile()
+    {
+        _settingsRetryTimer = new DispatcherTimer { Interval = SettingsRetryInterval };
+        _settingsRetryTimer.Tick += (_, _) => RetrySettingsFile();
+        _settingsRetryTimer.Start();
+    }
+
+    // Waits for the settings window to close, so pending edits aren't lost.
+    private void RetrySettingsFile()
+    {
+        if (_settingsStore is null || _settingsWindow is not null || !_settingsStore.CanRead())
+        {
+            return;
+        }
+
+        _settingsRetryTimer?.Stop();
+        _relaunchAfterLoad = true;
+        RequestExit();
+    }
+
+    // Starts a new copy with the same arguments.
+    private void Relaunch()
+    {
+        var startInfo = new ProcessStartInfo(ExecutablePath);
+
+        foreach (string argument in _startupArguments)
+        {
+            startInfo.ArgumentList.Add(argument);
+        }
+
+        Process.Start(startInfo)?.Dispose();
+    }
+
+    // One shared client for the speed test, the update check and the public IP.
     private static HttpClient CreateHttpClient()
     {
         var http = new HttpClient { Timeout = HttpRequestTimeout };
@@ -171,6 +260,7 @@ public partial class App : Application
         return http;
     }
 
+    // Double-click order: full → compact horizontal → compact vertical.
     private static ViewLayout NextLayout(ViewLayout current) => current switch
     {
         ViewLayout.Full => ViewLayout.CompactHorizontal,
@@ -197,9 +287,11 @@ public partial class App : Application
 
     private void ShowWindow() => _window?.Show();
 
+    // Closes the other windows first; if the settings window cancels its close (pending changes), the app keeps running.
     private void RequestExit()
     {
         _networkDevicesWindow?.Close();
+        _aboutWindow?.Close();
         _settingsWindow?.Close();
 
         if (_settingsWindow is null)
@@ -208,12 +300,14 @@ public partial class App : Application
         }
     }
 
+    // Saves the new position and updates the monitor box in the settings window.
     private void AfterWindowMoved()
     {
         SaveSettings();
         _settingsViewModel?.SyncGeneral(CurrentGeneral());
     }
 
+    // After a change from the tray menu: refreshes the menu and the settings window, then saves.
     private void AfterGeneralChange()
     {
         RefreshTrayMenu();
@@ -221,6 +315,7 @@ public partial class App : Application
         SaveSettings();
     }
 
+    // Change* methods come from the tray menu; Set* methods only apply the value.
     private void ChangeMode(WidgetMode mode)
     {
         SetMode(mode);
@@ -315,6 +410,7 @@ public partial class App : Application
         }
     }
 
+    // Network devices are listed on a background thread; the window opens when they arrive.
     private async void OpenSettingsWindow()
     {
         if (_settingsWindow is not null)
@@ -345,11 +441,14 @@ public partial class App : Application
             return;
         }
 
-        var settingsViewModel = new SettingsViewModel(CurrentSettings(), _viewModel.AvailableDisks, ListMonitors(), networkDevices, _speedTest);
+        var settingsViewModel = new SettingsViewModel(CurrentSettings(), _viewModel.AvailableDisks, _viewModel.AvailableGpus, _viewModel.HasBattery, ListMonitors(), networkDevices, _speedTest);
         _settingsViewModel = settingsViewModel;
         settingsViewModel.Applied += (_, saved) => ApplySavedSettings(saved);
         settingsViewModel.AppearanceEditRequested += (_, group) => EditAppearance(group);
         settingsViewModel.AppearancePreviewed += (_, preview) => PreviewAppearance(preview);
+        settingsViewModel.RemoveOtherProfilesRequested += (_, _) => RemoveOtherProfiles();
+        settingsViewModel.RemoveFromWindowsRequested += (_, _) => RemoveFromWindows();
+        settingsViewModel.HasOtherProfiles = _settingsStore?.ListOtherProfiles().Count > 0;
 
         var settingsWindow = new SettingsWindow(_settings.Theme) { DataContext = settingsViewModel };
         _settingsWindow = settingsWindow;
@@ -382,6 +481,7 @@ public partial class App : Application
         _settingsWindow.Activate();
     }
 
+    // Opens the editor as a dialog; afterwards the widget shows what the settings window still has pending.
     private void EditAppearance(AppearanceGroup group)
     {
         if (_settingsWindow is null || _settingsViewModel is null)
@@ -405,6 +505,7 @@ public partial class App : Application
         ShowPendingAppearance(settingsViewModel);
     }
 
+    // Keeps previewing changes not applied yet, or goes back to the saved look.
     private void ShowPendingAppearance(SettingsViewModel? settingsViewModel)
     {
         if (settingsViewModel?.PendingAppearance is AppearancePreview pending)
@@ -427,6 +528,7 @@ public partial class App : Application
         }
     }
 
+    // "Apply" in the editor saves right away.
     private void CommitAppearance(AppearancePreview preview)
     {
         _settings.Appearance = preview.Appearance;
@@ -435,6 +537,7 @@ public partial class App : Application
         SaveSettings();
     }
 
+    // Back to the saved appearance.
     private void EndAppearancePreview()
     {
         _viewModel?.UpdateSettings(CurrentSettings());
@@ -445,6 +548,7 @@ public partial class App : Application
         }
     }
 
+    // The list reloads whenever Windows reports an address or connectivity change.
     private void OpenNetworkDevicesWindow()
     {
         if (_networkDevicesWindow is not null)
@@ -485,6 +589,46 @@ public partial class App : Application
         ReloadNetworkDevices();
     }
 
+    private void OpenAboutWindow()
+    {
+        if (_aboutWindow is not null)
+        {
+            _aboutWindow.Activate();
+            return;
+        }
+
+        if (_http is null)
+        {
+            return;
+        }
+
+        var checker = new UpdateChecker(_http);
+        var viewModel = new AboutViewModel(checker.LatestAsync, OpenExternal);
+        var window = new AboutWindow(_settings.Theme, IconResource) { DataContext = viewModel };
+
+        _aboutWindow = window;
+        window.Closed += (_, _) =>
+        {
+            viewModel.Dispose();
+            _aboutWindow = null;
+        };
+        window.Show();
+        window.Activate();
+    }
+
+    // Opens a link or folder with its default app.
+    private void OpenExternal(string target)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(target) { UseShellExecute = true })?.Dispose();
+        }
+        catch (Win32Exception)
+        {
+            MessageBox.Show(Localizer.Format(Strings.Format_OpenFailed, target), AppInfo.Name, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
     private void OnNetworkAddressChanged(object? sender, EventArgs e) => Dispatcher.InvokeAsync(ReloadNetworkDevices);
 
     private void OnNetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e) => Dispatcher.InvokeAsync(ReloadNetworkDevices);
@@ -505,6 +649,7 @@ public partial class App : Application
         }
     }
 
+    // A listing error just shows an empty list.
     private static IReadOnlyList<NetworkDeviceInfo> ListNetworkDevices()
     {
         try
@@ -517,6 +662,7 @@ public partial class App : Application
         }
     }
 
+    // RestoreBounds keeps the normal size even when the window is maximized.
     private void RememberSettingsSize(Rect bounds)
     {
         if (bounds.IsEmpty)
@@ -529,6 +675,7 @@ public partial class App : Application
         SaveSettings();
     }
 
+    // Called by "Apply" in the settings window.
     private void ApplySavedSettings(SavedSettings saved)
     {
         bool fpsWasShown = _settings.Display.ShowFps;
@@ -563,9 +710,11 @@ public partial class App : Application
         SaveSettings();
     }
 
+    // True when the scheduled task starts this same .exe with this same settings file.
     private bool CanRelaunchElevated() =>
-        _settings.Display.ShowFps && !Elevation.IsElevated && _settings.FpsTaskPath == ExecutablePath;
+        _settings.Display.ShowFps && !Elevation.IsElevated && _settingsStore is not null && ElevatedTask.PointsTo(ExecutablePath, _settingsStore.FilePath);
 
+    // FPS needs admin rights; without them, permission is requested first.
     private void EnableFps()
     {
         if (Elevation.IsElevated)
@@ -578,6 +727,7 @@ public partial class App : Application
         }
     }
 
+    // Makes sure the task points here, so the next start is already elevated.
     private void StartFps()
     {
         if (_fps is not null || _settingsStore is null)
@@ -585,10 +735,9 @@ public partial class App : Application
             return;
         }
 
-        if (_settings.FpsTaskPath != ExecutablePath && ElevatedTask.Register(ExecutablePath, _settingsStore.FilePath))
+        if (!ElevatedTask.PointsTo(ExecutablePath, _settingsStore.FilePath))
         {
-            _settings.FpsTaskPath = ExecutablePath;
-            SaveSettings();
+            ElevatedTask.Register(ExecutablePath, _settingsStore.FilePath);
         }
 
         try
@@ -601,19 +750,20 @@ public partial class App : Application
         }
     }
 
+    // Also removes the task, so the app stops starting elevated.
     private void DisableFps()
     {
         _fps?.Dispose();
         _fps = null;
         _viewModel?.ApplyFps(null);
 
-        if (_settings.FpsTaskPath is not null)
+        if (_settingsStore is not null && ElevatedTask.PointsTo(ExecutablePath, _settingsStore.FilePath))
         {
             ElevatedTask.Delete();
-            _settings.FpsTaskPath = null;
         }
     }
 
+    // Registers the task through a UAC prompt, then restarts elevated.
     private async void RequestFpsPermission()
     {
         if (_fpsPermissionPending || _settingsStore is null)
@@ -645,10 +795,10 @@ public partial class App : Application
             return;
         }
 
-        _settings.FpsTaskPath = ExecutablePath;
         RelaunchElevated();
     }
 
+    // Runs this .exe as admin only to create the task; returns the notice to show, or null on success.
     private static async Task<string?> RegisterTaskElevatedAsync(string settingsPath)
     {
         var startInfo = new ProcessStartInfo(ExecutablePath, ElevatedTask.RegisterArguments(settingsPath))
@@ -675,6 +825,7 @@ public partial class App : Application
         }
     }
 
+    // If the settings window stays open (pending changes), the restart is postponed and the user is told.
     private void RelaunchElevated()
     {
         _relaunchElevated = true;
@@ -687,6 +838,7 @@ public partial class App : Application
         }
     }
 
+    // Turns FPS off and explains why.
     private void RejectFps(string noticeKey)
     {
         _settings.Display = _settings.Display with { ShowFps = false };
@@ -705,6 +857,7 @@ public partial class App : Application
         SaveSettings();
     }
 
+    // Applies the General tab.
     private void ApplyGeneral(GeneralSettings general)
     {
         _settings.Language = general.Language;
@@ -712,6 +865,7 @@ public partial class App : Application
         _settings.Theme = general.Theme;
         _settingsWindow?.ApplyTheme(general.Theme);
         _networkDevicesWindow?.ApplyTheme(general.Theme);
+        _aboutWindow?.ApplyTheme(general.Theme);
         ApplyTrayTheme();
 
         if (general.Mode != _settings.Mode)
@@ -732,6 +886,7 @@ public partial class App : Application
 
     private SavedSettings CurrentSettings() => new(_settings.Display, _settings.Colors, _settings.Network, _settings.Appearance, CurrentGeneral());
 
+    // "Start with Windows" is read from the registry, not from the settings file.
     private GeneralSettings CurrentGeneral() => new()
     {
         Language = _settings.Language,
@@ -762,6 +917,7 @@ public partial class App : Application
         }
     }
 
+    // Keeps the tray tooltip in sync.
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(MainViewModel.TrayText) && _viewModel is not null)
@@ -770,6 +926,7 @@ public partial class App : Application
         }
     }
 
+    // Disables the tray menu item while a test runs.
     private void OnSpeedTestCommandPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(IAsyncRelayCommand.IsRunning) && _speedTest is not null)
@@ -778,6 +935,7 @@ public partial class App : Application
         }
     }
 
+    // The result is saved; a notification shows only when the settings window isn't open to display it.
     private void OnSpeedTestCompleted(SpeedTestResult result)
     {
         _settings.LastSpeedTest = result;
@@ -806,6 +964,7 @@ public partial class App : Application
     private void ApplyTrayTheme() =>
         _trayIcon?.ApplyTheme(WindowsTheme.IsDark(_settings.Theme, WindowsTheme.AppsUseDarkTheme()));
 
+    // Follows the Windows light/dark switch when the theme is "System".
     private void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
     {
         if (e.Category == UserPreferenceCategory.General && _settings.Theme == AppTheme.System)
@@ -817,19 +976,115 @@ public partial class App : Application
     private void RefreshTrayMenu() =>
         _trayIcon?.UpdateMenu(_settings);
 
-    private void SaveSettings()
+    private void SaveSettings() => SaveSettings(TimeSpan.Zero);
+
+    // Saves the live window position and network totals together with the settings.
+    private void SaveSettings(TimeSpan patience)
     {
         if (_settingsStore is null || _window is null || _monitor is null)
         {
             return;
         }
 
-        _settings.WindowLeft = _window.Left;
-        _settings.WindowTop = _window.Top;
-        _settings.NetworkSession = _monitor.ExportNetworkSession();
-        _settingsStore.Save(_settings);
+        CaptureLiveState(_window, _monitor);
+        _settingsStore.Save(_settings, patience);
     }
 
+    // The position is saved in pixels, so the old DIP fields are cleared.
+    private void CaptureLiveState(MainWindow window, HardwareMonitor monitor)
+    {
+        if (window.PixelPosition is Interop.User32.Point position)
+        {
+            _settings.WindowX = position.X;
+            _settings.WindowY = position.Y;
+            _settings.WindowLeft = null;
+            _settings.WindowTop = null;
+        }
+
+        _settings.NetworkSession = monitor.ExportNetworkSession();
+    }
+
+    // Lists the other profiles and deletes them after confirmation.
+    private void RemoveOtherProfiles()
+    {
+        if (_settingsStore is null || _window is null || _monitor is null || _settingsViewModel is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<StoredProfile> others = _settingsStore.ListOtherProfiles();
+
+        if (others.Count > 0)
+        {
+            string list = string.Join(Environment.NewLine, others.Select(profile =>
+                Localizer.Format(Strings.Format_StoredProfile, profile.Computer, profile.UserName, profile.LastUsed?.LocalDateTime.ToString("d", Localizer.Instance.Culture) ?? DisplayFormat.Unavailable)));
+            string question = string.Join(Environment.NewLine + Environment.NewLine, Strings.RemoveProfiles_Question, list, Strings.RemoveProfiles_Keep);
+
+            if (MessageBox.Show(_settingsWindow!, question, Strings.Settings_Title, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            CaptureLiveState(_window, _monitor);
+
+            if (!_settingsStore.RemoveOtherProfiles(_settings))
+            {
+                MessageBox.Show(_settingsWindow!, Strings.RemoveProfiles_Failed, Strings.Settings_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        _settingsViewModel.HasOtherProfiles = _settingsStore.ListOtherProfiles().Count > 0;
+    }
+
+    // Removes what the app registered in Windows: the startup entry and the FPS task.
+    private void RemoveFromWindows()
+    {
+        if (_settingsWindow is null || _settingsViewModel is null)
+        {
+            return;
+        }
+
+        bool startup = StartupRegistration.IsEnabled();
+        bool task = ElevatedTask.Exists();
+
+        if (!startup && !task)
+        {
+            MessageBox.Show(_settingsWindow, Strings.RemoveFromWindows_Nothing, Strings.Settings_Title, MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        IEnumerable<string> items = new[] { (startup, Strings.RemoveFromWindows_Startup), (task, Strings.RemoveFromWindows_FpsTask) }
+            .Where(item => item.Item1)
+            .Select(item => Localizer.Format(Strings.Format_ListItem, item.Item2));
+        string question = string.Join(Environment.NewLine + Environment.NewLine, Strings.RemoveFromWindows_Question, string.Join(Environment.NewLine, items), Strings.RemoveFromWindows_Note);
+
+        if (MessageBox.Show(_settingsWindow, question, Strings.Settings_Title, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        SetStartWithWindows(false);
+        _settingsViewModel.SyncGeneral(CurrentGeneral());
+
+        if (_settings.Display.ShowFps)
+        {
+            _settings.Display = _settings.Display with { ShowFps = false };
+            DisableFps();
+            _viewModel?.UpdateSettings(CurrentSettings());
+            _settingsViewModel.SyncFpsOff();
+        }
+
+        bool removed = !ElevatedTask.Exists() || ElevatedTask.Delete();
+        SaveSettings();
+        MessageBox.Show(
+            _settingsWindow,
+            removed ? Strings.RemoveFromWindows_Done : Strings.RemoveFromWindows_Failed,
+            Strings.Settings_Title,
+            MessageBoxButton.OK,
+            removed ? MessageBoxImage.Information : MessageBoxImage.Warning);
+    }
+
+    // Samples once per second on a background thread, then updates the UI on the UI thread.
     private async void RunSamplingLoop(HardwareMonitor monitor, MainViewModel viewModel, CancellationToken cancellationToken)
     {
         using var timer = new PeriodicTimer(SampleInterval);
@@ -849,6 +1104,7 @@ public partial class App : Application
         }
     }
 
+    // Pings right away and then every 5 seconds; a result is dropped if the host changed meanwhile.
     private async void RunPingLoop(MainViewModel viewModel, CancellationToken cancellationToken)
     {
         using var timer = new PeriodicTimer(PingInterval);
@@ -857,10 +1113,15 @@ public partial class App : Application
         {
             do
             {
+                if (!_settings.Network.PingEnabled)
+                {
+                    continue;
+                }
+
                 string host = _settings.Network.PingHost;
                 long? roundTrip = await LatencyProbe.PingAsync(host, PingTimeout, cancellationToken);
 
-                if (host == _settings.Network.PingHost)
+                if (_settings.Network.PingEnabled && host == _settings.Network.PingHost)
                 {
                     viewModel.ApplyPing(roundTrip);
                 }
@@ -872,15 +1133,34 @@ public partial class App : Application
         }
     }
 
+    // Any unhandled UI error shows the error window and closes the app.
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        MessageBox.Show(
-            e.Exception.ToString(),
-            Strings.App_UnexpectedError,
-            MessageBoxButton.OK,
-            MessageBoxImage.Error);
-
         e.Handled = true;
+
+        if (!_showingError)
+        {
+            _showingError = true;
+            ShowError(e.Exception);
+        }
+
         Shutdown(1);
+    }
+
+    // Falls back to a message box if the error window itself fails.
+    private void ShowError(Exception exception)
+    {
+        try
+        {
+            new ErrorWindow(exception, _settings.Theme).ShowDialog();
+        }
+        catch (Exception windowException)
+        {
+            MessageBox.Show(
+                $"{AppInfo.DiagnosticHeader}{Environment.NewLine}{Environment.NewLine}{exception}{Environment.NewLine}{Environment.NewLine}{windowException}",
+                Strings.App_UnexpectedError,
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
     }
 }

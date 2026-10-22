@@ -3,11 +3,16 @@ using System.Runtime.InteropServices;
 
 namespace CobiHw.Core.Network;
 
+/// <summary>
+/// Reads the "Hidden" flag of every adapter from WMI (MSFT_NetAdapter), the same list Get-NetAdapter uses.
+/// </summary>
 internal static class NetAdapterQuery
 {
     private const string Namespace = @"root\StandardCimv2";
     private const string Query = "SELECT InterfaceGuid, Hidden FROM MSFT_NetAdapter";
 
+    /// <summary>Lists adapters and whether each one is hidden.</summary>
+    /// <returns>The list, or <see langword="null"/> when WMI is unavailable or access is denied.</returns>
     public static IReadOnlyList<VisibleAdapter>? Read()
     {
         try

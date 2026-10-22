@@ -155,7 +155,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Session   ↓ {0}   ↑ {1}.
+        ///   Looks up a localized string similar to Session ↓ {0} · ↑ {1}.
         /// </summary>
         internal static string Format_Session {
             get {
@@ -209,16 +209,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0:0.0} Mbps.
-        /// </summary>
-        internal static string Format_Bandwidth {
-            get {
-                return ResourceManager.GetString("Format_Bandwidth", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to {0:0.00} Mbps.
+        ///   Looks up a localized string similar to {0} Mbps.
         /// </summary>
         internal static string Format_NetworkRate {
             get {
@@ -236,7 +227,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0:0.##} {1}.
+        ///   Looks up a localized string similar to {0} {1}.
         /// </summary>
         internal static string Format_Size {
             get {
@@ -290,7 +281,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Speed test.
+        ///   Looks up a localized string similar to Internet speed test.
         /// </summary>
         internal static string SpeedTest_Title {
             get {
@@ -299,7 +290,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to No test yet.
+        ///   Looks up a localized string similar to No test run.
         /// </summary>
         internal static string SpeedTest_NoneYet {
             get {
@@ -308,7 +299,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to No test yet..
+        ///   Looks up a localized string similar to No test run..
         /// </summary>
         internal static string SpeedTest_NoneYetStatus {
             get {
@@ -578,6 +569,15 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Network.
+        /// </summary>
+        internal static string Tray_Network {
+            get {
+                return ResourceManager.GetString("Tray_Network", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Settings....
         /// </summary>
         internal static string Tray_Settings {
@@ -619,6 +619,51 @@ namespace CobiHw.App.Resources {
         internal static string Tray_Exit {
             get {
                 return ResourceManager.GetString("Tray_Exit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong and cobihw needs to close. If you want to report the problem, copy the details and send them along..
+        /// </summary>
+        internal static string Error_Message {
+            get {
+                return ResourceManager.GetString("Error_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Technical details.
+        /// </summary>
+        internal static string Error_Details {
+            get {
+                return ResourceManager.GetString("Error_Details", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy details.
+        /// </summary>
+        internal static string Error_CopyDetails {
+            get {
+                return ResourceManager.GetString("Error_CopyDetails", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copied.
+        /// </summary>
+        internal static string Error_Copied {
+            get {
+                return ResourceManager.GetString("Error_Copied", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to cobihw: opens the widget with administrator permission to measure FPS..
+        /// </summary>
+        internal static string Task_Description {
+            get {
+                return ResourceManager.GetString("Task_Description", resourceCulture);
             }
         }
 
@@ -956,6 +1001,78 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Settings file.
+        /// </summary>
+        internal static string General_SettingsFile {
+            get {
+                return ResourceManager.GetString("General_SettingsFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove settings from other computers….
+        /// </summary>
+        internal static string General_RemoveOtherProfiles {
+            get {
+                return ResourceManager.GetString("General_RemoveOtherProfiles", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deletes from the settings file the entries of other computers and Windows users and keeps only those of this computer and user..
+        /// </summary>
+        internal static string General_RemoveOtherProfilesHint {
+            get {
+                return ResourceManager.GetString("General_RemoveOtherProfilesHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the settings saved for these computers and users?.
+        /// </summary>
+        internal static string RemoveProfiles_Question {
+            get {
+                return ResourceManager.GetString("RemoveProfiles_Question", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This computer's settings stay..
+        /// </summary>
+        internal static string RemoveProfiles_Keep {
+            get {
+                return ResourceManager.GetString("RemoveProfiles_Keep", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not remove them now: the settings file is in use by another program..
+        /// </summary>
+        internal static string RemoveProfiles_Failed {
+            get {
+                return ResourceManager.GetString("RemoveProfiles_Failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to • {0} · {1} (last used: {2}).
+        /// </summary>
+        internal static string Format_StoredProfile {
+            get {
+                return ResourceManager.GetString("Format_StoredProfile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This folder doesn't allow writing the settings file. Move the cobihw folder somewhere else (for example, Documents) and open it again. No settings from this session will be saved..
+        /// </summary>
+        internal static string Settings_FolderReadOnly {
+            get {
+                return ResourceManager.GetString("Settings_FolderReadOnly", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Startup.
         /// </summary>
         internal static string General_Startup {
@@ -1037,7 +1154,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The border sits on the strip you can drag to resize the widget..
+        ///   Looks up a localized string similar to You can resize the widget by dragging its edges..
         /// </summary>
         internal static string Appearance_BorderHint {
             get {
@@ -1109,15 +1226,6 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Labels (CPU, RAM...) use a slightly dimmer text color..
-        /// </summary>
-        internal static string Appearance_LabelsHint {
-            get {
-                return ResourceManager.GetString("Appearance_LabelsHint", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Size.
         /// </summary>
         internal static string Appearance_Size {
@@ -1136,7 +1244,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to You can also drag the edges or corners of the widget. "Lock position and size" in the tray icon menu prevents changes..
+        ///   Looks up a localized string similar to You can also resize the widget by its edges. "Lock position and size" (icon menu) prevents changes..
         /// </summary>
         internal static string Appearance_ScaleHint {
             get {
@@ -1226,7 +1334,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to 8.8.8.8 is Google (default). 1.1.1.1 is Cloudflare, the same network as the speed test..
+        ///   Looks up a localized string similar to cobihw uses this address only for the ping test (like running ping 8.8.8.8 in PowerShell or Command Prompt).  8.8.8.8 -&gt; Google (default). 1.1.1.1 -&gt; Cloudflare, the same network used by the speed test. With ping measurement off, cobihw makes no other automatic network connection..
         /// </summary>
         internal static string Network_PingHint {
             get {
@@ -1253,7 +1361,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Uses Cloudflare servers. Uses about 200 MB on a 100 Mbps connection and 700 MB on a 1 Gbps one, and slows the internet down for up to 30 seconds..
+        ///   Looks up a localized string similar to Uses Cloudflare servers. Uses about 200 MB on a 100 Mbps connection and 700 MB on a 1 Gbps one. The internet may be slow or unstable during the test, which takes 10 to 30 seconds depending on the connection..
         /// </summary>
         internal static string Network_DataHint {
             get {
@@ -1397,7 +1505,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Always first in the widget. It only shows while the app in the foreground is drawing frames (games and 3D apps using DirectX 9 to 12). Needs administrator permission: Windows asks for confirmation only once..
+        ///   Looks up a localized string similar to FPS is read automatically when the app in the foreground is drawing frames. For now, only DirectX 9 to 12 are read. Windows requires administrator permission for this: it asks for confirmation only once, when you turn FPS on..
         /// </summary>
         internal static string Display_FpsHint {
             get {
@@ -1532,7 +1640,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Default (shown in the widget):.
+        ///   Looks up a localized string similar to Default device (shown in the widget):.
         /// </summary>
         internal static string Network_Default {
             get {
@@ -1541,7 +1649,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Sum of physical adapters.
+        ///   Looks up a localized string similar to Sum of devices.
         /// </summary>
         internal static string Network_PhysicalSum {
             get {
@@ -1550,7 +1658,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Checked devices appear in Network devices (tray icon menu) and can be the default. The sum of physical adapters leaves VPNs out so the same traffic is not counted twice..
+        ///   Looks up a localized string similar to Checked devices appear in Network devices (taskbar icon menu). The total ignores VPNs so the same traffic isn't counted twice..
         /// </summary>
         internal static string Network_DevicesHint {
             get {
@@ -1892,7 +2000,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to ↓ {0}   ↑ {1}.
+        ///   Looks up a localized string similar to ↓ {0} · ↑ {1}.
         /// </summary>
         internal static string Format_UpDown {
             get {
@@ -1919,7 +2027,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Asks Cloudflare which address your traffic leaves through (main route). Only when you click..
+        ///   Looks up a localized string similar to Asks Cloudflare which address your traffic leaves from (main route). No query is made automatically..
         /// </summary>
         internal static string PublicIp_Hint {
             get {
@@ -1991,7 +2099,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Each group opens in its own window. The widget shows the changes before they are saved..
+        ///   Looks up a localized string similar to Each group opens in its own window for customization. The widget shows the changes before they are saved..
         /// </summary>
         internal static string Appearance_GroupsHint {
             get {
@@ -2122,6 +2230,510 @@ namespace CobiHw.App.Resources {
         internal static string Format_TrayNetwork {
             get {
                 return ResourceManager.GetString("Format_TrayNetwork", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0:0.0} GB.
+        /// </summary>
+        internal static string Format_Gigabytes {
+            get {
+                return ResourceManager.GetString("Format_Gigabytes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to VRAM {0}.
+        /// </summary>
+        internal static string Format_GpuDedicatedMemory {
+            get {
+                return ResourceManager.GetString("Format_GpuDedicatedMemory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dedicated {0} · Shared {1}.
+        /// </summary>
+        internal static string Format_GpuIntegratedMemory {
+            get {
+                return ResourceManager.GetString("Format_GpuIntegratedMemory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Shared {0}.
+        /// </summary>
+        internal static string Format_GpuSharedMemory {
+            get {
+                return ResourceManager.GetString("Format_GpuSharedMemory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Monitored GPU:.
+        /// </summary>
+        internal static string Display_MonitoredGpu {
+            get {
+                return ResourceManager.GetString("Display_MonitoredGpu", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic.
+        /// </summary>
+        internal static string Gpu_Automatic {
+            get {
+                return ResourceManager.GetString("Gpu_Automatic", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic — {0}.
+        /// </summary>
+        internal static string Format_GpuAutomatic {
+            get {
+                return ResourceManager.GetString("Format_GpuAutomatic", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (not found).
+        /// </summary>
+        internal static string Format_GpuOptionNotFound {
+            get {
+                return ResourceManager.GetString("Format_GpuOptionNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic follows the order Windows uses for high performance: external GPU, then dedicated, then integrated..
+        /// </summary>
+        internal static string Display_GpuHint {
+            get {
+                return ResourceManager.GetString("Display_GpuHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to About cobihw.
+        /// </summary>
+        internal static string Tray_About {
+            get {
+                return ResourceManager.GetString("Tray_About", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to About cobihw.
+        /// </summary>
+        internal static string About_Title {
+            get {
+                return ResourceManager.GetString("About_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0} ({1}).
+        /// </summary>
+        internal static string Format_AboutVersion {
+            get {
+                return ResourceManager.GetString("Format_AboutVersion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0}.
+        /// </summary>
+        internal static string Format_AboutVersionOnly {
+            get {
+                return ResourceManager.GetString("Format_AboutVersionOnly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Free and open-source hardware monitor..
+        /// </summary>
+        internal static string About_Tagline {
+            get {
+                return ResourceManager.GetString("About_Tagline", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} · MIT License.
+        /// </summary>
+        internal static string Format_AboutCopyright {
+            get {
+                return ResourceManager.GetString("Format_AboutCopyright", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Website (cobihw.com).
+        /// </summary>
+        internal static string About_Website {
+            get {
+                return ResourceManager.GetString("About_Website", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub.
+        /// </summary>
+        internal static string About_GitHub {
+            get {
+                return ResourceManager.GetString("About_GitHub", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check for updates.
+        /// </summary>
+        internal static string About_CheckUpdates {
+            get {
+                return ResourceManager.GetString("About_CheckUpdates", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Checking….
+        /// </summary>
+        internal static string About_Checking {
+            get {
+                return ResourceManager.GetString("About_Checking", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You have the latest version..
+        /// </summary>
+        internal static string About_UpToDate {
+            get {
+                return ResourceManager.GetString("About_UpToDate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0} is available..
+        /// </summary>
+        internal static string Format_AboutUpdateAvailable {
+            get {
+                return ResourceManager.GetString("Format_AboutUpdateAvailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        internal static string About_Download {
+            get {
+                return ResourceManager.GetString("About_Download", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No version has been published on GitHub yet..
+        /// </summary>
+        internal static string About_NoRelease {
+            get {
+                return ResourceManager.GetString("About_NoRelease", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not check right now. Try again later..
+        /// </summary>
+        internal static string About_CheckFailed {
+            get {
+                return ResourceManager.GetString("About_CheckFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to cobihw uses the internet for the speed test and the public IP (Cloudflare), the ping (configurable address) and the update check (GitHub). It is not affiliated with these companies..
+        /// </summary>
+        internal static string About_Services {
+            get {
+                return ResourceManager.GetString("About_Services", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        internal static string About_License {
+            get {
+                return ResourceManager.GetString("About_License", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Third-party components.
+        /// </summary>
+        internal static string About_Notices {
+            get {
+                return ResourceManager.GetString("About_Notices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not open {0}.
+        /// </summary>
+        internal static string Format_OpenFailed {
+            get {
+                return ResourceManager.GetString("Format_OpenFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Battery.
+        /// </summary>
+        internal static string Metric_Battery {
+            get {
+                return ResourceManager.GetString("Metric_Battery", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Charging.
+        /// </summary>
+        internal static string Battery_Charging {
+            get {
+                return ResourceManager.GetString("Battery_Charging", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Plugged in.
+        /// </summary>
+        internal static string Battery_OnPower {
+            get {
+                return ResourceManager.GetString("Battery_OnPower", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to On battery.
+        /// </summary>
+        internal static string Battery_OnBattery {
+            get {
+                return ResourceManager.GetString("Battery_OnBattery", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} h {1:00} min left.
+        /// </summary>
+        internal static string Format_BatteryRemaining {
+            get {
+                return ResourceManager.GetString("Format_BatteryRemaining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show read (R) and write (W) speed.
+        /// </summary>
+        internal static string Display_ShowDiskSpeed {
+            get {
+                return ResourceManager.GetString("Display_ShowDiskSpeed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ↓{1} ↑{2} Mbps.
+        /// </summary>
+        internal static string Format_TrayNetworkWithoutPing {
+            get {
+                return ResourceManager.GetString("Format_TrayNetworkWithoutPing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Measure ping.
+        /// </summary>
+        internal static string Network_PingEnabled {
+            get {
+                return ResourceManager.GetString("Network_PingEnabled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove cobihw from Windows….
+        /// </summary>
+        internal static string General_RemoveFromWindows {
+            get {
+                return ResourceManager.GetString("General_RemoveFromWindows", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deletes the entries created inside Windows when FPS reading and start with Windows were turned on. Nothing else is written outside the cobihw folder..
+        /// </summary>
+        internal static string General_RemoveFromWindowsHint {
+            get {
+                return ResourceManager.GetString("General_RemoveFromWindowsHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove what cobihw registered in Windows?.
+        /// </summary>
+        internal static string RemoveFromWindows_Question {
+            get {
+                return ResourceManager.GetString("RemoveFromWindows_Question", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start with Windows.
+        /// </summary>
+        internal static string RemoveFromWindows_Startup {
+            get {
+                return ResourceManager.GetString("RemoveFromWindows_Startup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to FPS scheduled task.
+        /// </summary>
+        internal static string RemoveFromWindows_FpsTask {
+            get {
+                return ResourceManager.GetString("RemoveFromWindows_FpsTask", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to "Start with Windows" and FPS are also turned off in this computer's settings..
+        /// </summary>
+        internal static string RemoveFromWindows_Note {
+            get {
+                return ResourceManager.GetString("RemoveFromWindows_Note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to cobihw has nothing registered in Windows. To remove it, just close the program and delete its folder..
+        /// </summary>
+        internal static string RemoveFromWindows_Nothing {
+            get {
+                return ResourceManager.GetString("RemoveFromWindows_Nothing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done: nothing from cobihw is registered in Windows. To remove it, close the program and delete its folder..
+        /// </summary>
+        internal static string RemoveFromWindows_Done {
+            get {
+                return ResourceManager.GetString("RemoveFromWindows_Done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not delete the FPS scheduled task. Try again; if it keeps failing, delete the "cobihw" task in Windows Task Scheduler..
+        /// </summary>
+        internal static string RemoveFromWindows_Failed {
+            get {
+                return ResourceManager.GetString("RemoveFromWindows_Failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to • {0}.
+        /// </summary>
+        internal static string Format_ListItem {
+            get {
+                return ResourceManager.GetString("Format_ListItem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show temperature.
+        /// </summary>
+        internal static string Display_ShowGpuTemperature {
+            get {
+                return ResourceManager.GetString("Display_ShowGpuTemperature", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reads the temperature reported by the graphics driver itself. If it doesn't appear, try updating the driver. Integrated GPUs and virtual machines usually don't report it..
+        /// </summary>
+        internal static string Display_GpuTemperatureHint {
+            get {
+                return ResourceManager.GetString("Display_GpuTemperatureHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0:0} °C.
+        /// </summary>
+        internal static string Format_Celsius {
+            get {
+                return ResourceManager.GetString("Format_Celsius", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Temperature {0}.
+        /// </summary>
+        internal static string Format_GpuTemperature {
+            get {
+                return ResourceManager.GetString("Format_GpuTemperature", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} · {2} · {3}.
+        /// </summary>
+        internal static string Format_TrayLineExtra {
+            get {
+                return ResourceManager.GetString("Format_TrayLineExtra", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Gbps.
+        /// </summary>
+        internal static string Format_NetworkRateGigabits {
+            get {
+                return ResourceManager.GetString("Format_NetworkRateGigabits", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to R {0} · W {1}.
+        /// </summary>
+        internal static string Format_DiskRates {
+            get {
+                return ResourceManager.GetString("Format_DiskRates", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} KB/s.
+        /// </summary>
+        internal static string Format_KilobytesPerSecond {
+            get {
+                return ResourceManager.GetString("Format_KilobytesPerSecond", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} MB/s.
+        /// </summary>
+        internal static string Format_MegabytesPerSecond {
+            get {
+                return ResourceManager.GetString("Format_MegabytesPerSecond", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} GB/s.
+        /// </summary>
+        internal static string Format_GigabytesPerSecond {
+            get {
+                return ResourceManager.GetString("Format_GigabytesPerSecond", resourceCulture);
             }
         }
     }

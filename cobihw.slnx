@@ -1,7 +1,11 @@
 <Solution>
+  <!-- Solution in the XML format (.slnx); open it in Visual Studio or build it with dotnet build. -->
   <Folder Name="/src/">
     <Project Path="src/CobiHw.App/CobiHw.App.csproj" />
     <Project Path="src/CobiHw.ConsoleTest/CobiHw.ConsoleTest.csproj" />
     <Project Path="src/CobiHw.Core/CobiHw.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CobiHw.Tests/CobiHw.Tests.csproj" />
   </Folder>
 </Solution>

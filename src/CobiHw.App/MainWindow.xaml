@@ -23,9 +23,11 @@
         Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}"
         MouseLeftButtonDown="OnMouseLeftButtonDown">
 
+    <!-- Borderless, transparent window sized to its content. Background #01000000 keeps it clickable: fully transparent pixels ignore the mouse. -->
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
+        <!-- Details tooltip: same colors, font and zoom as the widget. -->
         <Style TargetType="ToolTip">
             <Setter Property="Background" Value="{Binding SolidBackgroundColor}" />
             <Setter Property="Foreground" Value="{Binding TextColor}" />
@@ -48,6 +50,7 @@
             </Setter>
         </Style>
 
+        <!-- Full layout: item title, row spacing and usage bar. -->
         <Style x:Key="SectionTitle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{Binding LabelColor}" />
             <Setter Property="Margin" Value="0,0,10,0" />
@@ -75,6 +78,7 @@
             </Setter>
         </Style>
 
+        <!-- Tabular digits keep numbers from shifting as they change. -->
         <Style x:Key="MetricValue" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
@@ -90,8 +94,10 @@
             <Setter Property="Margin" Value="14,0,0,0" />
         </Style>
 
+        <!-- Divider between items; the first item has none (PreviousData is null). -->
         <Style x:Key="Divider" TargetType="Border">
-            <Setter Property="Height" Value="1" />
+            <Setter Property="Height" Value="{Binding DataContext.DividerThickness, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Margin" Value="0,10" />
             <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
             <Style.Triggers>
@@ -101,6 +107,7 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Only the panel of the current layout is visible. -->
         <Style x:Key="FullViewPanel" TargetType="ItemsControl">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
@@ -128,6 +135,7 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Compact layouts. -->
         <Style x:Key="CompactTitle" TargetType="TextBlock" BasedOn="{StaticResource MetricValue}">
             <Setter Property="Foreground" Value="{Binding LabelColor}" />
         </Style>
@@ -141,10 +149,6 @@
             <Setter Property="Margin" Value="8,0,0,0" />
         </Style>
 
-        <Style x:Key="CompactSpeed" TargetType="TextBlock" BasedOn="{StaticResource MetricValue}">
-            <Setter Property="MinWidth" Value="76" />
-        </Style>
-
         <Style x:Key="CompactPing" TargetType="TextBlock" BasedOn="{StaticResource MetricValue}">
             <Setter Property="MinWidth" Value="64" />
         </Style>
@@ -154,7 +158,8 @@
         </Style>
 
         <Style x:Key="CompactDivider" TargetType="Border">
-            <Setter Property="Width" Value="1" />
+            <Setter Property="Width" Value="{Binding DataContext.DividerThickness, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Margin" Value="12,0" />
             <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
             <Style.Triggers>
@@ -165,7 +170,8 @@
         </Style>
 
         <Style x:Key="VerticalDivider" TargetType="Border">
-            <Setter Property="Height" Value="1" />
+            <Setter Property="Height" Value="{Binding DataContext.DividerThickness, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Margin" Value="0,6" />
             <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
             <Style.Triggers>
@@ -175,13 +181,16 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Details tooltip. -->
         <Style x:Key="DetailGroupDivider" TargetType="Border">
-            <Setter Property="Height" Value="1" />
+            <Setter Property="Height" Value="{Binding DividerThickness}" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Margin" Value="0,6" />
             <Setter Property="Background" Value="{Binding DividerColor}" />
         </Style>
 
         <Style x:Key="DetailDivider" TargetType="Border" BasedOn="{StaticResource DetailGroupDivider}">
+            <Setter Property="Height" Value="{Binding DataContext.DividerThickness, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
             <Setter Property="Background" Value="{Binding DataContext.DividerColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
@@ -195,6 +204,7 @@
             <Setter Property="Foreground" Value="{Binding LabelColor}" />
         </Style>
 
+        <!-- Full layout: one template per item. -->
         <DataTemplate x:Key="FullCpu" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
@@ -225,10 +235,13 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding GpuUsage, Mode=OneWay}" Foreground="{Binding GpuBarColor}" />
                     <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}" Foreground="{Binding GpuTextColor}" Text="{Binding GpuUsageText}" />
                     <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" Text="{Binding GpuMemoryText}" />
+                    <TextBlock Grid.Column="3" Style="{StaticResource MetricDetail}" Text="{Binding GpuTemperatureText}"
+                               Visibility="{Binding ShowGpuTemperature, Converter={StaticResource BooleanToVisibility}}" />
                 </Grid>
             </StackPanel>
         </DataTemplate>
@@ -259,9 +272,15 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding DiskActive, Mode=OneWay}" Foreground="{Binding DiskBarColor}" />
                     <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
+                    <Grid Grid.Column="2" Visibility="{Binding ShowDiskSpeed, Converter={StaticResource BooleanToVisibility}}">
+                        <!-- Hidden widest text reserves width, so the widget doesn't resize as speeds change. -->
+                        <TextBlock Style="{StaticResource MetricDetail}" Text="{Binding DiskSpeedWidestText}" Visibility="Hidden" />
+                        <TextBlock Style="{StaticResource MetricDetail}" Text="{Binding DiskSpeedText}" />
+                    </Grid>
                 </Grid>
             </StackPanel>
         </DataTemplate>
@@ -274,14 +293,42 @@
                 </StackPanel>
                 <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal" Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
-                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
-                        <TextBlock Margin="20,0,0,0" Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                        <Grid>
+                            <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" Visibility="Hidden" />
+                            <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                        </Grid>
+                        <Grid Margin="20,0,0,0">
+                            <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↑ {0}'}" Visibility="Hidden" />
+                            <TextBlock Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                        </Grid>
                     </StackPanel>
                     <TextBlock Style="{StaticResource LiveTest}" Text="{Binding SpeedTest.LiveLabelText}"
                                Visibility="{Binding SpeedTest.IsTesting, Converter={StaticResource BooleanToVisibility}}" />
-                    <TextBlock Margin="20,0,0,0" Style="{StaticResource MetricValue}" Text="{Binding PingLabelText}" />
+                    <TextBlock Margin="20,0,0,0" Style="{StaticResource MetricValue}" Text="{Binding PingLabelText}"
+                               Visibility="{Binding PingEnabled, Converter={StaticResource BooleanToVisibility}}" />
                 </StackPanel>
                 <TextBlock Margin="0,4,0,0" Style="{StaticResource MetricValue}" Text="{Binding NetworkSessionText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullBattery" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Battery}" />
+                    <TextBlock Text="{Binding BatteryStateText}" />
+                </StackPanel>
+                <Grid Style="{StaticResource MetricRow}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ProgressBar Grid.Column="0" Style="{StaticResource UsageBar}" Value="{Binding BatteryCharge, Mode=OneWay}" Foreground="{Binding BatteryBarColor}" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource MetricPercent}" Foreground="{Binding BatteryTextColor}" Text="{Binding BatteryText}" />
+                    <!-- Charging icon. -->
+                    <TextBlock Grid.Column="2" Style="{StaticResource MetricDetail}" FontFamily="Segoe MDL2 Assets" Text="&#xE945;"
+                               Visibility="{Binding IsBatteryCharging, Converter={StaticResource BooleanToVisibility}}" />
+                </Grid>
             </StackPanel>
         </DataTemplate>
 
@@ -292,14 +339,17 @@
             </StackPanel>
         </DataTemplate>
 
+        <!-- Picks the template of each item in the list. -->
         <converters:MetricTemplateConverter x:Key="FullTemplates"
                                             Cpu="{StaticResource FullCpu}"
                                             Gpu="{StaticResource FullGpu}"
                                             Memory="{StaticResource FullMemory}"
                                             Disk="{StaticResource FullDisk}"
                                             Network="{StaticResource FullNetwork}"
+                                            Battery="{StaticResource FullBattery}"
                                             Fps="{StaticResource FullFps}" />
 
+        <!-- Each list entry: a divider and the item template, bound to the view model. -->
         <DataTemplate x:Key="FullItem">
             <StackPanel>
                 <Border Style="{StaticResource Divider}" />
@@ -308,6 +358,7 @@
             </StackPanel>
         </DataTemplate>
 
+        <!-- Compact horizontal layout: items side by side. -->
         <DataTemplate x:Key="HorizontalCpu" DataType="{x:Type local:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Cpu}" />
@@ -321,6 +372,8 @@
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Gpu}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding GpuTextColor}" Text="{Binding GpuUsageText}" />
                 <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding GpuMemoryText}" />
+                <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding GpuTemperatureText}"
+                           Visibility="{Binding ShowGpuTemperature, Converter={StaticResource BooleanToVisibility}}" />
             </StackPanel>
         </DataTemplate>
 
@@ -336,18 +389,38 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
+                <Grid Visibility="{Binding ShowDiskSpeed, Converter={StaticResource BooleanToVisibility}}">
+                    <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding DiskSpeedWidestText}" Visibility="Hidden" />
+                    <TextBlock Style="{StaticResource CompactDetail}" Text="{Binding DiskSpeedText}" />
+                </Grid>
             </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="HorizontalNetwork" DataType="{x:Type local:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
-                    <TextBlock Style="{StaticResource CompactSpeed}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
-                    <TextBlock Margin="10,0,0,0" Style="{StaticResource CompactSpeed}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                    <Grid>
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" Visibility="Hidden" />
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                    </Grid>
+                    <Grid Margin="10,0,0,0">
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↑ {0}'}" Visibility="Hidden" />
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                    </Grid>
                 </StackPanel>
                 <TextBlock MinWidth="162" Style="{StaticResource LiveTest}" Text="{Binding SpeedTest.LiveLabelText}"
                            Visibility="{Binding SpeedTest.IsTesting, Converter={StaticResource BooleanToVisibility}}" />
-                <TextBlock Margin="10,0,0,0" Style="{StaticResource CompactPing}" Text="{Binding PingLabelText}" />
+                <TextBlock Margin="10,0,0,0" Style="{StaticResource CompactPing}" Text="{Binding PingLabelText}"
+                           Visibility="{Binding PingEnabled, Converter={StaticResource BooleanToVisibility}}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalBattery" DataType="{x:Type local:MainViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Battery}" />
+                <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding BatteryTextColor}" Text="{Binding BatteryText}" />
+                <TextBlock Style="{StaticResource CompactDetail}" FontFamily="Segoe MDL2 Assets" Text="&#xE945;"
+                           Visibility="{Binding IsBatteryCharging, Converter={StaticResource BooleanToVisibility}}" />
             </StackPanel>
         </DataTemplate>
 
@@ -364,6 +437,7 @@
                                             Memory="{StaticResource HorizontalMemory}"
                                             Disk="{StaticResource HorizontalDisk}"
                                             Network="{StaticResource HorizontalNetwork}"
+                                            Battery="{StaticResource HorizontalBattery}"
                                             Fps="{StaticResource HorizontalFps}" />
 
         <DataTemplate x:Key="HorizontalItem">
@@ -375,6 +449,7 @@
             </StackPanel>
         </DataTemplate>
 
+        <!-- Compact vertical layout: items stacked, details below the title. -->
         <DataTemplate x:Key="VerticalCpu" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
                 <DockPanel>
@@ -392,6 +467,8 @@
                     <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Gpu}" />
                 </DockPanel>
                 <TextBlock Style="{StaticResource MetricValue}" Text="{Binding GpuMemoryText}" />
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding GpuTemperatureText}"
+                           Visibility="{Binding ShowGpuTemperature, Converter={StaticResource BooleanToVisibility}}" />
             </StackPanel>
         </DataTemplate>
 
@@ -406,23 +483,46 @@
         </DataTemplate>
 
         <DataTemplate x:Key="VerticalDisk" DataType="{x:Type local:MainViewModel}">
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
-                <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
-            </DockPanel>
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
+                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
+                </DockPanel>
+                <Grid Visibility="{Binding ShowDiskSpeed, Converter={StaticResource BooleanToVisibility}}">
+                    <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DiskSpeedWidestText}" Visibility="Hidden" />
+                    <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DiskSpeedText}" />
+                </Grid>
+            </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="VerticalNetwork" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
                 <StackPanel Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
-                    <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
-                    <TextBlock Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                    <Grid>
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" Visibility="Hidden" />
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↑ {0}'}" Visibility="Hidden" />
+                        <TextBlock Style="{StaticResource MetricValue}" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                    </Grid>
                 </StackPanel>
                 <StackPanel Visibility="{Binding SpeedTest.IsTesting, Converter={StaticResource BooleanToVisibility}}">
                     <TextBlock Style="{StaticResource LiveTest}" Text="{loc:Text Widget_Test}" />
                     <TextBlock Style="{StaticResource LiveTest}" Text="{Binding SpeedTest.LiveText}" />
                 </StackPanel>
-                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding PingLabelText}" />
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding PingLabelText}"
+                           Visibility="{Binding PingEnabled, Converter={StaticResource BooleanToVisibility}}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalBattery" DataType="{x:Type local:MainViewModel}">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding BatteryTextColor}" Text="{Binding BatteryText}" />
+                    <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Battery}" />
+                </DockPanel>
+                <TextBlock Style="{StaticResource MetricValue}" Text="{Binding BatteryStateText}" />
             </StackPanel>
         </DataTemplate>
 
@@ -439,6 +539,7 @@
                                             Memory="{StaticResource VerticalMemory}"
                                             Disk="{StaticResource VerticalDisk}"
                                             Network="{StaticResource VerticalNetwork}"
+                                            Battery="{StaticResource VerticalBattery}"
                                             Fps="{StaticResource VerticalFps}" />
 
         <DataTemplate x:Key="VerticalItem">
@@ -449,6 +550,7 @@
             </StackPanel>
         </DataTemplate>
 
+        <!-- Details tooltip: every item, including hidden ones, with full names. -->
         <DataTemplate x:Key="DetailCpu" DataType="{x:Type local:MainViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -478,9 +580,10 @@
                     <TextBlock Text="{Binding GpuFullName}" />
                     <TextBlock>
                         <Run Text="{Binding GpuUsageText, Mode=OneWay}" />
-                        <Run Text="· VRAM" />
-                        <Run Text="{Binding GpuMemoryText, Mode=OneWay}" />
+                        <Run Text="·" />
+                        <Run Text="{Binding GpuMemoryDetailText, Mode=OneWay}" />
                     </TextBlock>
+                    <TextBlock Text="{Binding GpuTemperatureDetailText}" />
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -513,10 +616,12 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DiskName" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DiskActive" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="0,0,12,0" Text="{Binding Name}" />
-                                <TextBlock Grid.Column="1" Text="{Binding ActiveText}" />
+                                <TextBlock Grid.Column="1" Margin="0,0,12,0" Text="{Binding ActiveText}" />
+                                <TextBlock Grid.Column="2" Text="{Binding SpeedText}" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -540,7 +645,7 @@
                             <Run Text="{Binding UploadSpeedText, StringFormat='↑ {0}', Mode=OneWay}" />
                         </TextBlock>
                         <TextBlock Text="{Binding NetworkSessionText}" />
-                        <TextBlock Text="{Binding PingDetailText}" />
+                        <TextBlock Text="{Binding PingDetailText}" Visibility="{Binding PingEnabled, Converter={StaticResource BooleanToVisibility}}" />
                     </StackPanel>
                 </Grid>
 
@@ -558,6 +663,21 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailBattery" DataType="{x:Type local:MainViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Metric_Battery}" />
+                <TextBlock Grid.Column="1">
+                    <Run Text="{Binding BatteryText, Mode=OneWay}" />
+                    <Run Text="·" />
+                    <Run Text="{Binding BatteryStateText, Mode=OneWay}" />
+                </TextBlock>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="DetailFps" DataType="{x:Type local:MainViewModel}">
@@ -581,6 +701,7 @@
                                             Memory="{StaticResource DetailMemory}"
                                             Disk="{StaticResource DetailDisk}"
                                             Network="{StaticResource DetailNetwork}"
+                                            Battery="{StaticResource DetailBattery}"
                                             Fps="{StaticResource DetailFps}" />
 
         <DataTemplate x:Key="DetailItem">
@@ -596,7 +717,9 @@
         </ItemsPanelTemplate>
     </Window.Resources>
 
+    <!-- Widget body: background, border and corners. -->
     <Border Background="{Binding BackgroundColor}" BorderThickness="{Binding BorderWidth}" CornerRadius="{Binding WidgetCornerRadius}">
+        <!-- Hover mode: the border stays transparent until the mouse is over the widget. -->
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="{Binding BorderColor}" />
@@ -612,12 +735,14 @@
             </Style>
         </Border.Style>
 
+        <!-- Zoomed content; the details tooltip stays open while hovering. -->
         <Grid Background="Transparent" ToolTipService.IsEnabled="{Binding DetailedTooltip}" ToolTipService.ShowDuration="2147483647"
               LayoutTransform="{Binding Scale, Converter={x:Static converters:ScaleTransformConverter.Instance}}">
             <Grid.ToolTip>
                 <ItemsControl Grid.IsSharedSizeScope="True" Focusable="False" ItemsSource="{Binding DetailItems}" ItemTemplate="{StaticResource DetailItem}" />
             </Grid.ToolTip>
 
+            <!-- The three layouts share the item list; only the current one is visible. -->
             <ItemsControl Margin="{x:Static local:WidgetThickness.Full}" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
                           ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullItem}" />
 

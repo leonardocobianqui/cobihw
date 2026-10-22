@@ -1,0 +1,70 @@
+<Window x:Class="CobiHw.App.About.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:about="clr-namespace:CobiHw.App.About"
+        xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=about:AboutViewModel}"
+        Title="{loc:Text About_Title}"
+        Width="460"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI"
+        FontSize="13"
+        FocusManager.FocusedElement="{Binding ElementName=CloseButton}"
+        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+
+        <Style x:Key="Secondary" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Window.Resources>
+
+    <!-- Header with icon, name, version and copyright. -->
+    <StackPanel Margin="20">
+        <DockPanel>
+            <Image x:Name="AppIcon" DockPanel.Dock="Left" Width="56" Height="56" Margin="0,2,16,0" VerticalAlignment="Top" />
+            <StackPanel>
+                <TextBlock FontSize="22" FontWeight="SemiBold" Text="cobihw" />
+                <TextBlock Style="{StaticResource Secondary}" Text="{Binding VersionText}" />
+                <TextBlock Margin="0,8,0,0" TextWrapping="Wrap" Text="{loc:Text About_Tagline}" />
+                <TextBlock Style="{StaticResource Secondary}" Margin="0,2,0,0" Text="{Binding CopyrightText}" />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Links and the update check. -->
+        <WrapPanel Margin="0,18,0,0">
+            <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_Website}" Command="{Binding OpenWebsiteCommand}" />
+            <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_GitHub}" Command="{Binding OpenRepositoryCommand}" />
+            <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_CheckUpdates}" Command="{Binding CheckUpdatesCommand}" />
+        </WrapPanel>
+
+        <!-- Update check result, with Download when a newer version exists. -->
+        <DockPanel Margin="0,0,0,4" Visibility="{Binding HasUpdateStatus, Converter={StaticResource BooleanToVisibility}}">
+            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,4" Content="{loc:Text About_Download}" Command="{Binding OpenDownloadCommand}"
+                    Visibility="{Binding HasDownload, Converter={StaticResource BooleanToVisibility}}" />
+            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding UpdateStatus}" />
+        </DockPanel>
+
+        <Border Height="1" Margin="0,14" Background="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
+
+        <!-- Which outside services the app contacts. -->
+        <TextBlock Style="{StaticResource Secondary}" FontSize="12" Text="{loc:Text About_Services}" />
+
+        <!-- License buttons and Close. -->
+        <DockPanel Margin="0,16,0,0">
+            <Button x:Name="CloseButton" DockPanel.Dock="Right" MinWidth="90" Padding="10,4" IsCancel="True" Content="{loc:Text Settings_Close}" Click="OnCloseClick" />
+            <StackPanel Orientation="Horizontal">
+                <Button Margin="0,0,8,0" Padding="10,4" Content="{loc:Text About_License}" Command="{Binding OpenLicenseCommand}" />
+                <Button Padding="10,4" Content="{loc:Text About_Notices}" Command="{Binding OpenNoticesCommand}" />
+            </StackPanel>
+        </DockPanel>
+    </StackPanel>
+</Window>

@@ -5,10 +5,16 @@ using CobiHw.Core.Interop;
 
 namespace CobiHw.Core.Fps;
 
+/// <summary>
+/// Measures the foreground app's frame rate from DXGI and Direct3D 9 "Present" ETW events, like PresentMon.
+/// </summary>
+/// <remarks>Starting an ETW session requires administrator rights; the app gets them through a scheduled task.</remarks>
 public sealed class FpsMonitor : IDisposable
 {
-    private const string SessionName = "cobihw-fps";
+    // One session per Windows logon session, so two users can each run cobihw.
+    private const string SessionPrefix = "cobihw-fps-";
 
+    // DXGI covers Direct3D 10–12; D3D9 covers older games.
     private static readonly string[] Providers = ["Microsoft-Windows-DXGI", "Microsoft-Windows-D3D9"];
     private static readonly string[] PresentTasks = ["Present", "PresentMultiplaneOverlay"];
 
@@ -26,9 +32,12 @@ public sealed class FpsMonitor : IDisposable
         _processing.Start();
     }
 
+    /// <summary>Starts the ETW session and the thread that processes its events.</summary>
+    /// <exception cref="UnauthorizedAccessException">The process isn't elevated.</exception>
     public static FpsMonitor Start()
     {
-        var session = new TraceEventSession(SessionName) { StopOnDispose = true };
+        using Process current = Process.GetCurrentProcess();
+        var session = new TraceEventSession(SessionPrefix + current.SessionId) { StopOnDispose = true };
 
         try
         {
@@ -46,6 +55,8 @@ public sealed class FpsMonitor : IDisposable
         }
     }
 
+    /// <summary>Frame rate of the app the user is looking at.</summary>
+    /// <returns>The rate, or <see langword="null"/> when the foreground app isn't drawing frames (or is cobihw itself).</returns>
     public FpsSnapshot? Sample()
     {
         int processId = ForegroundProcessId();
@@ -60,12 +71,14 @@ public sealed class FpsMonitor : IDisposable
         return rate is null ? null : new FpsSnapshot(rate.Value, ProcessName(processId));
     }
 
+    /// <summary>Stops the ETW session and waits for the processing thread to finish.</summary>
     public void Dispose()
     {
         _session.Dispose();
         _processing.Join();
     }
 
+    // Runs on the ETW thread for every event; only the start of a Present call counts as a frame.
     private void OnEvent(TraceEvent data)
     {
         if (data.Opcode != TraceEventOpcode.Start ||
@@ -75,6 +88,7 @@ public sealed class FpsMonitor : IDisposable
             return;
         }
 
+// TimeStampQPC is marked obsolete but is the raw QPC value needed to compare with Stopwatch.
 #pragma warning disable CS0618
         _counter.Record(data.ProcessID, Clock(data.TimeStampQPC));
 #pragma warning restore CS0618
@@ -95,6 +109,7 @@ public sealed class FpsMonitor : IDisposable
         return (int)processId;
     }
 
+    // Caches the last name, so the process isn't opened every second.
     private string? ProcessName(int processId)
     {
         if (processId != _lastProcessId)

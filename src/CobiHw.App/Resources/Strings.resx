@@ -86,7 +86,7 @@
     <comment>{0} = velocidade ao vivo, ex.: ↓ 245,3 Mbps</comment>
   </data>
   <data name="Format_Session" xml:space="preserve">
-    <value>Session   ↓ {0}   ↑ {1}</value>
+    <value>Session ↓ {0} · ↑ {1}</value>
     <comment>{0} = recebido; {1} = enviado desde que ligou</comment>
   </data>
   <data name="Format_DiskNumber" xml:space="preserve">
@@ -109,21 +109,17 @@
     <value>{0:0.0} / {1:0.0} GB</value>
     <comment>{0} = usado; {1} = total, em GB</comment>
   </data>
-  <data name="Format_Bandwidth" xml:space="preserve">
-    <value>{0:0.0} Mbps</value>
-    <comment>Resultado do teste de velocidade</comment>
-  </data>
   <data name="Format_NetworkRate" xml:space="preserve">
-    <value>{0:0.00} Mbps</value>
-    <comment>Tráfego atual da rede</comment>
+    <value>{0} Mbps</value>
+    <comment>Tráfego atual da rede; {0} = número já formatado (3 algarismos)</comment>
   </data>
   <data name="Format_Milliseconds" xml:space="preserve">
     <value>{0:0} ms</value>
     <comment>Tempo em milissegundos</comment>
   </data>
   <data name="Format_Size" xml:space="preserve">
-    <value>{0:0.##} {1}</value>
-    <comment>{0} = número; {1} = unidade</comment>
+    <value>{0} {1}</value>
+    <comment>{0} = número já formatado (3 algarismos); {1} = unidade</comment>
   </data>
   <data name="Unit_Bytes" xml:space="preserve">
     <value>B</value>
@@ -146,15 +142,15 @@
     <comment>Unidade</comment>
   </data>
   <data name="SpeedTest_Title" xml:space="preserve">
-    <value>Speed test</value>
+    <value>Internet speed test</value>
     <comment>Título das notificações e da seção na aba Rede</comment>
   </data>
   <data name="SpeedTest_NoneYet" xml:space="preserve">
-    <value>No test yet</value>
+    <value>No test run</value>
     <comment>Detalhamento, sem nenhum teste</comment>
   </data>
   <data name="SpeedTest_NoneYetStatus" xml:space="preserve">
-    <value>No test yet.</value>
+    <value>No test run.</value>
     <comment>Linha de status, sem nenhum teste</comment>
   </data>
   <data name="SpeedTest_HowTo" xml:space="preserve">
@@ -273,6 +269,10 @@
     <value>Start with Windows</value>
     <comment>Caixa de marcar na aba Geral</comment>
   </data>
+  <data name="Tray_Network" xml:space="preserve">
+    <value>Network</value>
+    <comment>Menu do ícone: submenu da rede</comment>
+  </data>
   <data name="Tray_Settings" xml:space="preserve">
     <value>Settings...</value>
     <comment>Menu do ícone</comment>
@@ -292,6 +292,26 @@
   <data name="Tray_Exit" xml:space="preserve">
     <value>Exit</value>
     <comment>Menu do ícone</comment>
+  </data>
+  <data name="Error_Message" xml:space="preserve">
+    <value>Something went wrong and cobihw needs to close. If you want to report the problem, copy the details and send them along.</value>
+    <comment>Janela de erro inesperado</comment>
+  </data>
+  <data name="Error_Details" xml:space="preserve">
+    <value>Technical details</value>
+    <comment>Janela de erro: título da parte técnica</comment>
+  </data>
+  <data name="Error_CopyDetails" xml:space="preserve">
+    <value>Copy details</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Error_Copied" xml:space="preserve">
+    <value>Copied</value>
+    <comment>Botão depois de copiar</comment>
+  </data>
+  <data name="Task_Description" xml:space="preserve">
+    <value>cobihw: opens the widget with administrator permission to measure FPS.</value>
+    <comment>Descrição da tarefa agendada do FPS (aparece no Agendador de Tarefas)</comment>
   </data>
   <data name="App_UnexpectedError" xml:space="preserve">
     <value>cobihw: unexpected error</value>
@@ -441,6 +461,38 @@
     <value>Clicks</value>
     <comment>Seção</comment>
   </data>
+  <data name="General_SettingsFile" xml:space="preserve">
+    <value>Settings file</value>
+    <comment>Seção</comment>
+  </data>
+  <data name="General_RemoveOtherProfiles" xml:space="preserve">
+    <value>Remove settings from other computers…</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="General_RemoveOtherProfilesHint" xml:space="preserve">
+    <value>Deletes from the settings file the entries of other computers and Windows users and keeps only those of this computer and user.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="RemoveProfiles_Question" xml:space="preserve">
+    <value>Remove the settings saved for these computers and users?</value>
+    <comment>Confirmação, antes da lista</comment>
+  </data>
+  <data name="RemoveProfiles_Keep" xml:space="preserve">
+    <value>This computer's settings stay.</value>
+    <comment>Confirmação, depois da lista</comment>
+  </data>
+  <data name="RemoveProfiles_Failed" xml:space="preserve">
+    <value>Could not remove them now: the settings file is in use by another program.</value>
+    <comment>Aviso</comment>
+  </data>
+  <data name="Format_StoredProfile" xml:space="preserve">
+    <value>• {0} · {1} (last used: {2})</value>
+    <comment>{0} = computador; {1} = usuário; {2} = data</comment>
+  </data>
+  <data name="Settings_FolderReadOnly" xml:space="preserve">
+    <value>This folder doesn't allow writing the settings file. Move the cobihw folder somewhere else (for example, Documents) and open it again. No settings from this session will be saved.</value>
+    <comment>Aviso no ícone ao abrir</comment>
+  </data>
   <data name="General_Startup" xml:space="preserve">
     <value>Startup</value>
     <comment>Seção</comment>
@@ -478,7 +530,7 @@
     <comment>Rótulo do controle deslizante</comment>
   </data>
   <data name="Appearance_BorderHint" xml:space="preserve">
-    <value>The border sits on the strip you can drag to resize the widget.</value>
+    <value>You can resize the widget by dragging its edges.</value>
     <comment>Dica</comment>
   </data>
   <data name="Appearance_Background" xml:space="preserve">
@@ -509,10 +561,6 @@
     <value>Weight:</value>
     <comment>Título da caixa de espessura</comment>
   </data>
-  <data name="Appearance_LabelsHint" xml:space="preserve">
-    <value>Labels (CPU, RAM...) use a slightly dimmer text color.</value>
-    <comment>Dica</comment>
-  </data>
   <data name="Appearance_Size" xml:space="preserve">
     <value>Size</value>
     <comment>Seção</comment>
@@ -522,7 +570,8 @@
     <comment>Rótulo do controle deslizante</comment>
   </data>
   <data name="Appearance_ScaleHint" xml:space="preserve">
-    <value>You can also drag the edges or corners of the widget. "Lock position and size" in the tray icon menu prevents changes.</value>
+    <value>You can also resize the widget by its edges.
+"Lock position and size" (icon menu) prevents changes.</value>
     <comment>Dica</comment>
   </data>
   <data name="Weight_Light" xml:space="preserve">
@@ -562,7 +611,9 @@
     <comment>Erro</comment>
   </data>
   <data name="Network_PingHint" xml:space="preserve">
-    <value>8.8.8.8 is Google (default). 1.1.1.1 is Cloudflare, the same network as the speed test.</value>
+    <value>cobihw uses this address only for the ping test (like running ping 8.8.8.8 in PowerShell or Command Prompt).
+
+8.8.8.8 -&gt; Google (default). 1.1.1.1 -&gt; Cloudflare, the same network used by the speed test. With ping measurement off, cobihw makes no other automatic network connection.</value>
     <comment>Dica</comment>
   </data>
   <data name="Network_TestNow" xml:space="preserve">
@@ -574,7 +625,7 @@
     <comment>Botão</comment>
   </data>
   <data name="Network_DataHint" xml:space="preserve">
-    <value>Uses Cloudflare servers. Uses about 200 MB on a 100 Mbps connection and 700 MB on a 1 Gbps one, and slows the internet down for up to 30 seconds.</value>
+    <value>Uses Cloudflare servers. Uses about 200 MB on a 100 Mbps connection and 700 MB on a 1 Gbps one. The internet may be slow or unstable during the test, which takes 10 to 30 seconds depending on the connection.</value>
     <comment>Dica</comment>
   </data>
   <data name="Colors_Enabled" xml:space="preserve">
@@ -638,7 +689,7 @@
     <comment>Item FPS (quadros por segundo); igual em todos os idiomas</comment>
   </data>
   <data name="Display_FpsHint" xml:space="preserve">
-    <value>Always first in the widget. It only shows while the app in the foreground is drawing frames (games and 3D apps using DirectX 9 to 12). Needs administrator permission: Windows asks for confirmation only once.</value>
+    <value>FPS is read automatically when the app in the foreground is drawing frames. For now, only DirectX 9 to 12 are read. Windows requires administrator permission for this: it asks for confirmation only once, when you turn FPS on.</value>
     <comment>Dica do FPS na aba Exibição</comment>
   </data>
   <data name="Fps_Denied" xml:space="preserve">
@@ -698,15 +749,15 @@
     <comment>Caixa de marcar</comment>
   </data>
   <data name="Network_Default" xml:space="preserve">
-    <value>Default (shown in the widget):</value>
+    <value>Default device (shown in the widget):</value>
     <comment>Rótulo da caixa de seleção</comment>
   </data>
   <data name="Network_PhysicalSum" xml:space="preserve">
-    <value>Sum of physical adapters</value>
+    <value>Sum of devices</value>
     <comment>Opção do padrão</comment>
   </data>
   <data name="Network_DevicesHint" xml:space="preserve">
-    <value>Checked devices appear in Network devices (tray icon menu) and can be the default. The sum of physical adapters leaves VPNs out so the same traffic is not counted twice.</value>
+    <value>Checked devices appear in Network devices (taskbar icon menu). The total ignores VPNs so the same traffic isn't counted twice.</value>
     <comment>Dica</comment>
   </data>
   <data name="Network_NoDevices" xml:space="preserve">
@@ -858,7 +909,7 @@
     <comment>{0} = taxa em Mbps</comment>
   </data>
   <data name="Format_UpDown" xml:space="preserve">
-    <value>↓ {0}   ↑ {1}</value>
+    <value>↓ {0} · ↑ {1}</value>
     <comment>{0} = recebido; {1} = enviado</comment>
   </data>
   <data name="PublicIp_Label" xml:space="preserve">
@@ -870,7 +921,7 @@
     <comment>Botão</comment>
   </data>
   <data name="PublicIp_Hint" xml:space="preserve">
-    <value>Asks Cloudflare which address your traffic leaves through (main route). Only when you click.</value>
+    <value>Asks Cloudflare which address your traffic leaves from (main route). No query is made automatically.</value>
     <comment>Dica</comment>
   </data>
   <data name="PublicIp_Searching" xml:space="preserve">
@@ -902,7 +953,7 @@
     <comment>Botão que abre a janela de edição de um grupo</comment>
   </data>
   <data name="Appearance_GroupsHint" xml:space="preserve">
-    <value>Each group opens in its own window. The widget shows the changes before they are saved.</value>
+    <value>Each group opens in its own window for customization. The widget shows the changes before they are saved.</value>
     <comment>Dica embaixo dos grupos da aba Aparência</comment>
   </data>
   <data name="Appearance_EditorHint" xml:space="preserve">
@@ -960,5 +1011,229 @@
   <data name="Format_TrayNetwork" xml:space="preserve">
     <value>{0} ↓{1} ↑{2} Mbps · ping {3}</value>
     <comment>Linha da rede na dica do ícone (limite de 127 caracteres no total); {0} = item; {1} = download; {2} = upload; {3} = ping</comment>
+  </data>
+  <data name="Format_Gigabytes" xml:space="preserve">
+    <value>{0:0.0} GB</value>
+    <comment>{0} = quantidade em GB</comment>
+  </data>
+  <data name="Format_GpuDedicatedMemory" xml:space="preserve">
+    <value>VRAM {0}</value>
+    <comment>Detalhamento da GPU dedicada; {0} = usado / total</comment>
+  </data>
+  <data name="Format_GpuIntegratedMemory" xml:space="preserve">
+    <value>Dedicated {0} · Shared {1}</value>
+    <comment>Detalhamento da GPU integrada; {0} = reserva usada / total; {1} = compartilhada em uso</comment>
+  </data>
+  <data name="Format_GpuSharedMemory" xml:space="preserve">
+    <value>Shared {0}</value>
+    <comment>Detalhamento da GPU integrada sem reserva; {0} = compartilhada em uso</comment>
+  </data>
+  <data name="Display_MonitoredGpu" xml:space="preserve">
+    <value>Monitored GPU:</value>
+    <comment>Título da caixa de GPUs</comment>
+  </data>
+  <data name="Gpu_Automatic" xml:space="preserve">
+    <value>Automatic</value>
+    <comment>Opção de GPU, sem nenhuma encontrada</comment>
+  </data>
+  <data name="Format_GpuAutomatic" xml:space="preserve">
+    <value>Automatic — {0}</value>
+    <comment>{0} = nome da GPU escolhida automaticamente</comment>
+  </data>
+  <data name="Format_GpuOptionNotFound" xml:space="preserve">
+    <value>{0} (not found)</value>
+    <comment>{0} = nome da GPU salva que sumiu</comment>
+  </data>
+  <data name="Display_GpuHint" xml:space="preserve">
+    <value>Automatic follows the order Windows uses for high performance: external GPU, then dedicated, then integrated.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Tray_About" xml:space="preserve">
+    <value>About cobihw</value>
+    <comment>Item do menu do ícone</comment>
+  </data>
+  <data name="About_Title" xml:space="preserve">
+    <value>About cobihw</value>
+    <comment>Título da janela Sobre</comment>
+  </data>
+  <data name="Format_AboutVersion" xml:space="preserve">
+    <value>Version {0} ({1})</value>
+    <comment>{0} = versão; {1} = data da versão</comment>
+  </data>
+  <data name="Format_AboutVersionOnly" xml:space="preserve">
+    <value>Version {0}</value>
+    <comment>{0} = versão, sem data</comment>
+  </data>
+  <data name="About_Tagline" xml:space="preserve">
+    <value>Free and open-source hardware monitor.</value>
+    <comment>Frase da janela Sobre</comment>
+  </data>
+  <data name="Format_AboutCopyright" xml:space="preserve">
+    <value>{0} · MIT License</value>
+    <comment>{0} = © ano e autor</comment>
+  </data>
+  <data name="About_Website" xml:space="preserve">
+    <value>Website (cobihw.com)</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="About_GitHub" xml:space="preserve">
+    <value>GitHub</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="About_CheckUpdates" xml:space="preserve">
+    <value>Check for updates</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="About_Checking" xml:space="preserve">
+    <value>Checking…</value>
+    <comment>Enquanto consulta o GitHub</comment>
+  </data>
+  <data name="About_UpToDate" xml:space="preserve">
+    <value>You have the latest version.</value>
+    <comment>Resultado</comment>
+  </data>
+  <data name="Format_AboutUpdateAvailable" xml:space="preserve">
+    <value>Version {0} is available.</value>
+    <comment>{0} = versão nova</comment>
+  </data>
+  <data name="About_Download" xml:space="preserve">
+    <value>Download</value>
+    <comment>Botão ao lado da versão nova</comment>
+  </data>
+  <data name="About_NoRelease" xml:space="preserve">
+    <value>No version has been published on GitHub yet.</value>
+    <comment>Resultado, nenhuma versão publicada</comment>
+  </data>
+  <data name="About_CheckFailed" xml:space="preserve">
+    <value>Could not check right now. Try again later.</value>
+    <comment>Resultado, falha</comment>
+  </data>
+  <data name="About_Services" xml:space="preserve">
+    <value>cobihw uses the internet for the speed test and the public IP (Cloudflare), the ping (configurable address) and the update check (GitHub). It is not affiliated with these companies.</value>
+    <comment>Transparência sobre o uso da internet</comment>
+  </data>
+  <data name="About_License" xml:space="preserve">
+    <value>License</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="About_Notices" xml:space="preserve">
+    <value>Third-party components</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="Format_OpenFailed" xml:space="preserve">
+    <value>Could not open {0}</value>
+    <comment>{0} = endereço ou arquivo</comment>
+  </data>
+  <data name="Metric_Battery" xml:space="preserve">
+    <value>Battery</value>
+    <comment>Item bateria</comment>
+  </data>
+  <data name="Battery_Charging" xml:space="preserve">
+    <value>Charging</value>
+    <comment>Estado da bateria</comment>
+  </data>
+  <data name="Battery_OnPower" xml:space="preserve">
+    <value>Plugged in</value>
+    <comment>Estado da bateria, carregada e na tomada</comment>
+  </data>
+  <data name="Battery_OnBattery" xml:space="preserve">
+    <value>On battery</value>
+    <comment>Estado da bateria, sem estimativa de tempo</comment>
+  </data>
+  <data name="Format_BatteryRemaining" xml:space="preserve">
+    <value>{0} h {1:00} min left</value>
+    <comment>{0} = horas; {1} = minutos (estimativa do Windows)</comment>
+  </data>
+  <data name="Display_ShowDiskSpeed" xml:space="preserve">
+    <value>Show read (R) and write (W) speed</value>
+    <comment>Caixa de seleção abaixo do disco monitorado</comment>
+  </data>
+  <data name="Format_TrayNetworkWithoutPing" xml:space="preserve">
+    <value>{0} ↓{1} ↑{2} Mbps</value>
+    <comment>Linha da rede na dica do ícone, sem ping; {0} = item; {1} = download; {2} = upload</comment>
+  </data>
+  <data name="Network_PingEnabled" xml:space="preserve">
+    <value>Measure ping</value>
+    <comment>Caixa de seleção da seção Ping</comment>
+  </data>
+  <data name="General_RemoveFromWindows" xml:space="preserve">
+    <value>Remove cobihw from Windows…</value>
+    <comment>Botão</comment>
+  </data>
+  <data name="General_RemoveFromWindowsHint" xml:space="preserve">
+    <value>Deletes the entries created inside Windows when FPS reading and start with Windows were turned on. Nothing else is written outside the cobihw folder.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="RemoveFromWindows_Question" xml:space="preserve">
+    <value>Remove what cobihw registered in Windows?</value>
+    <comment>Confirmação, antes da lista</comment>
+  </data>
+  <data name="RemoveFromWindows_Startup" xml:space="preserve">
+    <value>Start with Windows</value>
+    <comment>Item da lista</comment>
+  </data>
+  <data name="RemoveFromWindows_FpsTask" xml:space="preserve">
+    <value>FPS scheduled task</value>
+    <comment>Item da lista</comment>
+  </data>
+  <data name="RemoveFromWindows_Note" xml:space="preserve">
+    <value>"Start with Windows" and FPS are also turned off in this computer's settings.</value>
+    <comment>Confirmação, depois da lista</comment>
+  </data>
+  <data name="RemoveFromWindows_Nothing" xml:space="preserve">
+    <value>cobihw has nothing registered in Windows. To remove it, just close the program and delete its folder.</value>
+    <comment>Aviso</comment>
+  </data>
+  <data name="RemoveFromWindows_Done" xml:space="preserve">
+    <value>Done: nothing from cobihw is registered in Windows. To remove it, close the program and delete its folder.</value>
+    <comment>Aviso</comment>
+  </data>
+  <data name="RemoveFromWindows_Failed" xml:space="preserve">
+    <value>Could not delete the FPS scheduled task. Try again; if it keeps failing, delete the "cobihw" task in Windows Task Scheduler.</value>
+    <comment>Aviso</comment>
+  </data>
+  <data name="Format_ListItem" xml:space="preserve">
+    <value>• {0}</value>
+    <comment>Item de lista em mensagens; {0} = texto</comment>
+  </data>
+  <data name="Display_ShowGpuTemperature" xml:space="preserve">
+    <value>Show temperature</value>
+    <comment>Caixa de seleção abaixo da GPU monitorada</comment>
+  </data>
+  <data name="Display_GpuTemperatureHint" xml:space="preserve">
+    <value>Reads the temperature reported by the graphics driver itself. If it doesn't appear, try updating the driver. Integrated GPUs and virtual machines usually don't report it.</value>
+    <comment>Dica</comment>
+  </data>
+  <data name="Format_Celsius" xml:space="preserve">
+    <value>{0:0} °C</value>
+    <comment>{0} = temperatura em °C, sem casas</comment>
+  </data>
+  <data name="Format_GpuTemperature" xml:space="preserve">
+    <value>Temperature {0}</value>
+    <comment>Detalhamento da GPU; {0} = temperatura</comment>
+  </data>
+  <data name="Format_TrayLineExtra" xml:space="preserve">
+    <value>{0} {1} · {2} · {3}</value>
+    <comment>Linha da dica do ícone com mais um detalhe; {0} = item; {1} = %; {2} = detalhe; {3} = outro detalhe</comment>
+  </data>
+  <data name="Format_NetworkRateGigabits" xml:space="preserve">
+    <value>{0} Gbps</value>
+    <comment>Tráfego atual da rede, a partir de 1000 Mbps; {0} = número já formatado</comment>
+  </data>
+  <data name="Format_DiskRates" xml:space="preserve">
+    <value>R {0} · W {1}</value>
+    <comment>Velocidade do disco; {0} = leitura; {1} = escrita, cada uma com a sua unidade</comment>
+  </data>
+  <data name="Format_KilobytesPerSecond" xml:space="preserve">
+    <value>{0} KB/s</value>
+    <comment>{0} = número já formatado</comment>
+  </data>
+  <data name="Format_MegabytesPerSecond" xml:space="preserve">
+    <value>{0} MB/s</value>
+    <comment>{0} = número já formatado</comment>
+  </data>
+  <data name="Format_GigabytesPerSecond" xml:space="preserve">
+    <value>{0} GB/s</value>
+    <comment>{0} = número já formatado (a partir de 1000 MB/s)</comment>
   </data>
 </root>

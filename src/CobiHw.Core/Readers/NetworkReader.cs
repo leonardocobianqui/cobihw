@@ -3,12 +3,22 @@ using CobiHw.Core.Interop;
 
 namespace CobiHw.Core.Readers;
 
+/// <summary>
+/// Reads network speed and session totals per device from the interface table (<c>GetIfTable2</c>).
+/// </summary>
+/// <remarks>
+/// Speeds come from the byte difference between two samples. Session totals count everything since the session
+/// started and survive app restarts within the same Windows boot.
+/// </remarks>
 internal sealed class NetworkReader
 {
     private readonly NetworkSessionState _session;
+    // Counters from the previous sample, by interface LUID, used to compute speeds.
     private Dictionary<ulong, InterfaceCounters> _previousSample = [];
     private long _previousTimestamp;
 
+    /// <summary>Starts a reader, resuming the saved session when it belongs to the current Windows boot.</summary>
+    /// <param name="savedSession">Session saved by a previous run, or <see langword="null"/>.</param>
     public NetworkReader(NetworkSessionState? savedSession)
     {
         _session = savedSession is not null && savedSession.BelongsToCurrentBoot()
@@ -16,8 +26,13 @@ internal sealed class NetworkReader
             : NetworkSessionState.CreateForCurrentBoot();
     }
 
+    /// <summary>Reads the interface table now and returns speeds and session totals.</summary>
     public NetworkSnapshot Read() => Process(IfTable.Read(), Stopwatch.GetTimestamp());
 
+    /// <summary>Turns interface counters into speeds and session totals. Separate from <see cref="Read"/> so it can be unit tested.</summary>
+    /// <param name="rows">Interface rows from the table.</param>
+    /// <param name="timestamp"><see cref="Stopwatch"/> timestamp of the sample.</param>
+    /// <returns>Speeds are <see langword="null"/> on the first sample, since there's nothing to compare with yet.</returns>
     public NetworkSnapshot Process(IReadOnlyList<IfRow> rows, long timestamp)
     {
         double? seconds = _previousTimestamp == 0 ? null : Stopwatch.GetElapsedTime(_previousTimestamp, timestamp).TotalSeconds;
@@ -35,6 +50,7 @@ internal sealed class NetworkReader
             ulong receivedDelta = previous is null ? 0 : Delta(counters.ReceivedBytes, previous.ReceivedBytes);
             ulong sentDelta = previous is null ? 0 : Delta(counters.SentBytes, previous.SentBytes);
 
+            // The widget total counts only physical adapters, so VPN traffic isn't counted twice.
             if (row.IsPhysicalUp)
             {
                 physicalReceived += receivedDelta;
@@ -67,6 +83,7 @@ internal sealed class NetworkReader
             devices);
     }
 
+    /// <summary>Zeroes the session totals of one device, or the widget total when <paramref name="device"/> is null.</summary>
     public void ResetSession(Guid? device)
     {
         if (device is Guid id)
@@ -79,8 +96,10 @@ internal sealed class NetworkReader
         _session.SentBytes = 0;
     }
 
+    /// <summary>Copy of the session state to save on exit.</summary>
     public NetworkSessionState ExportSession() => _session.CopyForSave();
 
+    // Adds the bytes since the last sample to the session totals (widget total and per device).
     private DeviceSession Accumulate(IfRow row, InterfaceCounters counters)
     {
         InterfaceCounters last = _session.LastCounters.GetValueOrDefault(row.Luid) ?? new InterfaceCounters(0, 0);
@@ -105,6 +124,7 @@ internal sealed class NetworkReader
         return session;
     }
 
+    // A counter lower than before means the interface was reset (e.g. adapter re-enabled): count from zero.
     private static ulong Delta(ulong current, ulong previous) =>
         current >= previous ? current - previous : current;
 }

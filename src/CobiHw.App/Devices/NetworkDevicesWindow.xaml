@@ -22,12 +22,14 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
+        <!-- Secondary text for hints and status lines. -->
         <Style x:Key="Hint" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
             <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
+        <!-- Label and value; the row hides while the value is empty. -->
         <DataTemplate x:Key="DetailRowTemplate" DataType="{x:Type devices:DetailRow}">
             <Grid Margin="0,3" Visibility="{Binding HasValue, Converter={StaticResource BooleanToVisibility}}">
                 <Grid.ColumnDefinitions>
@@ -41,6 +43,7 @@
     </Window.Resources>
 
     <DockPanel Margin="12">
+        <!-- Bottom bar: public IP lookup and Close. -->
         <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
             <Button DockPanel.Dock="Right" MinWidth="90" Padding="10,4" VerticalAlignment="Top" IsCancel="True" Content="{loc:Text Settings_Close}" Click="OnCloseClick" />
             <StackPanel Margin="0,0,12,0">
@@ -53,6 +56,7 @@
             </StackPanel>
         </DockPanel>
 
+        <!-- Loading and "no devices" messages. -->
         <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}" Text="{loc:Text NetworkDevices_Loading}"
                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibility}}" />
 
@@ -65,14 +69,19 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+            <!-- Device list. -->
             <ListBox ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type devices:NetworkDeviceTabViewModel}">
-                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" ToolTip="{Binding Name}" />
+                        <StackPanel Margin="0,2" ToolTip="{Binding AdapterName}">
+                            <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
+                            <TextBlock FontSize="11" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding AdapterName}" />
+                        </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
+            <!-- Details of the selected device, with the Wi-Fi section below. -->
             <Border Grid.Column="1" Margin="12,0,0,0" BorderThickness="1" CornerRadius="4"
                     BorderBrush="{DynamicResource ControlStrongStrokeColorDefaultBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">

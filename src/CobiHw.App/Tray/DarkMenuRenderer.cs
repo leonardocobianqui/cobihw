@@ -3,23 +3,27 @@ using Forms = System.Windows.Forms;
 
 namespace CobiHw.App.Tray;
 
+/// <summary>Dark look for the tray menu, which WinForms doesn't theme on its own.</summary>
 public sealed class DarkMenuRenderer() : Forms.ToolStripProfessionalRenderer(new DarkMenuColors())
 {
     private static readonly Drawing.Color Text = Drawing.Color.FromArgb(0xF2, 0xF2, 0xF2);
     private static readonly Drawing.Color DisabledText = Drawing.Color.FromArgb(0x8A, 0x8A, 0x8A);
 
+    /// <inheritdoc />
     protected override void OnRenderItemText(Forms.ToolStripItemTextRenderEventArgs e)
     {
         e.TextColor = e.Item.Enabled ? Text : DisabledText;
         base.OnRenderItemText(e);
     }
 
+    /// <inheritdoc />
     protected override void OnRenderArrow(Forms.ToolStripArrowRenderEventArgs e)
     {
         e.ArrowColor = Text;
         base.OnRenderArrow(e);
     }
 
+    /// <summary>Draws a plain check mark instead of the default boxed one.</summary>
     protected override void OnRenderItemCheck(Forms.ToolStripItemImageRenderEventArgs e)
     {
         Drawing.Rectangle box = e.ImageRectangle;
@@ -33,12 +37,14 @@ public sealed class DarkMenuRenderer() : Forms.ToolStripProfessionalRenderer(new
         ]);
     }
 
+    /// <summary>Background, hover and line colors of the dark menu.</summary>
     private sealed class DarkMenuColors : Forms.ProfessionalColorTable
     {
         private static readonly Drawing.Color Background = Drawing.Color.FromArgb(0x2B, 0x2B, 0x2B);
         private static readonly Drawing.Color Hover = Drawing.Color.FromArgb(0x3D, 0x3D, 0x3D);
         private static readonly Drawing.Color Line = Drawing.Color.FromArgb(0x4A, 0x4A, 0x4A);
 
+        // Each gradient uses a single color, so the menu looks flat.
         public override Drawing.Color ToolStripDropDownBackground => Background;
         public override Drawing.Color ImageMarginGradientBegin => Background;
         public override Drawing.Color ImageMarginGradientMiddle => Background;

@@ -3,8 +3,10 @@ using CobiHw.App.Resources;
 
 namespace CobiHw.App.Settings;
 
+/// <summary>One-line summaries shown under each group in the Appearance tab.</summary>
 public static class AppearanceSummary
 {
+    /// <summary>"Size 100% · corners 8 · bars 0 · no border".</summary>
     public static string Shape(AppearanceSettings appearance) =>
         Localizer.Format(
             Strings.Format_ShapeSummary,
@@ -13,6 +15,7 @@ public static class AppearanceSummary
             Math.Clamp(appearance.BarRadius, 0, AppearanceSettings.MaximumBarRadius),
             Border(appearance));
 
+    /// <summary>Background, transparency, text color and weight.</summary>
     public static string TextColors(AppearanceSettings appearance) =>
         Localizer.Format(
             Strings.Format_TextColorsSummary,
@@ -21,6 +24,7 @@ public static class AppearanceSummary
             HexColor.Normalize(appearance.TextColor, AppearanceSettings.DefaultTextColor),
             Lower(WeightLabel(appearance.TextWeight)));
 
+    /// <summary>Each item's thresholds, or "off".</summary>
     public static string UsageColors(ColorSettings colors) =>
         colors.Enabled
             ? Localizer.Format(Strings.Format_UsageSummary, string.Join(" · ", new (MetricItem Item, UsageThresholds Thresholds)[]
@@ -32,6 +36,7 @@ public static class AppearanceSummary
             }.Select(entry => Localizer.Format(Strings.Format_UsageThreshold, MetricRowViewModel.NameOf(entry.Item), entry.Thresholds.Warning, entry.Thresholds.Critical))))
             : Strings.Appearance_UsageOff;
 
+    /// <summary>Translated name of a text weight.</summary>
     public static string WeightLabel(TextWeight weight) => weight switch
     {
         TextWeight.Light => Strings.Weight_Light,

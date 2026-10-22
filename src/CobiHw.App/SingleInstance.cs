@@ -1,7 +1,12 @@
 namespace CobiHw.App;
 
+/// <summary>
+/// Keeps one copy of the app per user session.
+/// A second launch signals the first one to show its widget, then exits.
+/// </summary>
 internal sealed class SingleInstance : IDisposable
 {
+    // The Local prefix scopes both names to the current Windows session.
     private const string MutexName = @"Local\cobihw.SingleInstance";
     private const string ShowEventName = @"Local\cobihw.Show";
 
@@ -15,6 +20,7 @@ internal sealed class SingleInstance : IDisposable
         _showEvent = showEvent;
     }
 
+    /// <summary>Becomes the running instance, or signals the existing one and returns null.</summary>
     public static SingleInstance? TryAcquire()
     {
         Mutex mutex;
@@ -38,6 +44,7 @@ internal sealed class SingleInstance : IDisposable
         return new SingleInstance(mutex, new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName));
     }
 
+    // The other instance may be closing; then there is nothing to signal.
     private static void SignalRunningInstance()
     {
         try
@@ -50,6 +57,8 @@ internal sealed class SingleInstance : IDisposable
         }
     }
 
+    /// <summary>Calls <paramref name="onShowRequested"/> on a pool thread every time another launch signals.</summary>
+    /// <param name="onShowRequested">Action to run; it must switch to the UI thread itself.</param>
     public void ListenForShowRequests(Action onShowRequested)
     {
         _showRegistration = ThreadPool.RegisterWaitForSingleObject(
@@ -60,6 +69,7 @@ internal sealed class SingleInstance : IDisposable
             executeOnlyOnce: false);
     }
 
+    /// <summary>Stops listening and releases the lock.</summary>
     public void Dispose()
     {
         _showRegistration?.Unregister(null);

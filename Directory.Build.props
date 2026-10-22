@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Shared by every project. Update Version and ReleaseDate for each release. -->
+    <Version>1.0.0</Version>
+    <ReleaseDate>2026-10-19</ReleaseDate>
+    <Product>cobihw</Product>
+    <Authors>Leonardo Cobianqui</Authors>
+    <Company>Leonardo Cobianqui</Company>
+    <Copyright>© 2026 Leonardo Cobianqui</Copyright>
+    <!-- Keeps the version as "1.0.0", without the commit hash. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <!-- Debug symbols inside the binaries, so error reports have line numbers. -->
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Makes ReleaseDate readable at runtime (AppInfo.ReleaseDate). -->
+    <AssemblyMetadata Include="ReleaseDate" Value="$(ReleaseDate)" />
+  </ItemGroup>
+
+</Project>

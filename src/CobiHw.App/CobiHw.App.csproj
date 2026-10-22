@@ -1,31 +1,46 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Windows app without a console window; the .exe is named cobihw. -->
     <OutputType>WinExe</OutputType>
     <AssemblyName>cobihw</AssemblyName>
     <RootNamespace>CobiHw.App</RootNamespace>
-    <Product>cobihw</Product>
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <!-- WinForms only for the tray icon and the screen list. -->
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Required by the LibraryImport source generator. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- WFO0003 asks to move DPI settings out of app.manifest; WPF reads them from there. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <!-- English texts are the fallback for languages without a translation. -->
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Avoids name clashes with WPF; WinForms and System.Drawing are used through the Forms and Drawing aliases. -->
     <Using Remove="System.Windows.Forms" />
     <Using Remove="System.Drawing" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Icon embedded as a WPF resource, for the tray and the About window. -->
     <Resource Include="Assets\app.ico" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- License files ship next to the .exe, outside the single file. -->
+    <None Include="..\..\LICENSE" Link="LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <None Include="..\..\THIRD-PARTY-NOTICES.txt" Link="THIRD-PARTY-NOTICES.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Strongly typed access to the translated texts. -->
     <Compile Update="Resources\Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -43,6 +58,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CobiHw.Core\CobiHw.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Lets the test project reach internal types without making them public. -->
+    <InternalsVisibleTo Include="CobiHw.Tests" />
   </ItemGroup>
 
 </Project>
