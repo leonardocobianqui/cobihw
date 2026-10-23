@@ -4,13 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>cobihw · monitor de hardware para Windows</title>
+  <title>cobihw · monitor de hardware</title>
   <meta name="description"
-    content="Widget gratuito e de código aberto para Windows que mostra CPU, GPU, memória, disco, rede e FPS em tempo real, sempre à vista.">
+    content="Widget gratuito e de código aberto para Windows que mostra CPU, GPU, memória, disco, rede, bateria e FPS em tempo real, sempre à vista.">
   <meta name="color-scheme" content="light dark">
   <meta property="og:title" content="cobihw — monitor de hardware para Windows">
   <meta property="og:description"
-    content="CPU, GPU, memória, disco, rede e FPS sempre à vista, num widget leve e gratuito.">
+    content="CPU, GPU, memória, disco, rede, bateria e FPS sempre à vista, num widget leve e gratuito.">
 
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -1673,6 +1673,54 @@
         min-height: calc(100svh - var(--nav-h) + 64px);
       }
     }
+
+    /* Keep each filename and its download button together at the card bottom. */
+    .dl-card {
+      min-width: 0;
+    }
+
+    .download-action {
+      display: grid;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 16px;
+      min-width: 0;
+    }
+
+    .download-action .dl-size {
+      display: block;
+      line-height: 1.5;
+      min-height: 3em;
+      overflow-wrap: anywhere;
+    }
+
+    .download-action .btn {
+      margin-top: 0;
+      justify-self: start;
+      max-width: 100%;
+    }
+
+    /* Shared rows align the badge, titles, descriptions, filenames and buttons. */
+    .dl-card {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 5;
+    }
+    .dl-card > .tag { grid-row: 1; justify-self: start; align-self: start; }
+    .dl-card > h3 { grid-row: 2; margin: 0; }
+    .dl-card > p { grid-row: 3; }
+    .download-action {
+      grid-row: 4 / span 2;
+      grid-template-rows: subgrid;
+      margin-top: 0;
+    }
+    .download-action .dl-size { grid-row: 1; align-self: start; }
+    .download-action .btn { grid-row: 2; align-self: start; }
+    @media (max-width: 640px) {
+      .dl-card { grid-row: auto; grid-template-rows: auto; }
+      .dl-card > .tag, .dl-card > h3, .dl-card > p, .download-action { grid-row: auto; }
+      .download-action { grid-template-rows: auto auto; }
+    }
   </style>
 </head>
 
@@ -1704,16 +1752,15 @@
   <main id="conteudo">
     <section class="wrap hero" id="inicio">
       <p class="eyebrow">SEU PC. EM TEMPO REAL.</p>
-      <h1>Cada detalhe.<br><em>Sempre à vista.</em></h1><img class="hero-art" src="icon.svg" alt=""
-        aria-hidden="true">
-      <p class="lede">O cobihw é um widget leve para Windows que mostra CPU, GPU, memória, disco, rede e FPS em tempo
-        real, num canto da tela, do jeito que você configurar.</p>
+      <h1>Cada detalhe.<br><em>Sempre à vista.</em></h1><img class="hero-art" src="icon.svg" alt="" aria-hidden="true">
+      <p class="lede">O cobihw é um widget leve e customizável para Windows que mostra o uso dos recursos de hardware em
+        tempo real, num canto da tela, do jeito que você configurar.</p>
       <div class="actions">
         <a class="btn btn-primary" href="#instalar">Baixar para Windows</a>
         <a class="btn btn-secondary" href="#demo">Experimentar aqui</a>
       </div>
-      <p class="fineprint">Gratuito e de código aberto. Windows 11 ou Windows 10 22H2.<span id="hero-version"></span>
-      </p>
+      <p class="fineprint">Gratuito e de código aberto. Compatível com Windows 11 ou Windows 10 >= 22H2.<span
+          id="hero-version"></span></p>
 
       <div class="demo" id="demo">
         <div>
@@ -1825,13 +1872,6 @@
                   for="o-radius">8 px</output><input type="range" id="o-radius" min="0" max="12" step="1" value="8">
               </div>
             </div>
-            <div class="st-group">
-              <h3>Posição</h3>
-              <div class="st-row"><label for="o-snap">Encaixar nas bordas</label><input class="switch" type="checkbox"
-                  id="o-snap" checked></div>
-              <div class="st-row"><label for="o-lock">Travar posição e tamanho</label><input class="switch"
-                  type="checkbox" id="o-lock"></div>
-            </div>
           </div>
         </aside>
       </div>
@@ -1844,17 +1884,21 @@
           Gerenciador de Tarefas.</p>
         <dl class="metrics">
           <dt>CPU</dt>
-          <dd>Modelo do processador, porcentagem de uso e frequência atual.</dd>
+          <dd>Porcentagem de uso e frequência atual do processador.</dd>
           <dt>GPU</dt>
-          <dd>Modelo da placa de vídeo, porcentagem de uso, memória de vídeo ocupada e temperatura.</dd>
+          <dd>Porcentagem de uso, memória e, opcionalmente, temperatura. A temperatura depende do suporte do driver.
+          </dd>
           <dt>RAM</dt>
-          <dd>Porcentagem de uso e quantos GB estão ocupados do total.</dd>
+          <dd>Porcentagem de uso e memória utilizada em relação ao total.</dd>
           <dt>Disco</dt>
-          <dd>Quanto tempo o disco escolhido passa trabalhando, em porcentagem.</dd>
+          <dd>Tempo ativo e, opcionalmente, velocidades de leitura e escrita. Monitore o disco do Windows ou outro de
+            sua escolha.</dd>
           <dt>Rede</dt>
-          <dd>Download e upload agora, ping e o total trafegado desde que o cobihw abriu.</dd>
+          <dd>Velocidades de download e upload, dados trafegados e ping.</dd>
+          <dt>Bateria</dt>
+          <dd>Monitore o nível de carga, estado de carregamento e tempo restante.</dd>
           <dt>FPS</dt>
-          <dd>Quadros por segundo do jogo ou app em primeiro plano. Aparece só enquanto ele está rodando.</dd>
+          <dd>Monitore o FPS em jogos.</dd>
         </dl>
 
       </div>
@@ -1863,38 +1907,42 @@
     <section class="section" id="instalar">
       <div class="wrap">
         <h2>Como instalar</h2>
-        <p class="section-lede">O cobihw não tem instalador: é uma pasta com o programa. Escolha a versão, extraia e
-          abra.</p>
-        <div class="requirements"><span><strong>Requer:</strong> Windows 11 ou Windows 10 22H2</span><span
+        <p class="section-lede">O cobihw não precisa instalar: é uma pasta com o executável. Extraia e rode.</p>
+        <div class="requirements"><span><strong>Requer:</strong> Windows 11 ou Windows 10 >= 22H2</span><span
             id="req-version"></span></div>
         <div class="downloads">
           <div class="dl-card recommended">
             <span class="tag">Recomendado</span>
             <h3>Portátil</h3>
             <p>Vem com tudo o que precisa para rodar. Não exige instalar mais nada no computador.</p>
-            <span class="dl-size" id="size-portable"></span>
-            <a class="btn btn-primary" id="dl-portable"
-              href="https://github.com/leonardocobianqui/cobihw/releases">Baixar versão portátil (.zip)</a>
+            <div class="download-action">
+              <span class="dl-size" id="size-portable"></span>
+              <a class="btn btn-primary" id="dl-portable"
+                href="https://github.com/leonardocobianqui/cobihw/releases">Baixar versão portátil (.zip)</a>
+            </div>
           </div>
           <div class="dl-card">
             <h3>Compacta</h3>
             <p>Bem menor, mas exige o <a
                 href="https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.13/windowsdesktop-runtime-10.0.13-win-x64.exe">.NET
-                Desktop Runtime 10</a> instalado. Boa opção se você já usa outros apps em .NET.</p>
-            <span class="dl-size" id="size-compact"></span>
-            <a class="btn btn-secondary" id="dl-compact"
-              href="https://github.com/leonardocobianqui/cobihw/releases">Baixar versão compacta (.zip)</a>
+                Desktop Runtime 10</a> ou superior instalado.</p>
+            <div class="download-action">
+              <span class="dl-size" id="size-compact"></span>
+              <a class="btn btn-secondary" id="dl-compact"
+                href="https://github.com/leonardocobianqui/cobihw/releases">Baixar versão compacta (.zip)</a>
+            </div>
           </div>
         </div>
         <h3>Primeiro uso</h3>
         <ol class="steps">
-          <li>Extraia o .zip numa pasta onde o cobihw vai ficar, como Documentos. As configurações também ficam nessa
-            pasta.</li>
+          <li>Extraia o .zip em uma pasta onde o cobihw vai ficar, como Documentos. As configurações também ficam nessa
+            pasta. Nada é instalado ou gravado fora da pasta.</li>
           <li>Abra o <strong>cobihw.exe</strong>. Se aparecer a tela azul <strong>"O Windows protegeu o
               computador"</strong>, clique em <strong>Mais informações</strong> e depois em <strong>Executar assim
-              mesmo</strong>.</li>
-          <li>Arraste o widget para onde preferir. Clique com o botão direito no ícone perto do relógio para mudar a
-            visualização, abrir as configurações e ligar o "Iniciar com o Windows".</li>
+              mesmo</strong>. Isso acontece porque o programa ainda não possui assinatura digital.</li>
+          <li>Arraste o widget para onde preferir. Clique com o botão direito no ícone do cobihw na barra de tarefas
+            para mudar a
+            visualização, abrir as configurações, fechar o programa e etc. </li>
         </ol>
       </div>
     </section>
@@ -1915,7 +1963,7 @@
     <section class="section" id="contato">
       <div class="wrap">
         <h2>Contato</h2>
-        <p class="section-lede">Dúvidas, sugestões ou parcerias. A resposta chega no e-mail que você informar. Se
+        <p class="section-lede">Dúvidas ou sugestões. A resposta chega no e-mail que você informar. Se
           preferir, escreva direto para <a href="mailto:dev@cobihw.com">dev@cobihw.com</a>.</p>
         <form class="form" id="contact-form" novalidate>
           <label class="field">Nome<input type="text" name="name" autocomplete="name" required maxlength="100"></label>
@@ -2165,7 +2213,7 @@
       }));
     });
     document.querySelectorAll("[data-metric]").forEach(sw => sw.addEventListener("change", () => { O.metrics[sw.dataset.metric] = sw.checked; render(); }));
-    [["o-colors", "colors"], ["o-snap", "snap"], ["o-lock", "lock"]].forEach(([id, key]) => document.getElementById(id).addEventListener("change", e => { O[key] = e.target.checked; render(); }));
+    [["o-colors", "colors"]].forEach(([id, key]) => document.getElementById(id).addEventListener("change", e => { O[key] = e.target.checked; render(); }));
     [["o-transp", "transparency", v => v + "%"], ["o-scale", "scale", v => v + "%"], ["o-radius", "radius", v => v + " px"]].forEach(([id, key, label]) => {
       const input = document.getElementById(id), out = document.getElementById(id + "-v");
       input.addEventListener("input", () => { O[key] = Number(input.value); out.textContent = label(input.value); render(); });
