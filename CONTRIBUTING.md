@@ -40,7 +40,7 @@ Or, in Visual Studio: **Test → Test Explorer → Run All**.
 - Classes that check texts derive from `LocalizedTest`, which starts each test in Brazilian Portuguese. Use `SetLanguage` to test another language.
 - Tests that touch files use `TempSettingsFile`, which works in its own temporary folder.
 - The speed test runs against `FakeCloudflare`, a simulated server; no test uses the internet.
-- The [build workflow](.github/workflows/build.yml) builds and runs the tests on every push to `main` and on every pull request.
+- The [build workflow](.github/workflows/build.yml) builds and runs the tests on every push to `main` and on every pull request, in a 64-bit and in a 32-bit process.
 
 Add or update tests for every change in behavior.
 
@@ -53,6 +53,10 @@ Add or update tests for every change in behavior.
   - `//` only where the code doesn't explain itself: the reason for a choice, a Windows quirk, a unit. Keep it to one line when possible.
   - XAML: one `<!-- -->` per section, tab or style, not per element.
   - Windows API declarations say which official structure or constant they mirror.
+- **64-bit and 32-bit:** every Windows API declaration must work in both.
+  - Use `nint`/`nuint` where the SDK has a pointer, a handle or `SIZE_T`.
+  - Add each new structure to `InteropLayoutTests` (or `User32Tests` in the App) with its x64 and x86 sizes from the Windows SDK headers.
+  - Some `...Ptr` functions only exist in 64-bit Windows; see `User32.GetWindowLongPtr`.
 - **Line endings** are normalized by `.gitattributes`; you don't need to configure Git.
 
 ## Texts and translations
@@ -80,13 +84,15 @@ To add a language: create `Strings.<culture>.resx` with every key, add the cultu
 
 1. Update `Version` and `ReleaseDate` in `Directory.Build.props`.
 2. Add the version to `CHANGELOG.md`.
-3. Run `.\publish.ps1`. It creates, in `publish/<version>`:
-   - `cobihw-<version>-portable-win-x64.zip`: includes .NET.
-   - `cobihw-<version>-framework-dependent-win-x64.zip`: needs the .NET 10 Desktop Runtime.
-   - `SHA256SUMS.txt`.
-4. Create a GitHub release with the tag `v<version>` and attach those three files.
+3. Run `pwsh ./publish.ps1` (PowerShell 7). It creates, in `publish/<version>`:
+   - `cobihw-<version>-portable-win-x64.zip` and `...-win-x86.zip`: include .NET.
+   - `cobihw-<version>-framework-dependent-win-x64.zip` and `...-win-x86.zip`: need the .NET 10 Desktop Runtime of the same architecture.
+   - `SHA256SUMS.txt`, with the checksums of every zip.
+   - `-Architecture x64` (or `x86`) publishes only one architecture.
+4. Run the x64 packages on 64-bit Windows and the x86 packages on 32-bit Windows 10.
+5. Create a GitHub release with the tag `v<version>` and attach the four zips and `SHA256SUMS.txt`.
 
-The update check in **About** reads the latest GitHub release and compares its tag with the app version.
+The update check in **About** reads the latest GitHub release, compares its tag with the app version and only offers it when it has a zip for the architecture of the running app (`-win-x64.zip` or `-win-x86.zip`). Keep those package names.
 
 ## Pull requests
 

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -15,9 +16,9 @@ public enum UpdateState
     NotChecked,
     /// <summary>Checking now.</summary>
     Checking,
-    /// <summary>This is the latest version.</summary>
+    /// <summary>No newer version with a package for this app's architecture.</summary>
     UpToDate,
-    /// <summary>A newer version exists.</summary>
+    /// <summary>A newer version exists, with a package for this app's architecture.</summary>
     Available,
     /// <summary>No release published yet.</summary>
     NoRelease,
@@ -92,7 +93,7 @@ public sealed partial class AboutViewModel : ObservableObject, IDisposable
         {
             _latest = await _latestRelease(_closing.Token);
             UpdateState = _latest is null ? UpdateState.NoRelease
-                : UpdateChecker.IsNewer(_latest.Version, AppInfo.Version) ? UpdateState.Available
+                : UpdateChecker.IsUpdate(_latest, AppInfo.Version, RuntimeInformation.ProcessArchitecture) ? UpdateState.Available
                 : UpdateState.UpToDate;
         }
         catch (OperationCanceledException) when (_closing.IsCancellationRequested)

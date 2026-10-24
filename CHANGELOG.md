@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-24
+
+### Added
+
+- Portable and framework-dependent packages for 32-bit Windows 10 (x86).
+- Error reports show the architecture of the app next to the architecture of Windows.
+
+### Changed
+
+- The update check only offers a new version when it has a package for the architecture of the running app.
+
 ## [1.0.0] - 2026-10-22
 
 First public release.
@@ -29,5 +40,6 @@ First public release.
 - Start with Windows, and an option to remove everything the app registered in Windows.
 - Portable and framework-dependent packages for Windows x64.
 
-[Unreleased]: https://github.com/leonardocobianqui/cobihw/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/leonardocobianqui/cobihw/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/leonardocobianqui/cobihw/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/leonardocobianqui/cobihw/releases/tag/v1.0.0

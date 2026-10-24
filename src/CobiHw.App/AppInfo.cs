@@ -41,9 +41,10 @@ internal static class AppInfo
     /// <summary>Copyright line from the assembly.</summary>
     public static string Copyright { get; } = Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright ?? string.Empty;
 
-    /// <summary>First line of error reports: version, release date, Windows version and architecture.</summary>
+    /// <summary>First line of error reports: version, release date, Windows version and the architecture of Windows and of the app.</summary>
+    /// <remarks>The two architectures differ when the 32-bit package runs on 64-bit Windows, e.g. "Windows 10.0.19045 X64 · app X86".</remarks>
     public static string DiagnosticHeader =>
-        $"{Name} {VersionText} ({ReleaseDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "?"}) · Windows {Environment.OSVersion.Version} · {RuntimeInformation.OSArchitecture}";
+        $"{Name} {VersionText} ({ReleaseDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "?"}) · Windows {Environment.OSVersion.Version} {RuntimeInformation.OSArchitecture} · app {RuntimeInformation.ProcessArchitecture}";
 
     /// <summary>Drops the fourth part and turns a missing patch (-1) into 0, so versions compare correctly.</summary>
     /// <param name="version">Version to normalize.</param>

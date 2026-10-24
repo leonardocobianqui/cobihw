@@ -109,12 +109,26 @@ internal static partial class User32
     public static partial bool GetWindowRect(nint hwnd, out Rect rect);
 
     /// <summary>Reads a window attribute, such as its extended style.</summary>
-    [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
-    public static partial nint GetWindowLongPtr(nint hwnd, int index);
+    /// <remarks>32-bit user32.dll has no GetWindowLongPtrW (the SDK header maps it to GetWindowLongW), so x86 calls that one.</remarks>
+    public static nint GetWindowLongPtr(nint hwnd, int index) =>
+        Environment.Is64BitProcess ? GetWindowLongPtr64(hwnd, index) : GetWindowLong32(hwnd, index);
 
     /// <summary>Changes a window attribute.</summary>
+    /// <remarks>32-bit user32.dll has no SetWindowLongPtrW (the SDK header maps it to SetWindowLongW), so x86 calls that one.</remarks>
+    public static nint SetWindowLongPtr(nint hwnd, int index, nint value) =>
+        Environment.Is64BitProcess ? SetWindowLongPtr64(hwnd, index, value) : SetWindowLong32(hwnd, index, (int)value);
+
+    [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
+    private static partial nint GetWindowLongPtr64(nint hwnd, int index);
+
+    [LibraryImport("user32.dll", EntryPoint = "GetWindowLongW", SetLastError = true)]
+    private static partial int GetWindowLong32(nint hwnd, int index);
+
     [LibraryImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
-    public static partial nint SetWindowLongPtr(nint hwnd, int index, nint value);
+    private static partial nint SetWindowLongPtr64(nint hwnd, int index, nint value);
+
+    [LibraryImport("user32.dll", EntryPoint = "SetWindowLongW", SetLastError = true)]
+    private static partial int SetWindowLong32(nint hwnd, int index, int value);
 
     /// <summary>Key state right now; the high bit is set while the key is down.</summary>
     [LibraryImport("user32.dll")]
