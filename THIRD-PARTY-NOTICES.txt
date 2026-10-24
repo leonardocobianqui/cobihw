@@ -6,7 +6,8 @@ MIT License, reproduced at the end of this file, with the copyright notice
 shown next to its name.
 
 1. .NET Runtime, Windows Presentation Foundation (WPF) and Windows Forms
-   Included in the portable download (cobihw-*-portable-win-x64.zip).
+   Included in the portable downloads (cobihw-*-portable-win-x64.zip and
+   cobihw-*-portable-win-x86.zip).
    Copyright (c) .NET Foundation and Contributors
    https://github.com/dotnet/runtime
    https://github.com/dotnet/wpf

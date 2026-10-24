@@ -1,4 +1,4 @@
-# Builds the solution and runs the tests on every push to main and on every pull request.
+# Builds the solution and runs the tests, in a 64-bit and in a 32-bit process, on every push to main and on every pull request.
 name: build
 
 on:
@@ -28,3 +28,21 @@ jobs:
       # global.json selects Microsoft Testing Platform, the runner xUnit v3 uses.
       - name: Test
         run: dotnet test --project tests/CobiHw.Tests/CobiHw.Tests.csproj -c Release --no-build
+
+  # The same tests in a 32-bit process, where pointers and some Windows structures are smaller.
+  test-x86:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      # A self-contained test app runs as x86 without installing the 32-bit .NET runtime on the runner.
+      - name: Publish tests for x86
+        run: dotnet publish tests/CobiHw.Tests/CobiHw.Tests.csproj -c Release -r win-x86 --self-contained -o artifacts/tests-x86
+
+      - name: Test (x86)
+        run: ./artifacts/tests-x86/CobiHw.Tests.exe

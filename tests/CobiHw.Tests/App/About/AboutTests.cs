@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using CobiHw.App;
 using CobiHw.App.About;
 
@@ -10,6 +11,9 @@ public sealed class AboutTests : LocalizedTest
     private const string NewReleasePage = "https://github.com/leonardocobianqui/cobihw/releases/tag/v9.1.0";
 
     private readonly List<string> _opened = [];
+
+    // Package of the 9.1.0 release for the architecture running the tests (x64 or x86).
+    private static readonly string[] PackagesForThisApp = ["cobihw-9.1.0-portable" + UpdateChecker.PackageSuffix(RuntimeInformation.ProcessArchitecture)];
 
     private AboutViewModel About(Func<CancellationToken, Task<ReleaseInfo?>> latestRelease) => new(latestRelease, _opened.Add);
 
@@ -30,12 +34,44 @@ public sealed class AboutTests : LocalizedTest
     }
 
     [Fact]
-    public void ParseRelease_ReadsVersionAndPage()
+    public void ParseRelease_ReadsVersionPageAndFiles()
     {
-        ReleaseInfo release = UpdateChecker.ParseRelease("{\"tag_name\":\"v1.1.0\",\"html_url\":\"https://github.com/leonardocobianqui/cobihw/releases/tag/v1.1.0\"}");
+        ReleaseInfo release = UpdateChecker.ParseRelease(
+            "{\"tag_name\":\"v1.1.0\",\"html_url\":\"https://github.com/leonardocobianqui/cobihw/releases/tag/v1.1.0\","
+            + "\"assets\":[{\"name\":\"cobihw-1.1.0-portable-win-x86.zip\"},{\"name\":\"SHA256SUMS.txt\"}]}");
 
         Assert.Equal(new Version(1, 1, 0), release.Version);
         Assert.Equal("https://github.com/leonardocobianqui/cobihw/releases/tag/v1.1.0", release.PageUrl);
+        Assert.Equal(new[] { "cobihw-1.1.0-portable-win-x86.zip", "SHA256SUMS.txt" }, release.Files);
+    }
+
+    [Fact]
+    public void ParseRelease_WithoutFiles_HasAnEmptyList() =>
+        Assert.Empty(UpdateChecker.ParseRelease("{\"tag_name\":\"v1.1.0\"}").Files);
+
+    [Theory]
+    [InlineData(Architecture.X64, "-win-x64.zip")]
+    [InlineData(Architecture.X86, "-win-x86.zip")]
+    public void PackageSuffix_MatchesThePublishScriptNames(Architecture architecture, string suffix) =>
+        Assert.Equal(suffix, UpdateChecker.PackageSuffix(architecture));
+
+    [Fact]
+    public void HasPackageFor_LooksOnlyAtThatArchitecture()
+    {
+        var release = new ReleaseInfo(new Version(1, 1, 0), AppInfo.ReleasesUrl, ["cobihw-1.1.0-portable-win-x64.zip", "cobihw-1.1.0-framework-dependent-win-x64.zip", "SHA256SUMS.txt"]);
+
+        Assert.True(release.HasPackageFor(Architecture.X64));
+        Assert.False(release.HasPackageFor(Architecture.X86));
+    }
+
+    [Fact]
+    public void IsUpdate_NeedsANewerVersionAndAPackage()
+    {
+        var withX86 = new ReleaseInfo(new Version(1, 1, 0), AppInfo.ReleasesUrl, ["cobihw-1.1.0-portable-win-x86.zip"]);
+
+        Assert.True(UpdateChecker.IsUpdate(withX86, new Version(1, 0, 0), Architecture.X86));
+        Assert.False(UpdateChecker.IsUpdate(withX86, new Version(1, 0, 0), Architecture.X64));
+        Assert.False(UpdateChecker.IsUpdate(withX86, new Version(1, 1, 0), Architecture.X86));
     }
 
     [Theory]
@@ -57,10 +93,11 @@ public sealed class AboutTests : LocalizedTest
     }
 
     [Fact]
-    public void DiagnosticHeader_HasNameVersionAndWindows()
+    public void DiagnosticHeader_HasNameVersionWindowsAndBothArchitectures()
     {
         Assert.StartsWith("cobihw " + AppInfo.VersionText, AppInfo.DiagnosticHeader, StringComparison.Ordinal);
-        Assert.Contains("Windows", AppInfo.DiagnosticHeader, StringComparison.Ordinal);
+        Assert.Contains($"Windows {Environment.OSVersion.Version} {RuntimeInformation.OSArchitecture}", AppInfo.DiagnosticHeader, StringComparison.Ordinal);
+        Assert.EndsWith($"· app {RuntimeInformation.ProcessArchitecture}", AppInfo.DiagnosticHeader, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -85,7 +122,7 @@ public sealed class AboutTests : LocalizedTest
     [Fact]
     public async Task NewVersion_IsAnnounced_AndDownloadOpensItsPage()
     {
-        using AboutViewModel about = About(_ => Task.FromResult<ReleaseInfo?>(new(new Version(9, 1, 0), NewReleasePage)));
+        using AboutViewModel about = About(_ => Task.FromResult<ReleaseInfo?>(new(new Version(9, 1, 0), NewReleasePage, PackagesForThisApp)));
         Assert.False(about.HasUpdateStatus);
         Assert.Equal("", about.UpdateStatus);
 
@@ -100,9 +137,21 @@ public sealed class AboutTests : LocalizedTest
     }
 
     [Fact]
+    public async Task NewVersion_WithoutAPackageForThisArchitecture_IsNotOffered()
+    {
+        Architecture other = RuntimeInformation.ProcessArchitecture == Architecture.X86 ? Architecture.X64 : Architecture.X86;
+        using AboutViewModel about = About(_ => Task.FromResult<ReleaseInfo?>(new(new Version(9, 1, 0), NewReleasePage, ["cobihw-9.1.0-portable" + UpdateChecker.PackageSuffix(other)])));
+
+        await about.CheckUpdatesCommand.ExecuteAsync(null);
+
+        Assert.Equal(UpdateState.UpToDate, about.UpdateState);
+        Assert.False(about.HasDownload);
+    }
+
+    [Fact]
     public async Task SameVersion_IsUpToDate_WithoutDownload()
     {
-        using AboutViewModel about = About(_ => Task.FromResult<ReleaseInfo?>(new(AppInfo.Version, AppInfo.ReleasesUrl)));
+        using AboutViewModel about = About(_ => Task.FromResult<ReleaseInfo?>(new(AppInfo.Version, AppInfo.ReleasesUrl, PackagesForThisApp)));
 
         await about.CheckUpdatesCommand.ExecuteAsync(null);
 

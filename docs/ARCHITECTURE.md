@@ -81,6 +81,14 @@ The app also saves every minute and on exit; saving is skipped when nothing chan
 
 The tray icon and its menu use Windows Forms (`NotifyIcon`), with a custom dark renderer. The tooltip summarizes the visible items; Windows limits it to 127 characters, so `TrayTooltip` drops whole lines from the end when it doesn't fit.
 
+## 64-bit and 32-bit
+
+The x64 and x86 packages come from the same code; `publish.ps1` only changes the runtime (`-r win-x86`).
+
+- Windows structures use `nint`/`nuint` where the SDK has pointers, handles or `SIZE_T`, so they shrink in a 32-bit process. `InteropLayoutTests` and `User32Tests` check each size against the SDK headers for both architectures, and the build workflow also runs the tests in a 32-bit process.
+- `User32.GetWindowLongPtr` and `SetWindowLongPtr` call `GetWindowLongW` and `SetWindowLongW` in x86, where the `...Ptr` entry points don't exist.
+- The update check only offers a release with a package for the architecture of the running app (`UpdateChecker.IsUpdate`).
+
 ## Localization
 
 - English texts are in `Resources/Strings.resx`; Portuguese, Spanish and Russian in `Strings.pt.resx`, `Strings.es.resx` and `Strings.ru.resx`. Each English entry has a comment for translators.

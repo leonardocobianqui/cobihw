@@ -33,16 +33,18 @@ Hover over the widget to see the details of every item, including the hidden one
 
 ## Download
 
-Get the latest version from [Releases](https://github.com/leonardocobianqui/cobihw/releases). There are two packages:
+Get the latest version from [Releases](https://github.com/leonardocobianqui/cobihw/releases). There are two packages for each kind of Windows:
 
-| Package | Size | Needs |
-| --- | --- | --- |
-| `cobihw-<version>-portable-win-x64.zip` | Larger | Nothing; .NET is included |
-| `cobihw-<version>-framework-dependent-win-x64.zip` | Smaller | [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) |
+| Package | Windows | Size | Needs |
+| --- | --- | --- | --- |
+| `cobihw-<version>-portable-win-x64.zip` | 64-bit | Larger | Nothing; .NET is included |
+| `cobihw-<version>-framework-dependent-win-x64.zip` | 64-bit | Smaller | [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x64) |
+| `cobihw-<version>-portable-win-x86.zip` | 32-bit | Larger | Nothing; .NET is included |
+| `cobihw-<version>-framework-dependent-win-x86.zip` | 32-bit | Smaller | [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x86) |
 
-Each release also has a `SHA256SUMS.txt` file to check the download.
+Not sure which one you have? **Settings → System → About → System type** shows it. Each release also has a `SHA256SUMS.txt` file to check the download.
 
-**Requirements:** Windows 10 or 11, 64-bit.
+**Requirements:** Windows 11, or Windows 10 22H2 (64-bit or 32-bit).
 
 ## Getting started
 
@@ -80,10 +82,10 @@ Run the tests:
 dotnet test --project tests/CobiHw.Tests/CobiHw.Tests.csproj
 ```
 
-Create the release packages (zips and checksums in `publish/<version>`):
+Create the release packages with PowerShell 7 (zips for x64 and x86, and their checksums, in `publish/<version>`):
 
 ```powershell
-.\publish.ps1
+pwsh ./publish.ps1
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the project conventions and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how the code is organized.
