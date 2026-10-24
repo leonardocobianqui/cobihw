@@ -13,7 +13,6 @@
     content="CPU, GPU, memória, disco, rede, bateria e FPS sempre à vista, num widget leve e gratuito.">
 
   <link rel="icon" href="favicon.ico" sizes="any">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
 
   <style>
     :root {
@@ -1729,7 +1728,7 @@
 
   <nav class="nav" aria-label="Principal">
     <div class="wrap">
-      <a class="brand" href="#inicio"><img src="icon.svg" alt="" width="28" height="28">cobihw</a>
+      <a class="brand" href="#inicio"><img src="icon-64.png" alt="" width="32" height="32">cobihw</a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links">☰ Menu</button>
       <ul class="nav-links" id="nav-links">
         <li><a href="#funcionalidades">Funcionalidades</a></li>
@@ -1752,14 +1751,14 @@
   <main id="conteudo">
     <section class="wrap hero" id="inicio">
       <p class="eyebrow">SEU PC. EM TEMPO REAL.</p>
-      <h1>Cada detalhe.<br><em>Sempre à vista.</em></h1><img class="hero-art" src="icon.svg" alt="" aria-hidden="true">
+      <h1>Cada detalhe.<br><em>Sempre à vista.</em></h1><img class="hero-art" src="icon-512.webp" alt="" width="230" height="230" aria-hidden="true">
       <p class="lede">O cobihw é um widget leve e customizável para Windows que mostra o uso dos recursos de hardware em
         tempo real, num canto da tela, do jeito que você configurar.</p>
       <div class="actions">
         <a class="btn btn-primary" href="#instalar">Baixar para Windows</a>
         <a class="btn btn-secondary" href="#demo">Experimentar aqui</a>
       </div>
-      <p class="fineprint">Gratuito e de código aberto. Compatível com Windows 11 ou Windows 10 >= 22H2.<span
+      <p class="fineprint">Gratuito e de código aberto. Para Windows 11 e Windows 10 22H2, 64 bits.<span
           id="hero-version"></span></p>
 
       <div class="demo" id="demo">
@@ -1804,7 +1803,7 @@
                       style="background:#3B9CF4"></span></span><span class="tb-app" id="tb-running"><span class="tb-dot"
                       id="tb-running-dot" style="background:#7E57C2"></span></span><span class="tb-app"><span
                       class="tb-dot" style="background:#E8684A"></span></span></div>
-                <div class="tb-tray"><img src="icon.svg" alt=""><span id="clock"></span></div>
+                <div class="tb-tray"><img src="icon-64.png" alt="" width="16" height="16"><span id="clock"></span></div>
               </div>
             </div>
           </div>
@@ -1823,7 +1822,7 @@
         </div>
 
         <aside class="settings" aria-label="Configurações da demonstração">
-          <div class="st-title"><img src="icon.svg" alt="">Configurações do cobihw</div>
+          <div class="st-title"><img src="icon-64.png" alt="" width="16" height="16">Configurações do cobihw</div>
           <div class="st-body">
             <div class="st-group">
               <h3>Tema</h3>
@@ -1907,8 +1906,8 @@
     <section class="section" id="instalar">
       <div class="wrap">
         <h2>Como instalar</h2>
-        <p class="section-lede">O cobihw não precisa instalar: é uma pasta com o executável. Extraia e rode.</p>
-        <div class="requirements"><span><strong>Requer:</strong> Windows 11 ou Windows 10 >= 22H2</span><span
+        <p class="section-lede">O cobihw não precisa ser instalado: é uma pasta com o executável. Extraia e abra.</p>
+        <div class="requirements"><span><strong>Requer:</strong> Windows 11 ou Windows 10 22H2, 64 bits</span><span
             id="req-version"></span></div>
         <div class="downloads">
           <div class="dl-card recommended">
@@ -1935,14 +1934,16 @@
         </div>
         <h3>Primeiro uso</h3>
         <ol class="steps">
-          <li>Extraia o .zip em uma pasta onde o cobihw vai ficar, como Documentos. As configurações também ficam nessa
-            pasta. Nada é instalado ou gravado fora da pasta.</li>
+          <li>Extraia o .zip em uma pasta onde o cobihw vai ficar, como Documentos. As configurações ficam salvas nessa
+            mesma pasta. Fora dela, o cobihw só grava algo se você ligar <strong>Iniciar com o Windows</strong> ou o
+            <strong>FPS</strong>, e <strong>Configurações → Geral → Remover o cobihw do Windows</strong> desfaz os
+            dois.</li>
           <li>Abra o <strong>cobihw.exe</strong>. Se aparecer a tela azul <strong>"O Windows protegeu o
               computador"</strong>, clique em <strong>Mais informações</strong> e depois em <strong>Executar assim
               mesmo</strong>. Isso acontece porque o programa ainda não possui assinatura digital.</li>
-          <li>Arraste o widget para onde preferir. Clique com o botão direito no ícone do cobihw na barra de tarefas
-            para mudar a
-            visualização, abrir as configurações, fechar o programa e etc. </li>
+          <li>Arraste o widget para onde preferir. O ícone do cobihw fica na área de notificação, ao lado do relógio
+            (se não aparecer, clique na setinha <strong>^</strong>). O clique com o botão esquerdo mostra ou esconde o
+            widget; o direito abre o menu para mudar a visualização, abrir as configurações ou sair.</li>
         </ol>
       </div>
     </section>
@@ -2327,11 +2328,15 @@
         document.getElementById("hero-version").textContent = ` Versão ${version}.`;
         document.getElementById("req-version").textContent = `Versão atual: ${version}`;
         document.getElementById("footer-version").textContent = ` Versão ${version}.`;
-        const zips = latest.assets.filter(a => a.name.toLowerCase().endsWith(".zip"));
-        const portable = zips.find(a => a.name.toLowerCase().includes("portable"));
-        const compact = zips.find(a => a !== portable);
-        if (portable) { document.getElementById("dl-portable").href = portable.browser_download_url; document.getElementById("size-portable").textContent = `${portable.name} · ${mb(portable.size)}`; }
-        if (compact) { document.getElementById("dl-compact").href = compact.browser_download_url; document.getElementById("size-compact").textContent = `${compact.name} · ${mb(compact.size)}`; }
+        // Each button looks for its own package by the end of the file name, so other files in the release don't matter.
+        const showPackage = (suffix, linkId, sizeId) => {
+          const file = latest.assets.find(a => a.name.toLowerCase().endsWith(suffix));
+          if (!file) return;
+          document.getElementById(linkId).href = file.browser_download_url;
+          document.getElementById(sizeId).textContent = `${file.name} · ${mb(file.size)}`;
+        };
+        showPackage("-portable-win-x64.zip", "dl-portable", "size-portable");
+        showPackage("-framework-dependent-win-x64.zip", "dl-compact", "size-compact");
       } catch {
         box.innerHTML = `<p class="releases-empty">Não foi possível carregar as versões agora. Veja na <a href="https://github.com/${REPO}/releases">página de versões no GitHub</a>.</p>`;
       }

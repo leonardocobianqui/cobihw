@@ -1,0 +1,4 @@
+# GitHub Pages builds this folder with Jekyll. The site is only index.html, so the Markdown docs stay on GitHub.
+exclude:
+  - ARCHITECTURE.md
+  
