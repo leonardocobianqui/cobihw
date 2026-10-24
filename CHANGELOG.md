@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- New app icon, the same as the website's.
 - The update check only offers a new version when it has a package for the architecture of the running app.
 
 ## [1.0.0] - 2026-10-22
