@@ -4,7 +4,10 @@ name: build
 on:
   push:
     branches: [main]
+    # Changes only to the website or to Markdown docs don't affect the app.
+    paths-ignore: ['docs/**', '**/*.md']
   pull_request:
+    paths-ignore: ['docs/**', '**/*.md']
 
 # Only needs to read the code.
 permissions:

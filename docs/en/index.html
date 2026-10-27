@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cobihw · hardware monitor</title>
+  <meta name="description"
+    content="Free, open-source widget for Windows that shows CPU, GPU, memory, disk, network, battery and FPS in real time, always in sight.">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:title" content="cobihw — hardware monitor for Windows">
+  <meta property="og:description"
+    content="CPU, GPU, memory, disk, network, battery and FPS always in sight, in a light, free widget.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cobihw.com/en/">
+  <meta property="og:image" content="https://cobihw.com/og-image.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="pt_BR">
+
+  <!-- Language versions of this page, for search engines. -->
+  <link rel="canonical" href="https://cobihw.com/en/">
+  <link rel="alternate" hreflang="pt-BR" href="https://cobihw.com/">
+  <link rel="alternate" hreflang="en" href="https://cobihw.com/en/">
+  <link rel="alternate" hreflang="x-default" href="https://cobihw.com/en/">
+
+  <link rel="icon" href="../favicon.ico" sizes="any">
+
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+
+<body>
+  <a class="sr-only" href="#content">Skip to content</a>
+
+  <nav class="nav" aria-label="Main">
+    <div class="wrap">
+      <a class="brand" href="#top"><img src="../icon-64.png" alt="" width="32" height="32">cobihw</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links">☰ Menu</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#install">How to install</a></li>
+        <li><a href="#changelog">Changelog</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="lang-link" href="../" hreflang="pt-BR" lang="pt-BR" title="Português">PT</a>
+        <a class="icon-btn" href="https://github.com/leonardocobianqui/cobihw" target="_blank" rel="noopener" aria-label="Source code on GitHub">
+          <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+        </a>
+        <a class="btn btn-primary btn-small" href="#install">Download</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="content">
+    <section class="wrap hero" id="top">
+      <p class="eyebrow">YOUR PC. IN REAL TIME.</p>
+      <h1>Every detail.<br><em>Always in sight.</em></h1><img class="hero-art" src="../icon-512.webp" alt="" width="230"
+        height="230" aria-hidden="true">
+      <p class="lede">cobihw is a light, customizable widget for Windows that shows your hardware usage in real
+        time.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#install">Download for Windows</a>
+        <a class="btn btn-secondary" href="#demo">Try it here</a>
+      </div>
+      <p class="fineprint">Free and open source. For Windows 11 and Windows 10 22H2 or later, 32 or 64-bit.<span
+          id="hero-version"></span></p>
+
+      <div class="demo" id="demo">
+        <div>
+          <p class="sr-only">Interactive demo: a Windows desktop with the cobihw widget showing sample values. Use the
+            settings panel and the scenario buttons to see the widget change.</p>
+          <div class="desk" id="desk">
+            <div class="screen os-dark" id="screen">
+              <div class="win" id="win-game" aria-hidden="true">
+                <div class="win-bar"><span>Neon Race</span><span class="ctl">–▢✕</span></div>
+                <div class="win-body"><canvas id="game" width="640" height="404"></canvas></div>
+              </div>
+              <div class="win" id="win-render" aria-hidden="true">
+                <div class="win-bar"><span>Video editor — exporting</span><span class="ctl">–▢✕</span></div>
+                <div class="win-body">
+                  <div class="editor">
+                    <div class="editor-preview" id="ed-preview">Frame 0</div>
+                    <div class="timeline">
+                      <div class="track"><i style="left:0;width:38%;background:#4DB3EE"></i><i
+                          style="left:39%;width:24%;background:#C46BE2"></i><i
+                          style="left:64%;width:36%;background:#4DB3EE"></i></div>
+                      <div class="track"><i style="left:0;width:63%;background:#7FD14B"></i><i
+                          style="left:64%;width:30%;background:#7FD14B"></i></div>
+                      <div class="playhead" id="ed-head"></div>
+                      <div class="prog"><i id="ed-prog"></i></div>
+                      <div class="status"><span id="ed-status">Exporting in 4K</span><span id="ed-left"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="win" id="win-download" aria-hidden="true">
+                <div class="win-bar"><span>Downloads</span><span class="ctl">–▢✕</span></div>
+                <div class="win-body">
+                  <ul class="dl-list" id="dl-list"></ul>
+                </div>
+              </div>
+              <div class="widget" id="widget" aria-hidden="true"></div>
+              <div class="taskbar" aria-hidden="true">
+                <div class="tb-apps"><span class="tb-app"><span
+                      class="tb-start"><i></i><i></i><i></i><i></i></span></span><span class="tb-app"><span
+                      class="tb-dot" style="background:#F2C14E"></span></span><span class="tb-app"><span class="tb-dot"
+                      style="background:#3B9CF4"></span></span><span class="tb-app" id="tb-running"><span class="tb-dot"
+                      id="tb-running-dot" style="background:#7E57C2"></span></span><span class="tb-app"><span
+                      class="tb-dot" style="background:#E8684A"></span></span></div>
+                <div class="tb-tray"><img src="../icon-64.png" alt="" width="16" height="16"><span id="clock"></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="scenes">
+            <span class="lbl" id="scenes-lbl">The PC is:</span>
+            <div class="seg" id="scenes" role="group" aria-labelledby="scenes-lbl">
+              <button type="button" data-v="idle" aria-pressed="true">Idle</button>
+              <button type="button" data-v="game" aria-pressed="false">Gaming</button>
+              <button type="button" data-v="render" aria-pressed="false">Rendering video</button>
+              <button type="button" data-v="download" aria-pressed="false">Downloading files</button>
+              <button type="button" data-v="speed" aria-pressed="false">Testing the internet</button>
+            </div>
+          </div>
+          <p class="demo-hint">Sample values. Drag the widget around the screen. In the game, the FPS is your browser's
+            real one.</p>
+        </div>
+
+        <aside class="settings" aria-label="Demo settings">
+          <div class="st-title"><img src="../icon-64.png" alt="" width="16" height="16">cobihw settings</div>
+          <div class="st-body">
+            <div class="st-group">
+              <h3>Theme</h3>
+              <div class="st-opts" data-opt="theme"><button class="st-opt" type="button" data-v="dark"
+                  aria-pressed="true">Dark</button><button class="st-opt" type="button" data-v="light"
+                  aria-pressed="false">Light</button></div>
+            </div>
+            <div class="st-group">
+              <h3>View</h3>
+              <div class="st-opts" data-opt="layout"><button class="st-opt" type="button" data-v="full"
+                  aria-pressed="true">Full</button><button class="st-opt" type="button" data-v="h"
+                  aria-pressed="false">Compact horizontal</button><button class="st-opt" type="button" data-v="v"
+                  aria-pressed="false">Compact vertical</button></div>
+            </div>
+            <div class="st-group">
+              <h3>Show the widget</h3>
+              <div class="st-opts" data-opt="mode"><button class="st-opt" type="button" data-v="top"
+                  aria-pressed="true">Always on top</button><button class="st-opt" type="button" data-v="desk"
+                  aria-pressed="false">On the desktop</button></div>
+              <p class="st-hint">Open a game and compare both modes.</p>
+            </div>
+            <div class="st-group">
+              <h3>Show in the widget</h3>
+              <div class="st-row"><label for="m-cpu">CPU</label><input class="switch" type="checkbox" id="m-cpu"
+                  data-metric="cpu" checked></div>
+              <div class="st-row"><label for="m-gpu">GPU</label><input class="switch" type="checkbox" id="m-gpu"
+                  data-metric="gpu" checked></div>
+              <div class="st-row"><label for="m-ram">RAM</label><input class="switch" type="checkbox" id="m-ram"
+                  data-metric="ram" checked></div>
+              <div class="st-row"><label for="m-disk">Disk</label><input class="switch" type="checkbox" id="m-disk"
+                  data-metric="disk" checked></div>
+              <div class="st-row"><label for="m-net">Network</label><input class="switch" type="checkbox" id="m-net"
+                  data-metric="net" checked></div>
+              <p class="st-hint">FPS shows up on its own, first, while a game is running.</p>
+            </div>
+            <div class="st-group">
+              <h3>Appearance</h3>
+              <div class="st-row"><label for="o-colors">Color by usage</label><input class="switch"
+                  type="checkbox" id="o-colors" checked></div>
+              <div class="st-range"><label for="o-transp">Background transparency</label><output id="o-transp-v"
+                  for="o-transp">0%</output><input type="range" id="o-transp" min="0" max="80" step="5" value="0"></div>
+              <div class="st-range"><label for="o-scale">Widget size</label><output id="o-scale-v"
+                  for="o-scale">100%</output><input type="range" id="o-scale" min="70" max="130" step="5" value="100">
+              </div>
+              <div class="st-range"><label for="o-radius">Rounded corners</label><output id="o-radius-v"
+                  for="o-radius">8 px</output><input type="range" id="o-radius" min="0" max="12" step="1" value="8">
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="wrap">
+        <h2>Features</h2>
+        <p class="section-lede">Everything that matters about your PC's performance, in one place, without opening Task
+          Manager.</p>
+        <dl class="metrics">
+          <dt>CPU</dt>
+          <dd>Usage percentage and current processor clock.</dd>
+          <dt>GPU</dt>
+          <dd>Usage percentage, memory and, optionally, temperature. Temperature depends on driver support.</dd>
+          <dt>RAM</dt>
+          <dd>Usage percentage and used memory out of the total.</dd>
+          <dt>Disk</dt>
+          <dd>Active time and, optionally, read and write speeds. Monitor the Windows disk or another one of your
+            choice.</dd>
+          <dt>Network</dt>
+          <dd>Download and upload speeds, data used and ping.</dd>
+          <dt>Battery</dt>
+          <dd>Charge level, charging state and time left.</dd>
+          <dt>FPS</dt>
+          <dd>FPS in games. The first time, Windows asks for administrator permission.</dd>
+        </dl>
+
+      </div>
+    </section>
+
+    <section class="section" id="install">
+      <div class="wrap">
+        <h2>How to install</h2>
+        <p class="section-lede">cobihw doesn't need installing: it's a folder with the executable. Extract it and open it.</p>
+        <div class="requirements"><span><strong>Requires:</strong> Windows 11 or Windows 10 22H2 or later, 32 or
+            64-bit</span><span id="req-version"></span></div>
+        <div class="arch">
+          <span class="lbl" id="arch-label">Your Windows is:</span>
+          <div class="seg" id="arch" role="group" aria-labelledby="arch-label">
+            <button type="button" data-arch="x64" aria-pressed="true">64-bit</button>
+            <button type="button" data-arch="x86" aria-pressed="false">32-bit</button>
+          </div>
+          <p class="arch-hint">Not sure? See <strong>Settings → System → About → System type</strong>. Windows 11 is
+            always 64-bit.</p>
+        </div>
+        <div class="downloads">
+          <div class="dl-card recommended">
+            <span class="tag">Recommended</span>
+            <h3>Portable</h3>
+            <p>Comes with everything it needs to run. Nothing else to install on the computer.</p>
+            <div class="download-action">
+              <span class="dl-size" id="size-portable"></span>
+              <a class="btn btn-primary" id="dl-portable"
+                href="https://github.com/leonardocobianqui/cobihw/releases" target="_blank" rel="noopener">Download portable version (.zip)</a>
+            </div>
+          </div>
+          <div class="dl-card">
+            <h3>Compact</h3>
+            <p>Much smaller, but needs the <a id="runtime-link"
+                href="https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.13/windowsdesktop-runtime-10.0.13-win-x64.exe">.NET
+                Desktop Runtime 10<span id="runtime-arch"></span></a> or later installed.</p>
+            <div class="download-action">
+              <span class="dl-size" id="size-compact"></span>
+              <a class="btn btn-secondary" id="dl-compact"
+                href="https://github.com/leonardocobianqui/cobihw/releases" target="_blank" rel="noopener">Download compact version (.zip)</a>
+            </div>
+          </div>
+        </div>
+        <h3>First use</h3>
+        <ol class="steps">
+          <li>Extract the .zip to a folder where cobihw will stay, such as Documents. The settings are saved in that same
+            folder.</li>
+          <li>Open <strong>cobihw.exe</strong>. If the blue <strong>"Windows protected your PC"</strong> screen appears,
+            click <strong>More info</strong> and then <strong>Run anyway</strong>. This happens because the app isn't
+            digitally signed yet.</li>
+          <li>Drag the widget wherever you like. To set up the widget's features and display, right-click its icon in
+            the notification area and browse the options.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="changelog">
+      <div class="wrap">
+        <h2>Changelog</h2>
+        <p class="section-lede">What changed in each version. The full list is on the <a
+            href="https://github.com/leonardocobianqui/cobihw/releases" target="_blank" rel="noopener">releases page on GitHub</a>.</p>
+        <div class="releases" id="releases" aria-live="polite">
+          <p class="releases-empty">Loading the versions…</p>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="section" id="contact">
+      <div class="wrap">
+        <h2>Contact</h2>
+        <p class="section-lede">Questions or suggestions. The answer goes to the email address you enter. If you
+          prefer, write straight to <a href="mailto:dev@cobihw.com">dev@cobihw.com</a>.</p>
+        <form class="form" id="contact-form" novalidate>
+          <label class="field">Name<input type="text" name="name" autocomplete="name" required maxlength="100"></label>
+          <label class="field">Email<input type="email" name="email" autocomplete="email" required
+              maxlength="200"></label>
+          <label class="field full">Subject
+            <select name="topic">
+              <option>Question</option>
+              <option>Suggestion</option>
+              <option>Problem</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label class="field full">Message<textarea name="message" required maxlength="5000"></textarea></label>
+          <input class="trap" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="full actions"><button class="btn btn-primary" type="submit" id="send">Send message</button>
+          </div>
+          <p class="form-note full">Your name, email and message are sent through the <a
+              href="https://web3forms.com/" target="_blank" rel="noopener">Web3Forms</a> service and used only to reply to you.</p>
+          <p class="form-status full" id="form-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>© 2026 Leonardo Cobianqui. MIT License.<span id="footer-version"></span></span>
+      <span><a href="https://github.com/leonardocobianqui/cobihw" target="_blank" rel="noopener">GitHub</a> · <a href="#contact">Contact</a></span>
+    </div>
+  </footer>
+
+  <script src="../assets/site.js"></script>
+</body>
+
+</html>
