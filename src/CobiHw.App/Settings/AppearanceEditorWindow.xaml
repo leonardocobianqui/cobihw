@@ -58,133 +58,137 @@
         </DataTemplate>
     </Window.Resources>
 
-    <DockPanel Margin="16">
-        <!-- Buttons: Restore defaults (this group), Close, Apply. -->
-        <DockPanel DockPanel.Dock="Bottom" Margin="0,16,0,0">
-            <Button DockPanel.Dock="Left" MinWidth="120" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Common_Cancel}" IsCancel="True" />
-                <Button MinWidth="80" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
-            </StackPanel>
-        </DockPanel>
+    <DockPanel>
+        <!-- Footer band with the buttons: Restore defaults (this group), Cancel, Apply. -->
+        <Border DockPanel.Dock="Bottom" Style="{DynamicResource FooterBand}">
+            <DockPanel>
+                <Button DockPanel.Dock="Left" MinWidth="120" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Common_Cancel}" IsCancel="True" />
+                    <Button MinWidth="80" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
 
-        <TextBlock DockPanel.Dock="Top" Margin="0,0,0,14" Style="{StaticResource Hint}" Text="{loc:Text Appearance_EditorHint}" />
+        <DockPanel Margin="16,16,16,12">
+            <TextBlock DockPanel.Dock="Top" Margin="0,0,0,14" Style="{StaticResource Hint}" Text="{loc:Text Appearance_EditorHint}" />
 
-        <!-- The scroll area reaches 4 px past the content on the left, top and bottom, so the focus ring of the first and last controls isn't cut. -->
-        <ScrollViewer Margin="-4,-4,0,-4" VerticalScrollBarVisibility="Auto" Focusable="False">
-            <Grid Margin="4,4,16,4" Grid.IsSharedSizeScope="True">
-                <!-- Shape group: size, corners, bar corners and border. -->
-                <StackPanel Visibility="{Binding IsShape, Converter={StaticResource BooleanToVisibility}}">
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Size}" />
-                    <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_Scale}" />
-                    <DockPanel>
-                        <Button DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,2" Content="100%" Command="{Binding ResetScaleCommand}" />
-                        <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding Scale, StringFormat={}{0}%}" />
-                        <Slider Minimum="50" Maximum="200" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="10" Value="{Binding Scale}" />
-                    </DockPanel>
-                    <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_ScaleHint}" />
-
-                    <Border Style="{StaticResource SectionLine}" />
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Shape}" />
-                    <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_CornerRadius}" />
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding CornerRadius, StringFormat={}{0} px}" />
-                        <Slider Minimum="0" Maximum="{Binding MaximumCornerRadius}" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="5" Value="{Binding CornerRadius}" />
-                    </DockPanel>
-                    <TextBlock Style="{StaticResource Hint}" Text="{Binding CornerRadiusHint}" />
-                    <TextBlock Margin="0,12,0,4" Text="{loc:Text Appearance_BarRadius}" />
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BarRadius, StringFormat={}{0} px}" />
-                        <Slider Minimum="0" Maximum="{Binding MaximumBarRadius}" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1" Value="{Binding BarRadius}" />
-                    </DockPanel>
-                    <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_BarRadiusHint}" />
-
-                    <Border Style="{StaticResource SectionLine}" />
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Border}" />
-                    <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_BorderMode}" />
-                    <ComboBox ItemsSource="{Binding BorderModeOptions}" SelectedValuePath="Mode" SelectedValue="{Binding BorderMode}" DisplayMemberPath="Label" />
-                    <StackPanel Margin="0,10,0,0" IsEnabled="{Binding HasBorder}">
-                        <ContentControl Focusable="False" Content="{Binding BorderColor}" />
-                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_BorderThickness}" />
+            <!-- The scroll area reaches 4 px past the content on the left, top and bottom, so the focus ring of the first and last controls isn't cut. -->
+            <ScrollViewer Margin="-4,-4,0,-4" VerticalScrollBarVisibility="Auto" Focusable="False">
+                <Grid Margin="4,4,16,4" Grid.IsSharedSizeScope="True">
+                    <!-- Shape group: size, corners, bar corners and border. -->
+                    <StackPanel Visibility="{Binding IsShape, Converter={StaticResource BooleanToVisibility}}">
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Size}" />
+                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_Scale}" />
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BorderThickness, StringFormat={}{0} px}" />
-                            <Slider Minimum="1" Maximum="6" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1" Value="{Binding BorderThickness}" />
+                            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,2" Content="100%" Command="{Binding ResetScaleCommand}" />
+                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding Scale, StringFormat={}{0}%}" />
+                            <Slider Minimum="50" Maximum="200" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="10" Value="{Binding Scale}" />
                         </DockPanel>
-                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_BorderTransparency}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_ScaleHint}" />
+
+                        <Border Style="{StaticResource SectionLine}" />
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Shape}" />
+                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_CornerRadius}" />
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BorderTransparency, StringFormat={}{0}%}" />
-                            <Slider Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" SmallChange="5" LargeChange="10" Value="{Binding BorderTransparency}" />
+                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding CornerRadius, StringFormat={}{0} px}" />
+                            <Slider Minimum="0" Maximum="{Binding MaximumCornerRadius}" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="5" Value="{Binding CornerRadius}" />
                         </DockPanel>
+                        <TextBlock Style="{StaticResource Hint}" Text="{Binding CornerRadiusHint}" />
+                        <TextBlock Margin="0,12,0,4" Text="{loc:Text Appearance_BarRadius}" />
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BarRadius, StringFormat={}{0} px}" />
+                            <Slider Minimum="0" Maximum="{Binding MaximumBarRadius}" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1" Value="{Binding BarRadius}" />
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_BarRadiusHint}" />
+
+                        <Border Style="{StaticResource SectionLine}" />
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Border}" />
+                        <TextBlock Margin="0,0,0,4" Text="{loc:Text Appearance_BorderMode}" />
+                        <ComboBox ItemsSource="{Binding BorderModeOptions}" SelectedValuePath="Mode" SelectedValue="{Binding BorderMode}" DisplayMemberPath="Label" />
+                        <StackPanel Margin="0,10,0,0" IsEnabled="{Binding HasBorder}">
+                            <ContentControl Focusable="False" Content="{Binding BorderColor}" />
+                            <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_BorderThickness}" />
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BorderThickness, StringFormat={}{0} px}" />
+                                <Slider Minimum="1" Maximum="6" TickFrequency="1" IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1" Value="{Binding BorderThickness}" />
+                            </DockPanel>
+                            <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_BorderTransparency}" />
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding BorderTransparency, StringFormat={}{0}%}" />
+                                <Slider Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" SmallChange="5" LargeChange="10" Value="{Binding BorderTransparency}" />
+                            </DockPanel>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_BorderHint}" />
                     </StackPanel>
-                    <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_BorderHint}" />
-                </StackPanel>
 
-                <!-- Colors and text group: background, transparency, text color and weight. -->
-                <StackPanel Visibility="{Binding IsTextColors, Converter={StaticResource BooleanToVisibility}}">
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Background}" />
-                    <ContentControl Focusable="False" Content="{Binding BackgroundColor}" />
-                    <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_Transparency}" />
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding Transparency, StringFormat={}{0}%}" />
-                        <Slider Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" SmallChange="5" LargeChange="10" Value="{Binding Transparency}" />
-                    </DockPanel>
-                    <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_TransparencyHint}" />
+                    <!-- Colors and text group: background, transparency, text color and weight. -->
+                    <StackPanel Visibility="{Binding IsTextColors, Converter={StaticResource BooleanToVisibility}}">
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Background}" />
+                        <ContentControl Focusable="False" Content="{Binding BackgroundColor}" />
+                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_Transparency}" />
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Width="44" VerticalAlignment="Center" TextAlignment="Right" Text="{Binding Transparency, StringFormat={}{0}%}" />
+                            <Slider Minimum="0" Maximum="100" TickFrequency="5" IsSnapToTickEnabled="True" SmallChange="5" LargeChange="10" Value="{Binding Transparency}" />
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Appearance_TransparencyHint}" />
 
-                    <Border Style="{StaticResource SectionLine}" />
-                    <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Text}" />
-                    <ContentControl Focusable="False" Content="{Binding TextColor}" />
-                    <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_Weight}" />
-                    <ComboBox ItemsSource="{Binding WeightOptions}" SelectedValuePath="Weight" SelectedValue="{Binding TextWeight}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type settings:WeightOption}">
-                                <TextBlock FontWeight="{Binding WeightName}" Text="{Binding Label}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
+                        <Border Style="{StaticResource SectionLine}" />
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Text}" />
+                        <ContentControl Focusable="False" Content="{Binding TextColor}" />
+                        <TextBlock Margin="0,8,0,4" Text="{loc:Text Appearance_Weight}" />
+                        <ComboBox ItemsSource="{Binding WeightOptions}" SelectedValuePath="Weight" SelectedValue="{Binding TextWeight}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type settings:WeightOption}">
+                                    <TextBlock FontWeight="{Binding WeightName}" Text="{Binding Label}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
 
-                <!-- Usage colors group: on/off, the three colors and each item's thresholds. -->
-                <StackPanel Visibility="{Binding IsUsageColors, Converter={StaticResource BooleanToVisibility}}">
-                    <CheckBox Content="{loc:Text Colors_Enabled}" IsChecked="{Binding ColorsEnabled}" />
+                    <!-- Usage colors group: on/off, the three colors and each item's thresholds. -->
+                    <StackPanel Visibility="{Binding IsUsageColors, Converter={StaticResource BooleanToVisibility}}">
+                        <CheckBox Content="{loc:Text Colors_Enabled}" IsChecked="{Binding ColorsEnabled}" />
 
-                    <TextBlock Margin="0,12,0,8" Text="{loc:Text Colors_ThresholdsHeader}" />
-                    <Grid Margin="0,0,0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="Warning" />
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="Critical" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="1" Margin="0,0,16,0" Text="{loc:Text Level_Warning}" />
-                        <TextBlock Grid.Column="2" Text="{loc:Text Level_Critical}" />
-                    </Grid>
+                        <TextBlock Margin="0,12,0,8" Text="{loc:Text Colors_ThresholdsHeader}" />
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Warning" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Critical" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Margin="0,0,16,0" Text="{loc:Text Level_Warning}" />
+                            <TextBlock Grid.Column="2" Text="{loc:Text Level_Critical}" />
+                        </Grid>
 
-                    <ItemsControl IsEnabled="{Binding ColorsEnabled}" ItemsSource="{Binding Thresholds}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type settings:ThresholdRowViewModel}">
-                                <StackPanel Margin="0,0,0,8">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
-                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Warning" />
-                                            <ColumnDefinition Width="Auto" SharedSizeGroup="Critical" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center" Text="{Binding Name}" />
-                                        <TextBox Grid.Column="1" Width="56" Margin="0,0,16,0" Text="{Binding WarningText, UpdateSourceTrigger=PropertyChanged}" />
-                                        <TextBox Grid.Column="2" Width="56" Text="{Binding CriticalText, UpdateSourceTrigger=PropertyChanged}" />
-                                    </Grid>
-                                    <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}"
-                                               Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibility}}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                        <ItemsControl IsEnabled="{Binding ColorsEnabled}" ItemsSource="{Binding Thresholds}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type settings:ThresholdRowViewModel}">
+                                    <StackPanel Margin="0,0,0,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Name" />
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Warning" />
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Critical" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Center" Text="{Binding Name}" />
+                                            <TextBox Grid.Column="1" Width="56" Margin="0,0,16,0" Text="{Binding WarningText, UpdateSourceTrigger=PropertyChanged}" />
+                                            <TextBox Grid.Column="2" Width="56" Text="{Binding CriticalText, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}"
+                                                   Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibility}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                    <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Colors_BelowHint}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Colors_BelowHint}" />
 
-                    <TextBlock Margin="0,12,0,8" Text="{loc:Text Colors_LevelColors}" />
-                    <ItemsControl Focusable="False" IsEnabled="{Binding ColorsEnabled}" ItemsSource="{Binding LevelColors}" />
-                </StackPanel>
-            </Grid>
-        </ScrollViewer>
+                        <TextBlock Margin="0,12,0,8" Text="{loc:Text Colors_LevelColors}" />
+                        <ItemsControl Focusable="False" IsEnabled="{Binding ColorsEnabled}" ItemsSource="{Binding LevelColors}" />
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </DockPanel>
     </DockPanel>
 </Window>

@@ -51,6 +51,17 @@
         </Border>
     </ControlTemplate>
 
+    <!--
+        Footer band: the window's buttons on surface-alt under a 1 px line, across the whole width and down to the bottom edge.
+        Windows whose content has other side margins set Padding to match them.
+    -->
+    <Style x:Key="FooterBand" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="16,12,16,16" />
+    </Style>
+
     <!-- Buttons: secondary by default; PrimaryButtonStyle for the one action that confirms; TextButtonStyle for links. -->
     <Style TargetType="Button">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />

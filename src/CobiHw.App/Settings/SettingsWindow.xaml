@@ -79,15 +79,17 @@
         </Style>
     </Window.Resources>
 
-    <DockPanel Margin="16">
-        <!-- Buttons: Restore defaults (open tab), Close (asks about pending changes), Apply (open tab). -->
-        <StackPanel DockPanel.Dock="Bottom" Margin="0,16,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button MinWidth="120" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
-            <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_Close}" IsCancel="True" Click="OnCloseClick" />
-            <Button MinWidth="80" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
-        </StackPanel>
+    <DockPanel>
+        <!-- Footer band with the buttons: Restore defaults (open tab), Close (asks about pending changes), Apply (open tab). -->
+        <Border DockPanel.Dock="Bottom" Style="{DynamicResource FooterBand}">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button MinWidth="120" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
+                <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_Close}" IsCancel="True" Click="OnCloseClick" />
+                <Button MinWidth="80" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
+            </StackPanel>
+        </Border>
 
-        <TabControl SelectedValuePath="Tag" SelectedValue="{Binding SelectedTab}">
+        <TabControl Margin="16,16,16,12" SelectedValuePath="Tag" SelectedValue="{Binding SelectedTab}">
             <!-- General tab: language, theme, widget behavior, clicks, startup and settings file. -->
             <TabItem Tag="{x:Static settings:SettingsTab.General}">
                 <TabItem.Header>

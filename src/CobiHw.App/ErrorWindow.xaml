@@ -14,19 +14,23 @@
         FocusManager.FocusedElement="{Binding ElementName=CloseButton}"
         Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
 
-    <!-- Message, expandable details and buttons; Close has the focus and Esc closes. -->
-    <StackPanel Margin="16">
-        <TextBlock TextWrapping="Wrap" Text="{loc:Text Error_Message}" />
+    <!-- Message and expandable details, with the buttons in the footer band; Close has the focus and Esc closes. -->
+    <DockPanel>
+        <Border DockPanel.Dock="Bottom" Style="{DynamicResource FooterBand}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="CopyButton" MinWidth="120" Padding="10,4" Content="{loc:Text Error_CopyDetails}" Click="OnCopyClick" />
+                <Button x:Name="CloseButton" Margin="8,0,0,0" MinWidth="90" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" IsCancel="True" Content="{loc:Text Settings_Close}" />
+            </StackPanel>
+        </Border>
 
-        <Expander Margin="0,12,0,0" Header="{loc:Text Error_Details}">
-            <TextBox x:Name="DetailsBox" Height="180" Margin="0,8,0,0" IsReadOnly="True" TextWrapping="NoWrap"
-                     FontFamily="Consolas" FontSize="12"
-                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
-        </Expander>
+        <StackPanel Margin="16,16,16,12">
+            <TextBlock TextWrapping="Wrap" Text="{loc:Text Error_Message}" />
 
-        <StackPanel Margin="0,16,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="CopyButton" MinWidth="120" Padding="10,4" Content="{loc:Text Error_CopyDetails}" Click="OnCopyClick" />
-            <Button x:Name="CloseButton" Margin="8,0,0,0" MinWidth="90" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" IsCancel="True" Content="{loc:Text Settings_Close}" />
+            <Expander Margin="0,12,0,0" Header="{loc:Text Error_Details}">
+                <TextBox x:Name="DetailsBox" Height="180" Margin="0,8,0,0" IsReadOnly="True" TextWrapping="NoWrap"
+                         FontFamily="Consolas" FontSize="12"
+                         HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+            </Expander>
         </StackPanel>
-    </StackPanel>
+    </DockPanel>
 </Window>
