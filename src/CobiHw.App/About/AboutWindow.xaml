@@ -22,7 +22,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
         <Style x:Key="Secondary" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
     </Window.Resources>
@@ -53,17 +53,17 @@
             <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding UpdateStatus}" />
         </DockPanel>
 
-        <Border Height="1" Margin="0,14" Background="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
+        <Border Height="1" Margin="0,14" Background="{DynamicResource LineBrush}" />
 
         <!-- Which outside services the app contacts. -->
         <TextBlock Style="{StaticResource Secondary}" FontSize="12" Text="{loc:Text About_Services}" />
 
         <!-- License buttons and Close. -->
         <DockPanel Margin="0,16,0,0">
-            <Button x:Name="CloseButton" DockPanel.Dock="Right" MinWidth="90" Padding="10,4" IsCancel="True" Content="{loc:Text Settings_Close}" Click="OnCloseClick" />
+            <Button x:Name="CloseButton" DockPanel.Dock="Right" MinWidth="90" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" IsCancel="True" Content="{loc:Text Settings_Close}" Click="OnCloseClick" />
             <StackPanel Orientation="Horizontal">
-                <Button Margin="0,0,8,0" Padding="10,4" Content="{loc:Text About_License}" Command="{Binding OpenLicenseCommand}" />
-                <Button Padding="10,4" Content="{loc:Text About_Notices}" Command="{Binding OpenNoticesCommand}" />
+                <Button Margin="0,0,8,0" Style="{DynamicResource TextButtonStyle}" Content="{loc:Text About_License}" Command="{Binding OpenLicenseCommand}" />
+                <Button Style="{DynamicResource TextButtonStyle}" Content="{loc:Text About_Notices}" Command="{Binding OpenNoticesCommand}" />
             </StackPanel>
         </DockPanel>
     </StackPanel>

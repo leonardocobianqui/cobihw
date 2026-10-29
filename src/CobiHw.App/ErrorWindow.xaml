@@ -26,7 +26,7 @@
 
         <StackPanel Margin="0,16,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="CopyButton" MinWidth="120" Padding="10,4" Content="{loc:Text Error_CopyDetails}" Click="OnCopyClick" />
-            <Button x:Name="CloseButton" Margin="8,0,0,0" MinWidth="90" Padding="10,4" IsCancel="True" Content="{loc:Text Settings_Close}" />
+            <Button x:Name="CloseButton" Margin="8,0,0,0" MinWidth="90" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" IsCancel="True" Content="{loc:Text Settings_Close}" />
         </StackPanel>
     </StackPanel>
 </Window>

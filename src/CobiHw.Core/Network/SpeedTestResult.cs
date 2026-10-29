@@ -9,15 +9,17 @@ public enum SpeedTestStage
 }
 
 /// <summary>Progress update for the live display.</summary>
+/// <remarks>The last update of each phase holds that phase's final result.</remarks>
 /// <param name="Stage">Current phase.</param>
-/// <param name="BitsPerSecond">Live speed, when measuring bandwidth.</param>
-/// <param name="LatencyMilliseconds">Latest latency sample, when measuring latency.</param>
-public sealed record SpeedTestProgress(SpeedTestStage Stage, double? BitsPerSecond, double? LatencyMilliseconds);
+/// <param name="BitsPerSecond">When measuring bandwidth: the speed of the last second, then the phase's result.</param>
+/// <param name="LatencyMilliseconds">Result so far, when measuring latency: median of the samples.</param>
+/// <param name="JitterMilliseconds">Jitter of the latency samples so far, when measuring latency.</param>
+public sealed record SpeedTestProgress(SpeedTestStage Stage, double? BitsPerSecond, double? LatencyMilliseconds, double? JitterMilliseconds = null);
 
 /// <summary>Final speed test result.</summary>
 /// <param name="MeasuredAt">When the test finished.</param>
-/// <param name="DownloadBitsPerSecond">90th percentile of the download samples.</param>
-/// <param name="UploadBitsPerSecond">90th percentile of the upload samples.</param>
+/// <param name="DownloadBitsPerSecond">Average download speed after the ramp-up, all connections together.</param>
+/// <param name="UploadBitsPerSecond">Average upload speed after the ramp-up, all connections together.</param>
 /// <param name="LatencyMilliseconds">Median latency.</param>
 /// <param name="JitterMilliseconds">Average difference between consecutive latency samples.</param>
 public sealed record SpeedTestResult(
@@ -30,7 +32,7 @@ public sealed record SpeedTestResult(
 /// <summary>Why a speed test failed; each value has its own message in the UI.</summary>
 public enum SpeedTestFailure
 {
-    /// <summary>Every sample was too fast to measure.</summary>
+    /// <summary>Nothing could be measured: no latency sample, or no data moved after the ramp-up.</summary>
     NoValidMeasurement,
     /// <summary>HTTP 403: Cloudflare refused the request (usually rate limiting).</summary>
     Refused,

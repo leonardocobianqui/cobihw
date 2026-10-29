@@ -44,4 +44,37 @@ public static class HexColor
     /// <param name="color">A valid "#RRGGBB" color.</param>
     /// <param name="alpha">Opacity; 0 = fully transparent.</param>
     public static string WithAlpha(string color, byte alpha) => $"#{alpha:X2}{color[1..]}";
+
+    /// <summary>
+    /// <paramref name="color"/> drawn over <paramref name="background"/> at <paramref name="opacity"/>, as one opaque color.
+    /// </summary>
+    /// <remarks>Same result the screen gives for a semi-transparent color over that background, but the halo of an opaque color is at full strength.</remarks>
+    /// <param name="color">A valid "#RRGGBB" color in front.</param>
+    /// <param name="background">A valid "#RRGGBB" color behind it.</param>
+    /// <param name="opacity">0 = only the background, 1 = only the color.</param>
+    public static string Mix(string color, string background, double opacity)
+    {
+        TryParse(color, out byte red, out byte green, out byte blue);
+        TryParse(background, out byte backRed, out byte backGreen, out byte backBlue);
+        byte Blend(byte front, byte back) => (byte)Math.Round(front * opacity + back * (1 - opacity));
+        return FromRgb(Blend(red, backRed), Blend(green, backGreen), Blend(blue, backBlue));
+    }
+
+    /// <summary>Black or white, whichever has more contrast with <paramref name="color"/> (WCAG relative luminance).</summary>
+    /// <param name="color">A valid "#RRGGBB" color.</param>
+    public static string Contrasting(string color)
+    {
+        TryParse(color, out byte red, out byte green, out byte blue);
+        double luminance = 0.2126 * Linear(red) + 0.7152 * Linear(green) + 0.0722 * Linear(blue);
+
+        // Contrast with black is (L + 0.05) / 0.05 and with white 1.05 / (L + 0.05); they are equal at L ≈ 0.179.
+        return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? "#000000" : "#FFFFFF";
+    }
+
+    // sRGB channel (0–255) to linear light (0–1), as in the WCAG definition.
+    private static double Linear(byte channel)
+    {
+        double value = channel / 255.0;
+        return value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
+    }
 }

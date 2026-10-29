@@ -488,6 +488,69 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        internal static string SpeedTest_Download {
+            get {
+                return ResourceManager.GetString("SpeedTest_Download", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Upload.
+        /// </summary>
+        internal static string SpeedTest_Upload {
+            get {
+                return ResourceManager.GetString("SpeedTest_Upload", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mbps.
+        /// </summary>
+        internal static string Unit_Megabits {
+            get {
+                return ResourceManager.GetString("Unit_Megabits", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Gbps.
+        /// </summary>
+        internal static string Unit_Gigabits {
+            get {
+                return ResourceManager.GetString("Unit_Gigabits", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ms.
+        /// </summary>
+        internal static string Unit_Milliseconds {
+            get {
+                return ResourceManager.GetString("Unit_Milliseconds", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} · {1}.
+        /// </summary>
+        internal static string Format_GaugeUnit {
+            get {
+                return ResourceManager.GetString("Format_GaugeUnit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to jitter {0}.
+        /// </summary>
+        internal static string Format_Jitter {
+            get {
+                return ResourceManager.GetString("Format_Jitter", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Always on top.
         /// </summary>
         internal static string Tray_AlwaysOnTop {
@@ -2207,7 +2270,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0} {1} · {2}.
+        ///   Looks up a localized string similar to {0} {1} {2}.
         /// </summary>
         internal static string Format_TrayLine {
             get {
@@ -2225,7 +2288,7 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0} ↓{1} ↑{2} Mbps · ping {3}.
+        ///   Looks up a localized string similar to {0} ↓{1} ↑{2} Mbps · {3}.
         /// </summary>
         internal static string Format_TrayNetwork {
             get {
@@ -2680,15 +2743,6 @@ namespace CobiHw.App.Resources {
         internal static string Format_GpuTemperature {
             get {
                 return ResourceManager.GetString("Format_GpuTemperature", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to {0} {1} · {2} · {3}.
-        /// </summary>
-        internal static string Format_TrayLineExtra {
-            get {
-                return ResourceManager.GetString("Format_TrayLineExtra", resourceCulture);
             }
         }
 

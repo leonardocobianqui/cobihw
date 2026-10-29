@@ -1,5 +1,6 @@
 using CobiHw.App;
 using CobiHw.App.Settings;
+using CobiHw.App.Tray;
 using CobiHw.Core;
 using CobiHw.Core.Fps;
 using CobiHw.Tests.Core;
@@ -98,7 +99,8 @@ public sealed class MainViewModelTests : LocalizedTest
 
         Assert.True(widget.ShowDiskSpeed);
         Assert.Equal("L 3,00 MB/s · E 1,00 MB/s", widget.DiskSpeedText);
-        Assert.Contains("\nDisco 12% · L 3,00 MB/s · E 1,00 MB/s", widget.TrayText, StringComparison.Ordinal);
+        // The tray summary leaves the speeds out.
+        Assert.Contains("\nDisco 12%\n", widget.TrayText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -163,7 +165,7 @@ public sealed class MainViewModelTests : LocalizedTest
         widget.UpdateSettings(Settings(network: new NetworkSettings { PingEnabled = true }));
 
         Assert.True(widget.PingEnabled);
-        Assert.Contains("· ping —", widget.TrayText, StringComparison.Ordinal);
+        Assert.EndsWith("\nRede ↓0,00 ↑0,00 Mbps · —", widget.TrayText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -174,8 +176,9 @@ public sealed class MainViewModelTests : LocalizedTest
         Assert.Equal("#FF1E1F22", widget.BackgroundColor);
         Assert.Equal("#1E1F22", widget.SolidBackgroundColor);
         Assert.Equal("#E6E6E6", widget.TextColor);
-        Assert.Equal("#A6E6E6E6", widget.LabelColor);
-        Assert.Equal("#33E6E6E6", widget.DividerColor);
+        // 65% and 20% of the text over the background, as opaque colors.
+        Assert.Equal("#A0A1A2", widget.LabelColor);
+        Assert.Equal("#464749", widget.DividerColor);
         Assert.Equal("Normal", widget.FontWeightName);
     }
 
@@ -187,6 +190,8 @@ public sealed class MainViewModelTests : LocalizedTest
         Assert.Equal("#80000000", widget.BackgroundColor);
         Assert.Equal("#000000", widget.SolidBackgroundColor);
         Assert.Equal("#00FF00", widget.TextColor);
+        // Mixed with the solid background color, not with the transparency.
+        Assert.Equal("#00A600", widget.LabelColor);
         Assert.Equal("Bold", widget.FontWeightName);
     }
 
@@ -301,7 +306,7 @@ public sealed class MainViewModelTests : LocalizedTest
     {
         MainViewModel widget = Widget(Settings(appearance: new AppearanceSettings { BarRadius = 3 }));
         Assert.Equal(3, widget.BarRadius);
-        Assert.Equal("#33E6E6E6", widget.DividerColor);
+        Assert.Equal("#464749", widget.DividerColor);
 
         widget.UpdateSettings(Settings(appearance: new AppearanceSettings { BarRadius = 50 }));
         Assert.Equal(3, widget.BarRadius);
@@ -422,18 +427,19 @@ public sealed class MainViewModelTests : LocalizedTest
     {
         MainViewModel widget = Showing(Snapshot with { Gpu = new GpuSnapshot([GpuTests.Nvidia with { TemperatureCelsius = 46.9 }]) });
         Assert.False(widget.ShowGpuTemperature);
-        Assert.Contains("\nGPU 40% · 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
+        Assert.Contains("\nGPU 40% 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
         Assert.Equal("Temperatura 47 °C", widget.GpuTemperatureDetailText);
 
         widget.UpdateSettings(Settings(new DisplaySettings { ShowGpuTemperature = true }));
         Assert.True(widget.ShowGpuTemperature);
         Assert.Equal("47 °C", widget.GpuTemperatureText);
-        Assert.Contains("\nGPU 40% · 2,3 / 6,0 GB · 47 °C\n", widget.TrayText, StringComparison.Ordinal);
+        // The tray summary leaves the temperature out.
+        Assert.Contains("\nGPU 40% 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
 
         // On, but the driver reports no temperature.
         widget.Apply(Snapshot with { Gpu = new GpuSnapshot([GpuTests.Nvidia]) });
         Assert.False(widget.ShowGpuTemperature);
-        Assert.Contains("\nGPU 40% · 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
+        Assert.Contains("\nGPU 40% 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
         Assert.Equal("Temperatura —", widget.GpuTemperatureDetailText);
     }
 
@@ -505,7 +511,7 @@ public sealed class MainViewModelTests : LocalizedTest
         Assert.True(widget.IsBatteryCharging);
         Assert.Equal("Carregando", widget.BatteryStateText);
         Assert.Equal(85, widget.BatteryCharge);
-        Assert.EndsWith("\nBateria 85% · Carregando", widget.TrayText, StringComparison.Ordinal);
+        Assert.EndsWith("\nBateria 85%", widget.TrayText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -523,50 +529,46 @@ public sealed class MainViewModelTests : LocalizedTest
 
     [Fact]
     public void TrayText_BeforeTheFirstReading_HasDashes() =>
-        Assert.StartsWith("cobihw\nCPU — · —", Widget(Settings(network: new NetworkSettings { PingEnabled = true })).TrayText, StringComparison.Ordinal);
+        Assert.StartsWith("CPU — —\nGPU — —", Widget(Settings(network: new NetworkSettings { PingEnabled = true })).TrayText, StringComparison.Ordinal);
 
     [Fact]
-    public void TrayText_ListsTheVisibleItems_InTheWidgetOrder()
+    public void TrayText_IsAFixedSummary_WhateverTheWidgetShows()
     {
+        const string Summary = "CPU 13% 2,60 GHz\nGPU 9% 0,0 / 0,0 GB\nRAM 33% 0,0 / 0,0 GB\nDisco 12%\nRede ↓0,00 ↑0,00 Mbps · 23 ms";
         MainViewModel widget = Showing(Snapshot, Settings(network: new NetworkSettings { PingEnabled = true }));
         widget.ApplyPing(23);
+        Assert.Equal(Summary, widget.TrayText);
 
-        Assert.Equal("cobihw\nCPU 13% · 2,60 GHz\nGPU 9% · 0,0 / 0,0 GB\nRAM 33% · 0,0 / 0,0 GB\nDisco 12%\nRede ↓0,00 ↑0,00 Mbps · ping 23 ms", widget.TrayText);
-
+        // Hidden items, another order and FPS on the widget don't change the tray.
         widget.UpdateSettings(Settings(new DisplaySettings { ShowGpu = false, ShowFps = true, Order = new([MetricItem.Network, MetricItem.Cpu]) }, network: new NetworkSettings { PingEnabled = true }));
         widget.ApplyPing(23);
         widget.ApplyFps(new FpsSnapshot(144, "PathOfExile"));
-        Assert.Equal("cobihw\nFPS 144 · PathOfExile\nRede ↓0,00 ↑0,00 Mbps · ping 23 ms\nCPU 13% · 2,60 GHz\nRAM 33% · 0,0 / 0,0 GB\nDisco 12%", widget.TrayText);
-
-        widget.ApplyFps(new FpsSnapshot(60, null));
-        Assert.Contains("\nFPS 60\n", widget.TrayText, StringComparison.Ordinal);
-
-        widget.ApplyFps(null);
-        Assert.DoesNotContain("FPS", widget.TrayText, StringComparison.Ordinal);
+        Assert.Equal(Summary, widget.TrayText);
 
         SetLanguage("ru-RU");
-        Assert.Contains("↓0,00 ↑0,00 Мбит/с · пинг 23", widget.TrayText, StringComparison.Ordinal);
+        Assert.Contains("↓0,00 ↑0,00 Мбит/с · 23", widget.TrayText, StringComparison.Ordinal);
     }
 
-    [Fact]
-    public void TrayText_WorstCase_StaysWithinTheWindowsLimit()
+    [Theory]
+    [InlineData("pt-BR")]
+    [InlineData("en-US")]
+    [InlineData("es-ES")]
+    [InlineData("ru-RU")]
+    public void TrayText_WorstCase_FitsTheWindowsLimitWithEveryLine(string language)
     {
         var wide = new HardwareSnapshot(
-            new CpuSnapshot("x", 100, 4.6),
-            new MemorySnapshot(17_000_000_000, 17_100_000_000),
-            new GpuSnapshot([new GpuActivity(new GpuId(1, 2, 0), "y", 0, false, 100, 12_800_000_000, 12_880_000_000, null)]),
+            new CpuSnapshot("x", 100, 5.5),
+            new MemorySnapshot(127_000_000_000, 128_000_000_000),
+            new GpuSnapshot([new GpuActivity(new GpuId(1, 2, 0), "y", 0, false, 100, 23_900_000_000, 24_000_000_000, null)]),
             new DiskSnapshot([new DiskActivity(0, "C:", 100, true)]),
-            new NetworkSnapshot(124_000_000, 124_000_000, 0, 0, []));
-        MainViewModel widget = Showing(wide, Settings(new DisplaySettings { ShowFps = true }));
+            new NetworkSnapshot(1_249_000_000, 1_249_000_000, 0, 0, []),
+            new BatterySnapshot(100, true, true, null));
+        MainViewModel widget = Showing(wide, Settings(network: new NetworkSettings { PingEnabled = true }));
         widget.ApplyPing(999);
-        widget.ApplyFps(new FpsSnapshot(240, "UmJogoComNomeBemComprido"));
+        SetLanguage(language);
 
-        Assert.True(widget.TrayText.Length <= 127, $"{widget.TrayText.Length} characters");
-        Assert.StartsWith("cobihw\nFPS 240", widget.TrayText, StringComparison.Ordinal);
-
-        SetLanguage("en-US");
-        Assert.Contains("\nDisk 100%", widget.TrayText, StringComparison.Ordinal);
-        Assert.Contains("\nCPU 100% · 4.60 GHz", widget.TrayText, StringComparison.Ordinal);
+        Assert.True(widget.TrayText.Length <= TrayTooltip.MaximumLength, $"{widget.TrayText.Length} characters");
+        Assert.Equal(6, widget.TrayText.Split('\n').Length);
     }
 
     [Fact]

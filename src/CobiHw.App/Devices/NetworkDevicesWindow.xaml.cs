@@ -14,13 +14,9 @@ public partial class NetworkDevicesWindow : Window
     /// <param name="theme">Theme of the app.</param>
     public NetworkDevicesWindow(AppTheme theme)
     {
-        ApplyTheme(theme);
+        WindowTheme.Apply(this, theme);
         InitializeComponent();
     }
-
-    /// <summary>Changes the theme while the window is open.</summary>
-    /// <param name="theme">New theme.</param>
-    public void ApplyTheme(AppTheme theme) => WindowTheme.Apply(this, theme);
 
     private void OnCloseClick(object sender, RoutedEventArgs e) => Close();
 

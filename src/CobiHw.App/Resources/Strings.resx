@@ -233,6 +233,34 @@
     <value>the server took too long to respond</value>
     <comment>Reason</comment>
   </data>
+  <data name="SpeedTest_Download" xml:space="preserve">
+    <value>Download</value>
+    <comment>Speed test window: download step and card</comment>
+  </data>
+  <data name="SpeedTest_Upload" xml:space="preserve">
+    <value>Upload</value>
+    <comment>Speed test window: upload step and card</comment>
+  </data>
+  <data name="Unit_Megabits" xml:space="preserve">
+    <value>Mbps</value>
+    <comment>Speed test gauge unit, below the number</comment>
+  </data>
+  <data name="Unit_Gigabits" xml:space="preserve">
+    <value>Gbps</value>
+    <comment>Speed test gauge unit, from 1000 Mbps</comment>
+  </data>
+  <data name="Unit_Milliseconds" xml:space="preserve">
+    <value>ms</value>
+    <comment>Speed test gauge unit while measuring the ping</comment>
+  </data>
+  <data name="Format_GaugeUnit" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>Below the gauge number; {0} = unit (Mbps, ms); {1} = phase (Ping, Download, Upload)</comment>
+  </data>
+  <data name="Format_Jitter" xml:space="preserve">
+    <value>jitter {0}</value>
+    <comment>Under the ping card; {0} = milliseconds, e.g. "2 ms"</comment>
+  </data>
   <data name="Tray_AlwaysOnTop" xml:space="preserve">
     <value>Always on top</value>
     <comment>Tray icon menu</comment>
@@ -1001,16 +1029,16 @@
     <comment>Hint</comment>
   </data>
   <data name="Format_TrayLine" xml:space="preserve">
-    <value>{0} {1} · {2}</value>
-    <comment>Line of the tray icon tooltip; {0} = item; {1} = %; {2} = detail</comment>
+    <value>{0} {1} {2}</value>
+    <comment>Line of the tray icon tooltip, e.g. "CPU 23% 4.25 GHz"; {0} = item; {1} = %; {2} = detail</comment>
   </data>
   <data name="Format_TrayValue" xml:space="preserve">
     <value>{0} {1}</value>
     <comment>Line of the tray icon tooltip without detail; {0} = item; {1} = value</comment>
   </data>
   <data name="Format_TrayNetwork" xml:space="preserve">
-    <value>{0} ↓{1} ↑{2} Mbps · ping {3}</value>
-    <comment>Network line of the tray tooltip (127 characters in total); {0} = item; {1} = download; {2} = upload; {3} = ping</comment>
+    <value>{0} ↓{1} ↑{2} Mbps · {3}</value>
+    <comment>Network line of the tray tooltip (127 characters in total); {0} = item; {1} = download; {2} = upload; {3} = ping, e.g. "18 ms"</comment>
   </data>
   <data name="Format_Gigabytes" xml:space="preserve">
     <value>{0:0.0} GB</value>
@@ -1211,10 +1239,6 @@
   <data name="Format_GpuTemperature" xml:space="preserve">
     <value>Temperature {0}</value>
     <comment>GPU details; {0} = temperature</comment>
-  </data>
-  <data name="Format_TrayLineExtra" xml:space="preserve">
-    <value>{0} {1} · {2} · {3}</value>
-    <comment>Line of the tray icon tooltip with one more detail; {0} = item; {1} = %; {2} = detail; {3} = second detail</comment>
   </data>
   <data name="Format_NetworkRateGigabits" xml:space="preserve">
     <value>{0} Gbps</value>

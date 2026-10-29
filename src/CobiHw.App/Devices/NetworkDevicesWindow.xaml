@@ -25,7 +25,8 @@
         <!-- Secondary text for hints and status lines. -->
         <Style x:Key="Hint" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
@@ -36,7 +37,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Margin="0,0,16,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding Label}" />
+                <TextBlock Margin="0,0,16,0" Foreground="{DynamicResource InkMutedBrush}" Text="{Binding Label}" />
                 <TextBlock Grid.Column="1" TextWrapping="Wrap" Text="{Binding Value}" />
             </Grid>
         </DataTemplate>
@@ -75,20 +76,20 @@
                     <DataTemplate DataType="{x:Type devices:NetworkDeviceTabViewModel}">
                         <StackPanel Margin="0,2" ToolTip="{Binding AdapterName}">
                             <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
-                            <TextBlock FontSize="11" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding AdapterName}" />
+                            <TextBlock FontSize="11" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource InkMutedBrush}" Text="{Binding AdapterName}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
             <!-- Details of the selected device, with the Wi-Fi section below. -->
-            <Border Grid.Column="1" Margin="12,0,0,0" BorderThickness="1" CornerRadius="4"
-                    BorderBrush="{DynamicResource ControlStrongStrokeColorDefaultBrush}">
+            <Border Grid.Column="1" Margin="12,0,0,0" BorderThickness="1" CornerRadius="8"
+                    Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
                     <StackPanel Margin="14,14,30,14" Grid.IsSharedSizeScope="True" DataContext="{Binding SelectedTab}">
                         <ItemsControl Focusable="False" ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource DetailRowTemplate}" />
                         <StackPanel Visibility="{Binding IsWifi, Converter={StaticResource BooleanToVisibility}}">
-                            <Border Height="1" Margin="0,12" Background="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
+                            <Border Height="1" Margin="0,12" Background="{DynamicResource LineBrush}" />
                             <TextBlock Margin="0,0,0,6" FontWeight="SemiBold" Text="{loc:Text Wifi_Section}" />
                             <ItemsControl Focusable="False" ItemsSource="{Binding WifiRows}" ItemTemplate="{StaticResource DetailRowTemplate}"
                                           Visibility="{Binding ShowWifiRows, Converter={StaticResource BooleanToVisibility}}" />

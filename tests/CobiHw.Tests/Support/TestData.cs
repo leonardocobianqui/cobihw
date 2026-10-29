@@ -44,7 +44,7 @@ internal static class TestData
 
     /// <summary>Speed test against the simulated Cloudflare server.</summary>
     public static SpeedTestViewModel SpeedTest(SpeedTestResult? lastResult = null) =>
-        new(new CloudflareSpeedTest(new HttpClient(new FakeCloudflare())), lastResult);
+        new(FakeCloudflare.Client(new FakeCloudflare()), lastResult);
 
     /// <summary>Widget state built from the given settings.</summary>
     public static MainViewModel Widget(SavedSettings? settings = null) => new(settings ?? Settings(), SpeedTest());

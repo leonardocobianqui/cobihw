@@ -43,6 +43,18 @@ public sealed class DisplayFormatTests : LocalizedTest
     }
 
     [Fact]
+    public void BandwidthNumberAndUnit_SplitTheBandwidthText()
+    {
+        Assert.Equal(("245", "Mbps"), (DisplayFormat.BandwidthNumber(245.3e6), DisplayFormat.BandwidthUnit(245.3e6)));
+        Assert.Equal(("1,20", "Gbps"), (DisplayFormat.BandwidthNumber(1.2e9), DisplayFormat.BandwidthUnit(1.2e9)));
+        // 999.6 Mbps would round to "1000", so it's already Gbps, as in Bandwidth.
+        Assert.Equal(("1,00", "Gbps"), (DisplayFormat.BandwidthNumber(999.6e6), DisplayFormat.BandwidthUnit(999.6e6)));
+
+        SetLanguage("ru-RU");
+        Assert.Equal("Мбит/с", DisplayFormat.BandwidthUnit(245.3e6));
+    }
+
+    [Fact]
     public void DiskRates_ThreeSignificantDigits()
     {
         // Two decimals below 10, one below 100, none from 100; zero stays "0".

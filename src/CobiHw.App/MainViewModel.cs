@@ -16,9 +16,9 @@ public sealed partial class MainViewModel : ObservableObject
 {
     // Bar color while usage colors are off.
     private const string AccentColor = "#4FB0EA";
-    // Labels and dividers use the text color with less opacity.
-    private const byte LabelAlpha = 0xA6;
-    private const byte DividerAlpha = 0x33;
+    // Labels and dividers are the text color mixed into the background: 65% and 20% of the text.
+    private const double LabelOpacity = 0xA6 / 255.0;
+    private const double DividerOpacity = 0x33 / 255.0;
 
     private DisplaySettings _display;
     private ColorSettings _colors;
@@ -62,10 +62,12 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private string _solidBackgroundColor = AppearanceSettings.DefaultBackgroundColor;
     /// <summary>Main text color.</summary>
     [ObservableProperty] private string _textColor = AppearanceSettings.DefaultTextColor;
-    /// <summary>Faded text color for labels.</summary>
+    /// <summary>Faded, opaque text color for labels.</summary>
     [ObservableProperty] private string _labelColor = AppearanceSettings.DefaultTextColor;
-    /// <summary>Color of dividers and empty bar tracks.</summary>
+    /// <summary>Opaque color of dividers and empty bar tracks.</summary>
     [ObservableProperty] private string _dividerColor = AppearanceSettings.DefaultTextColor;
+    /// <summary>Halo around texts and bars: black or white, whichever contrasts with the text color.</summary>
+    [ObservableProperty] private string _haloColor = HexColor.Contrasting(AppearanceSettings.DefaultTextColor);
     /// <summary>Text weight name as WPF expects it ("Normal", "SemiBold"...).</summary>
     [ObservableProperty] private string _fontWeightName = nameof(TextWeight.Normal);
     /// <summary>Widget zoom; 1 = 100%.</summary>
@@ -413,34 +415,30 @@ public sealed partial class MainViewModel : ObservableObject
         RefreshTrayText();
     }
 
-    // Lines that don't fit the tray's 127-character limit are dropped from the end.
+    // The tray shows a fixed summary, whatever the widget shows: with the widget hidden, it's where the values are.
+    // All lines together fit the 127-character limit; Build still drops lines from the end if a text ever grows.
     private void RefreshTrayText() =>
-        TrayText = TrayTooltip.Build([TrayTooltip.Title, .. VisibleItems.Select(TrayLine)]);
+        TrayText = TrayTooltip.Build([.. TrayLines()]);
 
-    // The tray shows network speeds as bare numbers to save space.
-    private string TrayLine(MetricItem item) => item switch
+    // Network speeds are bare numbers, to save space.
+    private IEnumerable<string> TrayLines()
     {
-        MetricItem.Fps when FpsProcessText == DisplayFormat.Unavailable => Localizer.Format(Strings.Format_TrayValue, Strings.Metric_Fps, FpsText),
-        MetricItem.Fps => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Fps, FpsText, FpsProcessText),
-        MetricItem.Cpu => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Cpu, CpuUsageText, CpuFrequencyText),
-        MetricItem.Gpu when ShowGpuTemperature => Localizer.Format(Strings.Format_TrayLineExtra, Strings.Metric_Gpu, GpuUsageText, GpuMemoryText, GpuTemperatureText),
-        MetricItem.Gpu => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Gpu, GpuUsageText, GpuMemoryText),
-        MetricItem.Memory => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Memory, MemoryUsageText, MemoryAmountText),
-        MetricItem.Disk when ShowDiskSpeed => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Disk, DiskActiveText, DiskSpeedText),
-        MetricItem.Disk => Localizer.Format(Strings.Format_TrayValue, Strings.Metric_Disk, DiskActiveText),
-        MetricItem.Battery => Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Battery, BatteryText, BatteryStateText),
-        _ when !PingEnabled => Localizer.Format(
-            Strings.Format_TrayNetworkWithoutPing,
-            Strings.Metric_Network,
-            DisplayFormat.Megabits(_downloadBytesPerSecond),
-            DisplayFormat.Megabits(_uploadBytesPerSecond)),
-        _ => Localizer.Format(
-            Strings.Format_TrayNetwork,
-            Strings.Metric_Network,
-            DisplayFormat.Megabits(_downloadBytesPerSecond),
-            DisplayFormat.Megabits(_uploadBytesPerSecond),
-            PingText),
-    };
+        yield return Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Cpu, CpuUsageText, CpuFrequencyText);
+        yield return Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Gpu, GpuUsageText, GpuMemoryText);
+        yield return Localizer.Format(Strings.Format_TrayLine, Strings.Metric_Memory, MemoryUsageText, MemoryAmountText);
+        yield return Localizer.Format(Strings.Format_TrayValue, Strings.Metric_Disk, DiskActiveText);
+
+        string download = DisplayFormat.Megabits(_downloadBytesPerSecond);
+        string upload = DisplayFormat.Megabits(_uploadBytesPerSecond);
+        yield return PingEnabled
+            ? Localizer.Format(Strings.Format_TrayNetwork, Strings.Metric_Network, download, upload, PingText)
+            : Localizer.Format(Strings.Format_TrayNetworkWithoutPing, Strings.Metric_Network, download, upload);
+
+        if (_hasBattery)
+        {
+            yield return Localizer.Format(Strings.Format_TrayValue, Strings.Metric_Battery, BatteryText);
+        }
+    }
 
     // Invalid saved values fall back to defaults or are clamped.
     private void ApplyAppearance(AppearanceSettings appearance)
@@ -452,8 +450,10 @@ public sealed partial class MainViewModel : ObservableObject
         SolidBackgroundColor = background;
         BackgroundColor = HexColor.WithAlpha(background, BackgroundAlpha(transparency));
         TextColor = text;
-        LabelColor = HexColor.WithAlpha(text, LabelAlpha);
-        DividerColor = HexColor.WithAlpha(text, DividerAlpha);
+        // Opaque mixes instead of transparent text: same look on a solid background, and on a transparent one they don't let the desktop through and get the full halo.
+        LabelColor = HexColor.Mix(text, background, LabelOpacity);
+        DividerColor = HexColor.Mix(text, background, DividerOpacity);
+        HaloColor = HexColor.Contrasting(text);
         FontWeightName = Enum.IsDefined(appearance.TextWeight) ? appearance.TextWeight.ToString() : nameof(TextWeight.Normal);
         ApplyScale(appearance.Scale);
         CornerRadius = CornerRule.Clamp(appearance.CornerRadius);

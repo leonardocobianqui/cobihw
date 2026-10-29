@@ -25,33 +25,35 @@
         <!-- Same visual language as the settings window. -->
         <Style x:Key="SectionHeader" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
         <Style x:Key="Hint" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
         <Style x:Key="SectionLine" TargetType="Border">
             <Setter Property="Height" Value="1" />
             <Setter Property="Margin" Value="0,14" />
-            <Setter Property="Background" Value="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
+            <Setter Property="Background" Value="{DynamicResource LineBrush}" />
         </Style>
 
         <Style x:Key="ErrorText" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
         <DataTemplate DataType="{x:Type settings:ColorChoiceViewModel}">
             <DockPanel Margin="0,0,0,6">
                 <Button DockPanel.Dock="Right" MinWidth="90" Padding="10,2" Content="{loc:Text Settings_ChooseColor}" Click="OnChooseColorClick" />
-                <Border Width="28" Height="18" Margin="0,0,10,0" BorderBrush="{DynamicResource ControlStrongStrokeColorDefaultBrush}" BorderThickness="1" Background="{Binding Color}" />
+                <Border Width="28" Height="18" Margin="0,0,10,0" BorderBrush="{DynamicResource LineStrongBrush}" BorderThickness="1" Background="{Binding Color}" />
                 <TextBlock MinWidth="90" VerticalAlignment="Center" Text="{Binding Label}" />
-                <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding Color}" />
+                <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource InkMutedBrush}" Text="{Binding Color}" />
             </DockPanel>
         </DataTemplate>
     </Window.Resources>
@@ -62,14 +64,15 @@
             <Button DockPanel.Dock="Left" MinWidth="120" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Common_Cancel}" IsCancel="True" />
-                <Button MinWidth="80" Padding="10,4" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
+                <Button MinWidth="80" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
             </StackPanel>
         </DockPanel>
 
         <TextBlock DockPanel.Dock="Top" Margin="0,0,0,14" Style="{StaticResource Hint}" Text="{loc:Text Appearance_EditorHint}" />
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
-            <Grid Margin="0,0,16,0" Grid.IsSharedSizeScope="True">
+        <!-- The scroll area reaches 4 px past the content on the left, top and bottom, so the focus ring of the first and last controls isn't cut. -->
+        <ScrollViewer Margin="-4,-4,0,-4" VerticalScrollBarVisibility="Auto" Focusable="False">
+            <Grid Margin="4,4,16,4" Grid.IsSharedSizeScope="True">
                 <!-- Shape group: size, corners, bar corners and border. -->
                 <StackPanel Visibility="{Binding IsShape, Converter={StaticResource BooleanToVisibility}}">
                     <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Appearance_Size}" />
