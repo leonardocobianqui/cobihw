@@ -9,9 +9,14 @@ internal sealed class SimulatedLine(double bitsPerSecond, TimeSpan slowStart = d
 {
     private const double SlowStartShare = 0.01;
 
+    // How far the schedule may fall behind the clock and still catch up. A wait can end late: on Windows, Task.Delay wakes on the
+    // system timer, every 15.6 ms by default, so a 3 ms wait takes about 16 ms. Without this credit the line would lose that time on
+    // every wait and run at a fraction of its speed. 50 ms covers a few late wakes; more would let an idle line send in a burst.
+    private static readonly TimeSpan LateWakeCredit = TimeSpan.FromMilliseconds(50);
+
     private readonly Stopwatch _clock = Stopwatch.StartNew();
     private readonly Lock _lock = new();
-    // When the line finishes what it already accepted; an idle line gives no credit for the time it sat unused.
+    // When the line finishes what it already accepted; time behind the clock counts only up to LateWakeCredit.
     private TimeSpan _busyUntil;
     private TimeSpan? _firstUse;
 
@@ -26,13 +31,14 @@ internal sealed class SimulatedLine(double bitsPerSecond, TimeSpan slowStart = d
             TimeSpan now = _clock.Elapsed;
             _firstUse ??= now;
             // The bytes cross when the line gets to them; the speed at that moment decides how long they take.
-            TimeSpan start = _busyUntil > now ? _busyUntil : now;
-            double speed = start - _firstUse < slowStart ? bitsPerSecond * SlowStartShare : bitsPerSecond;
+            TimeSpan earliest = now - LateWakeCredit;
+            TimeSpan start = _busyUntil > earliest ? _busyUntil : earliest;
+            double speed = slowStart > TimeSpan.Zero && start - _firstUse < slowStart ? bitsPerSecond * SlowStartShare : bitsPerSecond;
             _busyUntil = start + TimeSpan.FromSeconds(bytes * 8 / speed);
             due = _busyUntil - now;
         }
 
-        // Short waits are skipped; the schedule is absolute, so the average rate stays right.
+        // Short waits are skipped, and waits that end late are made up by the next transfers: the schedule is absolute, so the average rate stays right.
         if (due > TimeSpan.FromMilliseconds(2))
         {
             await Task.Delay(due, cancellationToken);

@@ -53,8 +53,9 @@ public sealed class CloudflareSpeedTestTests
 
         Assert.InRange(result.DownloadBitsPerSecond, 0.8e9, 1.2e9);
         Assert.InRange(result.UploadBitsPerSecond, 0.8e9, 1.2e9);
-        // 5 ms simulated latency minus the 1.5 ms the server reports as its own time.
-        Assert.InRange(result.LatencyMilliseconds, 2, 15);
+        // 5 ms simulated latency minus the 1.5 ms the server reports as its own time. On Windows the 5 ms wait lasts until the next
+        // system timer tick (15.6 ms by default), so the upper bound leaves room for one tick plus scheduling.
+        Assert.InRange(result.LatencyMilliseconds, 2, 25);
         // Never asks for 100 MB or more (the server refuses it), and runs 4 connections at once.
         Assert.Equal(50_000_000, server.LargestDownload);
         Assert.Equal(4, server.MostTransfers);
