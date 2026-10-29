@@ -398,6 +398,7 @@
 
         <DataTemplate x:Key="HorizontalNetwork" DataType="{x:Type local:MainViewModel}">
             <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="0,0,8,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Network}" />
                 <StackPanel Orientation="Horizontal" Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
                     <Grid>
                         <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" Visibility="Hidden" />
@@ -497,6 +498,7 @@
 
         <DataTemplate x:Key="VerticalNetwork" DataType="{x:Type local:MainViewModel}">
             <StackPanel>
+                <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Network}" />
                 <StackPanel Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
                     <Grid>
                         <TextBlock Style="{StaticResource MetricValue}" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" Visibility="Hidden" />
@@ -742,15 +744,27 @@
                 <ItemsControl Grid.IsSharedSizeScope="True" Focusable="False" ItemsSource="{Binding DetailItems}" ItemTemplate="{StaticResource DetailItem}" />
             </Grid.ToolTip>
 
-            <!-- The three layouts share the item list; only the current one is visible. -->
-            <ItemsControl Margin="{x:Static local:WidgetThickness.Full}" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
-                          ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullItem}" />
+            <!-- Halo around texts and bars, so they stay readable on a transparent background. Two passes make the edge stronger than one blur. -->
+            <Grid>
+                <Grid.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="3" Opacity="1" Color="{Binding HaloColor}" />
+                </Grid.Effect>
+                <Grid>
+                    <Grid.Effect>
+                        <DropShadowEffect ShadowDepth="0" BlurRadius="3" Opacity="1" Color="{Binding HaloColor}" />
+                    </Grid.Effect>
 
-            <ItemsControl Margin="{x:Static local:WidgetThickness.CompactHorizontal}" Background="Transparent" Focusable="False" Style="{StaticResource HorizontalViewPanel}"
-                          ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource HorizontalItem}" ItemsPanel="{StaticResource HorizontalPanel}" />
+                    <!-- The three layouts share the item list; only the current one is visible. -->
+                    <ItemsControl Margin="{x:Static local:WidgetThickness.Full}" Grid.IsSharedSizeScope="True" Focusable="False" Style="{StaticResource FullViewPanel}"
+                                  ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullItem}" />
 
-            <ItemsControl Margin="{x:Static local:WidgetThickness.CompactVertical}" Background="Transparent" Focusable="False" Style="{StaticResource VerticalViewPanel}"
-                          ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource VerticalItem}" />
+                    <ItemsControl Margin="{x:Static local:WidgetThickness.CompactHorizontal}" Background="Transparent" Focusable="False" Style="{StaticResource HorizontalViewPanel}"
+                                  ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource HorizontalItem}" ItemsPanel="{StaticResource HorizontalPanel}" />
+
+                    <ItemsControl Margin="{x:Static local:WidgetThickness.CompactVertical}" Background="Transparent" Focusable="False" Style="{StaticResource VerticalViewPanel}"
+                                  ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource VerticalItem}" />
+                </Grid>
+            </Grid>
         </Grid>
     </Border>
 </Window>

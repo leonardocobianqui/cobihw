@@ -31,6 +31,7 @@
 
         <Style x:Key="SectionHeader" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
@@ -41,7 +42,7 @@
             <Setter Property="Cursor" Value="SizeAll" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsDragging}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                    <Setter Property="Background" Value="{DynamicResource ControlHoverBrush}" />
                     <Setter Property="Opacity" Value="0.7" />
                 </DataTrigger>
             </Style.Triggers>
@@ -50,7 +51,8 @@
         <!-- Secondary explanation under a control. -->
         <Style x:Key="Hint" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
@@ -58,12 +60,13 @@
         <Style x:Key="SectionLine" TargetType="Border">
             <Setter Property="Height" Value="1" />
             <Setter Property="Margin" Value="0,14" />
-            <Setter Property="Background" Value="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
+            <Setter Property="Background" Value="{DynamicResource LineBrush}" />
         </Style>
 
-        <!-- Dot next to a tab name when it has changes not applied. -->
+        <!-- Dot next to a tab name when it has changes not applied; same color as the tab name. -->
         <Style x:Key="PendingDot" TargetType="TextBlock">
             <Setter Property="Margin" Value="4,0,0,0" />
+            <Setter Property="Foreground" Value="{Binding (TextElement.Foreground), RelativeSource={RelativeSource AncestorType=ContentPresenter}}" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Text" Value="•" />
         </Style>
@@ -71,25 +74,27 @@
         <!-- Validation message. -->
         <Style x:Key="ErrorText" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,4,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
     </Window.Resources>
 
-    <DockPanel Margin="16">
-        <!-- Buttons: Restore defaults (open tab), Close (asks about pending changes), Apply (open tab). -->
-        <StackPanel DockPanel.Dock="Bottom" Margin="0,16,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button MinWidth="120" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
-            <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_Close}" IsCancel="True" Click="OnCloseClick" />
-            <Button MinWidth="80" Padding="10,4" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
-        </StackPanel>
+    <DockPanel>
+        <!-- Footer band with the buttons: Restore defaults (open tab), Close (asks about pending changes), Apply (open tab). -->
+        <Border DockPanel.Dock="Bottom" Style="{DynamicResource FooterBand}">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button MinWidth="120" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_RestoreDefaults}" Command="{Binding RestoreDefaultsCommand}" />
+                <Button MinWidth="80" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Settings_Close}" IsCancel="True" Click="OnCloseClick" />
+                <Button MinWidth="80" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" Content="{loc:Text Settings_Apply}" IsDefault="True" Command="{Binding ApplyCommand}" />
+            </StackPanel>
+        </Border>
 
-        <TabControl SelectedValuePath="Tag" SelectedValue="{Binding SelectedTab}">
+        <TabControl Margin="16,16,16,12" SelectedValuePath="Tag" SelectedValue="{Binding SelectedTab}">
             <!-- General tab: language, theme, widget behavior, clicks, startup and settings file. -->
             <TabItem Tag="{x:Static settings:SettingsTab.General}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{loc:Text Tab_General}" />
+                        <TextBlock Style="{DynamicResource TabHeaderText}" Text="{loc:Text Tab_General}" />
                         <TextBlock Style="{StaticResource PendingDot}" Visibility="{Binding IsGeneralPending, Converter={StaticResource BooleanToVisibility}}" />
                     </StackPanel>
                 </TabItem.Header>
@@ -143,7 +148,7 @@
             <TabItem Tag="{x:Static settings:SettingsTab.Display}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{loc:Text Tab_Display}" />
+                        <TextBlock Style="{DynamicResource TabHeaderText}" Text="{loc:Text Tab_Display}" />
                         <TextBlock Style="{StaticResource PendingDot}" Visibility="{Binding IsDisplayPending, Converter={StaticResource BooleanToVisibility}}" />
                     </StackPanel>
                 </TabItem.Header>
@@ -151,7 +156,7 @@
                     <StackPanel Style="{StaticResource TabContent}">
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text Display_ShowInWidget}" />
                         <StackPanel Margin="0,3" Orientation="Horizontal">
-                            <TextBlock Width="22" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="&#xE72E;" />
+                            <TextBlock Width="22" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource InkMutedBrush}" Text="&#xE72E;" />
                             <CheckBox VerticalAlignment="Center" Content="{loc:Text Metric_Fps}" IsChecked="{Binding ShowFps}" />
                         </StackPanel>
                         <!-- Item list: checkbox shows the item; drag a row to reorder (handled in code-behind). -->
@@ -164,7 +169,7 @@
                                 <DataTemplate DataType="{x:Type settings:MetricRowViewModel}">
                                     <Border Style="{StaticResource MetricRow}" Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibility}}">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Width="22" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="&#xE76F;" />
+                                            <TextBlock Width="22" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource InkMutedBrush}" Text="&#xE76F;" />
                                             <CheckBox VerticalAlignment="Center" Cursor="Arrow" Content="{Binding Name}" IsChecked="{Binding IsVisible}" />
                                         </StackPanel>
                                     </Border>
@@ -203,7 +208,7 @@
             <TabItem Tag="{x:Static settings:SettingsTab.Appearance}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{loc:Text Tab_Appearance}" />
+                        <TextBlock Style="{DynamicResource TabHeaderText}" Text="{loc:Text Tab_Appearance}" />
                         <TextBlock Style="{StaticResource PendingDot}" Visibility="{Binding IsAppearancePending, Converter={StaticResource BooleanToVisibility}}" />
                     </StackPanel>
                 </TabItem.Header>
@@ -248,7 +253,7 @@
             <TabItem Tag="{x:Static settings:SettingsTab.Network}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{loc:Text Tab_Network}" />
+                        <TextBlock Style="{DynamicResource TabHeaderText}" Text="{loc:Text Tab_Network}" />
                         <TextBlock Style="{StaticResource PendingDot}" Visibility="{Binding IsNetworkPending, Converter={StaticResource BooleanToVisibility}}" />
                     </StackPanel>
                 </TabItem.Header>
@@ -263,7 +268,7 @@
                                     <CheckBox Margin="0,2" IsChecked="{Binding IsMonitored}" Visibility="{Binding IsShown, Converter={StaticResource BooleanToVisibility}}">
                                         <StackPanel>
                                             <TextBlock Text="{Binding Name}" />
-                                            <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Text="{Binding Detail}" />
+                                            <TextBlock FontSize="12" Foreground="{DynamicResource InkMutedBrush}" TextWrapping="Wrap" Text="{Binding Detail}" />
                                         </StackPanel>
                                     </CheckBox>
                                 </DataTemplate>
@@ -287,14 +292,9 @@
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Network_PingHint}" />
 
                         <Border Style="{StaticResource SectionLine}" />
-                        <!-- Speed test: buttons, live speed while testing, then the last result. -->
+                        <!-- Speed test: the button starts it and the app opens the speed test window; below, the last result or the current step. -->
                         <TextBlock Style="{StaticResource SectionHeader}" Text="{loc:Text SpeedTest_Title}" />
-                        <StackPanel Orientation="Horizontal">
-                            <Button MinWidth="110" Margin="0,0,8,0" Padding="10,4" Content="{loc:Text Network_TestNow}" Command="{Binding SpeedTest.RunCommand}" />
-                            <Button MinWidth="80" Padding="10,4" Content="{loc:Text Network_CancelTest}" Command="{Binding SpeedTest.RunCancelCommand}" />
-                        </StackPanel>
-                        <TextBlock Margin="0,10,0,0" FontSize="22" FontWeight="SemiBold" Text="{Binding SpeedTest.LiveText}"
-                                   Visibility="{Binding SpeedTest.IsTesting, Converter={StaticResource BooleanToVisibility}}" />
+                        <Button HorizontalAlignment="Left" MinWidth="110" Padding="10,4" Content="{loc:Text Network_TestNow}" Command="{Binding SpeedTest.RunCommand}" />
                         <TextBlock Margin="0,8,0,0" TextWrapping="Wrap" Text="{Binding SpeedTest.StatusText}" />
                         <TextBlock Style="{StaticResource Hint}" Text="{loc:Text Network_DataHint}" />
                     </StackPanel>

@@ -27,7 +27,7 @@ Hover over the widget to see the details of every item, including the hidden one
 - Choose and reorder the items; colors change with usage (normal, warning, critical) at thresholds you set.
 - Appearance: background color and transparency, text color and weight, rounded corners, bar rounding, and a border.
 - Network devices window: IP addresses, gateway, DNS, MAC, link speed and Wi-Fi details for each adapter.
-- Internet speed test (Cloudflare), with the last result kept in the details.
+- Internet speed test (Cloudflare) in its own window, with a gauge and the ping, download and upload one at a time; the last result is kept in the details.
 - Languages: English, Português (Brasil), Español and Русский. Light, dark or automatic theme for the windows and the tray menu.
 - Portable: no installer; the settings file lives next to the executable.
 

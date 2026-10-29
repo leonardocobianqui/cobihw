@@ -55,6 +55,7 @@ public partial class App : Application
     private SettingsViewModel? _settingsViewModel;
     private NetworkDevicesWindow? _networkDevicesWindow;
     private AboutWindow? _aboutWindow;
+    private SpeedTestWindow? _speedTestWindow;
     private NetworkDevicesViewModel? _networkDevicesViewModel;
     // Blocks a second open while the device list is loading.
     private bool _openingSettings;
@@ -292,6 +293,7 @@ public partial class App : Application
     {
         _networkDevicesWindow?.Close();
         _aboutWindow?.Close();
+        _speedTestWindow?.Close();
         _settingsWindow?.Close();
 
         if (_settingsWindow is null)
@@ -863,9 +865,7 @@ public partial class App : Application
         _settings.Language = general.Language;
         Localizer.Instance.SetLanguage(general.Language);
         _settings.Theme = general.Theme;
-        _settingsWindow?.ApplyTheme(general.Theme);
-        _networkDevicesWindow?.ApplyTheme(general.Theme);
-        _aboutWindow?.ApplyTheme(general.Theme);
+        WindowTheme.ApplyAll(general.Theme);
         ApplyTrayTheme();
 
         if (general.Mode != _settings.Mode)
@@ -909,9 +909,19 @@ public partial class App : Application
             screen.Bounds.Height,
             screen.Primary)));
 
+    // From the tray: starts a test, or shows the one already running (its window may have been closed).
     private void StartSpeedTest()
     {
-        if (_speedTest is not null && _speedTest.RunCommand.CanExecute(null))
+        if (_speedTest is null)
+        {
+            return;
+        }
+
+        if (_speedTest.RunCommand.IsRunning)
+        {
+            OpenSpeedTestWindow();
+        }
+        else if (_speedTest.RunCommand.CanExecute(null))
         {
             _speedTest.RunCommand.Execute(null);
         }
@@ -926,22 +936,43 @@ public partial class App : Application
         }
     }
 
-    // Disables the tray menu item while a test runs.
+    // Updates the tray menu item while a test runs, and opens the speed test window when one starts,
+    // wherever it was started (widget, tray or settings).
     private void OnSpeedTestCommandPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(IAsyncRelayCommand.IsRunning) && _speedTest is not null)
         {
             _trayIcon?.SetSpeedTestRunning(_speedTest.RunCommand.IsRunning);
+            if (_speedTest.RunCommand.IsRunning)
+            {
+                OpenSpeedTestWindow();
+            }
         }
     }
 
-    // The result is saved; a notification shows only when the settings window isn't open to display it.
+    // Closing the window only hides the test, which keeps running; "Cancel test" is what stops it.
+    private void OpenSpeedTestWindow()
+    {
+        if (_speedTestWindow is not null)
+        {
+            _speedTestWindow.Activate();
+            return;
+        }
+
+        var window = new SpeedTestWindow(_settings.Theme) { DataContext = _speedTest };
+        _speedTestWindow = window;
+        window.Closed += (_, _) => _speedTestWindow = null;
+        window.Show();
+        window.Activate();
+    }
+
+    // The result is saved; a notification shows only when the speed test window was closed and can't show it.
     private void OnSpeedTestCompleted(SpeedTestResult result)
     {
         _settings.LastSpeedTest = result;
         SaveSettings();
 
-        if (_settingsWindow is null && _speedTest is not null)
+        if (_speedTestWindow is null && _speedTest is not null)
         {
             _trayIcon?.ShowNotification(Strings.SpeedTest_Title, $"{_speedTest.ResultText}\n{_speedTest.LatencyText}", isError: false);
         }
@@ -949,7 +980,7 @@ public partial class App : Application
 
     private void OnSpeedTestFailed(string message)
     {
-        if (_settingsWindow is null)
+        if (_speedTestWindow is null)
         {
             _trayIcon?.ShowNotification(Strings.SpeedTest_Title, message, isError: true);
         }
@@ -969,7 +1000,11 @@ public partial class App : Application
     {
         if (e.Category == UserPreferenceCategory.General && _settings.Theme == AppTheme.System)
         {
-            Dispatcher.InvokeAsync(ApplyTrayTheme);
+            Dispatcher.InvokeAsync(() =>
+            {
+                WindowTheme.ApplyAll(_settings.Theme);
+                ApplyTrayTheme();
+            });
         }
     }
 

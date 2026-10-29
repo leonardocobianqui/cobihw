@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Speed test window with a gauge: ping, download and upload one at a time, with the jitter. Closing it doesn't stop the test, and a notification brings the result.
+- Network label in the compact layouts.
+- Halo around the widget's texts and bars, so they stay readable on a transparent background.
+
+### Changed
+
+- The speed test works like Ookla's Speedtest: 4 connections for 10 seconds per phase, leaving out the first 2 seconds. The ping leaves out Cloudflare's server time the way Cloudflare's own test does.
+- The tray icon tooltip is a fixed summary: CPU, GPU, RAM, disk, network and battery.
+- New look for the app windows and the tray menu, the same on Windows 10 and 11, in light and dark.
+
 ## [1.1.0] - 2026-10-24
 
 ### Added

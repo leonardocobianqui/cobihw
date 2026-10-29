@@ -22,49 +22,53 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
         <Style x:Key="Secondary" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
     </Window.Resources>
 
-    <!-- Header with icon, name, version and copyright. -->
-    <StackPanel Margin="20">
-        <DockPanel>
-            <Image x:Name="AppIcon" DockPanel.Dock="Left" Width="56" Height="56" Margin="0,2,16,0" VerticalAlignment="Top" />
-            <StackPanel>
-                <TextBlock FontSize="22" FontWeight="SemiBold" Text="cobihw" />
-                <TextBlock Style="{StaticResource Secondary}" Text="{Binding VersionText}" />
-                <TextBlock Margin="0,8,0,0" TextWrapping="Wrap" Text="{loc:Text About_Tagline}" />
-                <TextBlock Style="{StaticResource Secondary}" Margin="0,2,0,0" Text="{Binding CopyrightText}" />
-            </StackPanel>
-        </DockPanel>
+    <DockPanel>
+        <!-- Footer band: license buttons and Close. The text buttons have 10 px of padding, so the band starts 10 px in and their text lines up with the content. -->
+        <Border DockPanel.Dock="Bottom" Padding="10,12,20,16" Style="{DynamicResource FooterBand}">
+            <DockPanel>
+                <Button x:Name="CloseButton" DockPanel.Dock="Right" MinWidth="90" Padding="10,4" Style="{DynamicResource PrimaryButtonStyle}" IsCancel="True" Content="{loc:Text Settings_Close}" Click="OnCloseClick" />
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="0,0,8,0" Style="{DynamicResource TextButtonStyle}" Content="{loc:Text About_License}" Command="{Binding OpenLicenseCommand}" />
+                    <Button Style="{DynamicResource TextButtonStyle}" Content="{loc:Text About_Notices}" Command="{Binding OpenNoticesCommand}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
 
-        <!-- Links and the update check. -->
-        <WrapPanel Margin="0,18,0,0">
-            <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_Website}" Command="{Binding OpenWebsiteCommand}" />
-            <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_GitHub}" Command="{Binding OpenRepositoryCommand}" />
-            <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_CheckUpdates}" Command="{Binding CheckUpdatesCommand}" />
-        </WrapPanel>
+        <!-- Header with icon, name, version and copyright. -->
+        <StackPanel Margin="20,20,20,16">
+            <DockPanel>
+                <Image x:Name="AppIcon" DockPanel.Dock="Left" Width="56" Height="56" Margin="0,2,16,0" VerticalAlignment="Top" />
+                <StackPanel>
+                    <TextBlock FontSize="22" FontWeight="SemiBold" Text="cobihw" />
+                    <TextBlock Style="{StaticResource Secondary}" Text="{Binding VersionText}" />
+                    <TextBlock Margin="0,8,0,0" TextWrapping="Wrap" Text="{loc:Text About_Tagline}" />
+                    <TextBlock Style="{StaticResource Secondary}" Margin="0,2,0,0" Text="{Binding CopyrightText}" />
+                </StackPanel>
+            </DockPanel>
 
-        <!-- Update check result, with Download when a newer version exists. -->
-        <DockPanel Margin="0,0,0,4" Visibility="{Binding HasUpdateStatus, Converter={StaticResource BooleanToVisibility}}">
-            <Button DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,4" Content="{loc:Text About_Download}" Command="{Binding OpenDownloadCommand}"
-                    Visibility="{Binding HasDownload, Converter={StaticResource BooleanToVisibility}}" />
-            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding UpdateStatus}" />
-        </DockPanel>
+            <!-- Links and the update check. -->
+            <WrapPanel Margin="0,18,0,0">
+                <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_Website}" Command="{Binding OpenWebsiteCommand}" />
+                <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_GitHub}" Command="{Binding OpenRepositoryCommand}" />
+                <Button Margin="0,0,8,8" Padding="10,4" Content="{loc:Text About_CheckUpdates}" Command="{Binding CheckUpdatesCommand}" />
+            </WrapPanel>
 
-        <Border Height="1" Margin="0,14" Background="{DynamicResource ControlStrongStrokeColorDefaultBrush}" />
+            <!-- Update check result, with Download when a newer version exists. -->
+            <DockPanel Margin="0,0,0,4" Visibility="{Binding HasUpdateStatus, Converter={StaticResource BooleanToVisibility}}">
+                <Button DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,4" Content="{loc:Text About_Download}" Command="{Binding OpenDownloadCommand}"
+                        Visibility="{Binding HasDownload, Converter={StaticResource BooleanToVisibility}}" />
+                <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding UpdateStatus}" />
+            </DockPanel>
 
-        <!-- Which outside services the app contacts. -->
-        <TextBlock Style="{StaticResource Secondary}" FontSize="12" Text="{loc:Text About_Services}" />
+            <Border Height="1" Margin="0,14" Background="{DynamicResource LineBrush}" />
 
-        <!-- License buttons and Close. -->
-        <DockPanel Margin="0,16,0,0">
-            <Button x:Name="CloseButton" DockPanel.Dock="Right" MinWidth="90" Padding="10,4" IsCancel="True" Content="{loc:Text Settings_Close}" Click="OnCloseClick" />
-            <StackPanel Orientation="Horizontal">
-                <Button Margin="0,0,8,0" Padding="10,4" Content="{loc:Text About_License}" Command="{Binding OpenLicenseCommand}" />
-                <Button Padding="10,4" Content="{loc:Text About_Notices}" Command="{Binding OpenNoticesCommand}" />
-            </StackPanel>
-        </DockPanel>
-    </StackPanel>
+            <!-- Which outside services the app contacts. -->
+            <TextBlock Style="{StaticResource Secondary}" FontSize="12" Text="{loc:Text About_Services}" />
+        </StackPanel>
+    </DockPanel>
 </Window>

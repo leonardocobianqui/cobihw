@@ -4,10 +4,21 @@ using CobiHw.App.Tray;
 
 namespace CobiHw.Tests.App;
 
-/// <summary>Monitor numbering, click-through keys, theme choice and the tray tooltip limit.</summary>
+/// <summary>Monitor numbering, click-through keys, theme choice, the tray tooltip limit and the speed gauge scale.</summary>
 [Collection(AppState.Name)]
 public sealed class SmallRulesTests : LocalizedTest
 {
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(-3, 0)]
+    [InlineData(5, 1 / 7d)]
+    [InlineData(30, 2.5 / 7)]
+    [InlineData(500, 6 / 7d)]
+    [InlineData(1000, 1)]
+    [InlineData(2500, 1)]
+    public void SpeedGaugeScale_SpacesTheMarksEvenly(double megabits, double fraction) =>
+        Assert.Equal(fraction, SpeedGaugeScale.Fraction(megabits), 9);
+
     [Fact]
     public void Monitors_AreNumberedFromLeftToRight_IgnoringTheWindowsName()
     {

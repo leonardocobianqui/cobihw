@@ -133,4 +133,9 @@ internal static partial class User32
     /// <summary>Key state right now; the high bit is set while the key is down.</summary>
     [LibraryImport("user32.dll")]
     public static partial short GetAsyncKeyState(int key);
+
+    /// <summary>Brings a window to the front; the tray menu needs it to close when the user clicks somewhere else.</summary>
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool SetForegroundWindow(nint hwnd);
 }

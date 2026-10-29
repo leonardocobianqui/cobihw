@@ -158,6 +158,17 @@ internal static class DisplayFormat
     /// <summary>Speed test result in Mbps, or Gbps from 1000 Mbps.</summary>
     public static string Bandwidth(double bitsPerSecond) => MegabitRate(bitsPerSecond / 1_000_000);
 
+    /// <summary>Number of <see cref="Bandwidth"/> without the unit, for the speed test gauge.</summary>
+    public static string BandwidthNumber(double bitsPerSecond)
+    {
+        double megabits = bitsPerSecond / 1_000_000;
+        return ThreeDigits(megabits < NextUnitFrom ? megabits : megabits / 1000);
+    }
+
+    /// <summary>Unit of <see cref="BandwidthNumber"/>: Mbps, or Gbps from 1000 Mbps.</summary>
+    public static string BandwidthUnit(double bitsPerSecond) =>
+        bitsPerSecond / 1_000_000 < NextUnitFrom ? Strings.Unit_Megabits : Strings.Unit_Gigabits;
+
     /// <summary>Latency in whole milliseconds.</summary>
     public static string Milliseconds(double? value) =>
         value is null ? Unavailable : Localizer.Format(Strings.Format_Milliseconds, value.Value);

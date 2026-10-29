@@ -1,0 +1,138 @@
+<!-- Speed test window: phases, gauge and result. Opens whenever a test starts; closing it doesn't stop the test. Logic in SpeedTestViewModel. -->
+<Window x:Class="CobiHw.App.SpeedTestWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:app="clr-namespace:CobiHw.App"
+        xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=app:SpeedTestViewModel}"
+        Title="{loc:Text SpeedTest_Title}"
+        Width="420"
+        SizeToContent="Height"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI"
+        FontSize="13"
+        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+
+        <Style x:Key="Secondary" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+        </Style>
+
+        <!-- Items side by side, for the steps. -->
+        <ItemsPanelTemplate x:Key="Row">
+            <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+
+        <!-- Three equal columns, for the cards. -->
+        <ItemsPanelTemplate x:Key="Columns">
+            <UniformGrid Columns="3" Rows="1" />
+        </ItemsPanelTemplate>
+    </Window.Resources>
+
+    <StackPanel Margin="24,12,24,24">
+        <!-- Steps: Ping, Download, Upload; the running one has the phase color, finished ones a check mark. -->
+        <ItemsControl HorizontalAlignment="Center" Focusable="False" ItemsSource="{Binding Phases}" ItemsPanel="{StaticResource Row}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type app:SpeedTestPhase}">
+                    <Border x:Name="Pill" Height="28" Margin="4,0" Padding="12,0" CornerRadius="14" BorderThickness="1"
+                            BorderBrush="{DynamicResource LineBrush}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="Check" Margin="0,0,6,0" VerticalAlignment="Center" Visibility="Collapsed" Style="{StaticResource Secondary}"
+                                       FontFamily="Segoe MDL2 Assets" FontSize="10" Text="&#xE73E;" />
+                            <TextBlock x:Name="Label" VerticalAlignment="Center" FontSize="12" Style="{StaticResource Secondary}" Text="{Binding Name}" />
+                        </StackPanel>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding State}" Value="Done">
+                            <Setter TargetName="Check" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding State}" Value="Active">
+                            <Setter TargetName="Pill" Property="BorderBrush" Value="{DynamicResource DownloadBrush}" />
+                            <Setter TargetName="Pill" Property="Background" Value="{DynamicResource SurfaceBrush}" />
+                            <Setter TargetName="Label" Property="Foreground" Value="{DynamicResource InkBrush}" />
+                            <Setter TargetName="Label" Property="FontWeight" Value="SemiBold" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding State}" Value="Active" />
+                                <Condition Binding="{Binding IsUpload}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="Pill" Property="BorderBrush" Value="{DynamicResource UploadBrush}" />
+                        </MultiDataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Gauge with the number and unit in the middle; blue for the download, orange for the upload. -->
+        <Grid Width="260" Height="226" Margin="0,16,0,0" HorizontalAlignment="Center">
+            <app:SpeedGauge Track="{DynamicResource GaugeTrackBrush}"
+                            Needle="{DynamicResource InkBrush}"
+                            Label="{DynamicResource InkMutedBrush}"
+                            Value="{Binding GaugeMegabits}">
+                <app:SpeedGauge.Style>
+                    <Style TargetType="app:SpeedGauge">
+                        <Setter Property="Fill" Value="{DynamicResource DownloadBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsUploading}" Value="True">
+                                <Setter Property="Fill" Value="{DynamicResource UploadBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </app:SpeedGauge.Style>
+            </app:SpeedGauge>
+            <StackPanel Margin="0,148,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TextBlock HorizontalAlignment="Center" FontSize="36" FontWeight="SemiBold" Text="{Binding GaugeValueText}" />
+                <TextBlock HorizontalAlignment="Center" Style="{StaticResource Secondary}" Text="{Binding GaugeUnitText}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Current step, the error, or when the result was measured. -->
+        <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                   Style="{StaticResource Secondary}" Text="{Binding WindowStatusText}" />
+
+        <!-- Cards: each phase's result once it's done; the running one has the phase color. -->
+        <ItemsControl Margin="-4,16,-4,0" Focusable="False" ItemsSource="{Binding Phases}" ItemsPanel="{StaticResource Columns}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type app:SpeedTestPhase}">
+                    <Border x:Name="Card" Margin="4,0" Padding="12,10" CornerRadius="8" BorderThickness="1"
+                            Background="{DynamicResource SurfaceBrush}"
+                            BorderBrush="{DynamicResource LineBrush}">
+                        <StackPanel>
+                            <TextBlock FontSize="12" Style="{StaticResource Secondary}" Text="{Binding Name}" />
+                            <TextBlock FontSize="17" FontWeight="SemiBold" Text="{Binding ValueText}" />
+                            <TextBlock Height="16" FontSize="11" Style="{StaticResource Secondary}" Text="{Binding DetailText}" />
+                        </StackPanel>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding State}" Value="Active">
+                            <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource DownloadBrush}" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding State}" Value="Active" />
+                                <Condition Binding="{Binding IsUpload}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource UploadBrush}" />
+                        </MultiDataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Test now / Cancel test. -->
+        <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
+            <Button MinWidth="160" Padding="20,6" Style="{DynamicResource PrimaryButtonStyle}" Content="{loc:Text Network_TestNow}" Command="{Binding RunCommand}"
+                    Visibility="{Binding IsIdle, Converter={StaticResource BooleanToVisibility}}" />
+            <Button MinWidth="160" Padding="20,6" Content="{loc:Text Network_CancelTest}" Command="{Binding RunCancelCommand}"
+                    Visibility="{Binding IsTesting, Converter={StaticResource BooleanToVisibility}}" />
+        </Grid>
+    </StackPanel>
+</Window>

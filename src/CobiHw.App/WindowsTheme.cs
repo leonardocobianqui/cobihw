@@ -3,7 +3,7 @@ using CobiHw.App.Settings;
 
 namespace CobiHw.App;
 
-/// <summary>Light or dark decision for parts WPF doesn't theme, such as the tray menu.</summary>
+/// <summary>Light or dark decision for the app windows and the tray menu.</summary>
 public static class WindowsTheme
 {
     private const string PersonalizeKey = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";

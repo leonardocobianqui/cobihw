@@ -20,13 +20,10 @@ public partial class SettingsWindow : Window
     /// <summary>Creates the window with the given theme.</summary>
     public SettingsWindow(AppTheme theme)
     {
-        ApplyTheme(theme);
+        WindowTheme.Apply(this, theme);
         InitializeComponent();
         Closing += OnClosing;
     }
-
-    /// <summary>Switches the window theme (light, dark or Windows').</summary>
-    public void ApplyTheme(AppTheme theme) => WindowTheme.Apply(this, theme);
 
     private SettingsViewModel ViewModel => (SettingsViewModel)DataContext;
 

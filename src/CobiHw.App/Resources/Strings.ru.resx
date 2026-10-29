@@ -185,6 +185,27 @@
   <data name="Reason_Timeout" xml:space="preserve">
     <value>сервер слишком долго не отвечал</value>
   </data>
+  <data name="SpeedTest_Download" xml:space="preserve">
+    <value>Загрузка</value>
+  </data>
+  <data name="SpeedTest_Upload" xml:space="preserve">
+    <value>Отдача</value>
+  </data>
+  <data name="Unit_Megabits" xml:space="preserve">
+    <value>Мбит/с</value>
+  </data>
+  <data name="Unit_Gigabits" xml:space="preserve">
+    <value>Гбит/с</value>
+  </data>
+  <data name="Unit_Milliseconds" xml:space="preserve">
+    <value>мс</value>
+  </data>
+  <data name="Format_GaugeUnit" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Format_Jitter" xml:space="preserve">
+    <value>джиттер {0}</value>
+  </data>
   <data name="Tray_AlwaysOnTop" xml:space="preserve">
     <value>Поверх всех окон</value>
   </data>
@@ -762,13 +783,13 @@
     <value>0 — прямоугольные полосы нагрузки; 3 — полностью скруглённые концы.</value>
   </data>
   <data name="Format_TrayLine" xml:space="preserve">
-    <value>{0} {1} · {2}</value>
+    <value>{0} {1} {2}</value>
   </data>
   <data name="Format_TrayValue" xml:space="preserve">
     <value>{0} {1}</value>
   </data>
   <data name="Format_TrayNetwork" xml:space="preserve">
-    <value>{0} ↓{1} ↑{2} Мбит/с · пинг {3}</value>
+    <value>{0} ↓{1} ↑{2} Мбит/с · {3}</value>
   </data>
   <data name="Format_Gigabytes" xml:space="preserve">
     <value>{0:0.0} ГБ</value>
@@ -919,9 +940,6 @@
   </data>
   <data name="Format_GpuTemperature" xml:space="preserve">
     <value>Температура {0}</value>
-  </data>
-  <data name="Format_TrayLineExtra" xml:space="preserve">
-    <value>{0} {1} · {2} · {3}</value>
   </data>
   <data name="Format_NetworkRateGigabits" xml:space="preserve">
     <value>{0} Гбит/с</value>

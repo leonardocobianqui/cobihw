@@ -1,0 +1,40 @@
+<!-- Dark tokens of the cobihw design system. Light.xaml has the same keys; WindowTheme swaps one for the other. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    <SolidColorBrush x:Key="WindowBgBrush" Color="#0D1017" />
+    <!-- Glows behind the content: violet at the top right (420 × 260), teal at the left (360 × 280). -->
+    <RadialGradientBrush x:Key="GlowVioletBrush" Center="1,0" GradientOrigin="1,0" RadiusX="1" RadiusY="1">
+        <GradientStop Offset="0" Color="#6631234B" />
+        <GradientStop Offset="1" Color="#0031234B" />
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="GlowTealBrush" Center="0,0.5" GradientOrigin="0,0.5" RadiusX="1" RadiusY="0.5">
+        <GradientStop Offset="0" Color="#44173B42" />
+        <GradientStop Offset="1" Color="#00173B42" />
+    </RadialGradientBrush>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#11151E" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="#0F131B" />
+    <SolidColorBrush x:Key="ControlBrush" Color="#1B2230" />
+    <SolidColorBrush x:Key="ControlHoverBrush" Color="#232B3B" />
+    <SolidColorBrush x:Key="ControlBorderBrush" Color="#2A3243" />
+    <SolidColorBrush x:Key="LineBrush" Color="#252B39" />
+    <SolidColorBrush x:Key="LineStrongBrush" Color="#62708A" />
+    <SolidColorBrush x:Key="InkBrush" Color="#F2F4FB" />
+    <SolidColorBrush x:Key="InkMutedBrush" Color="#9CA7BA" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#B3F07C" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#C6FFA0" />
+    <SolidColorBrush x:Key="AccentEdgeBrush" Color="#B3F07C" />
+    <SolidColorBrush x:Key="AccentLineBrush" Color="#B3F07C" />
+    <SolidColorBrush x:Key="OnAccentBrush" Color="#12200B" />
+    <SolidColorBrush x:Key="LinkBrush" Color="#B7A5FF" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#FF8F85" />
+    <SolidColorBrush x:Key="CloseHoverBrush" Color="#C42B1C" />
+    <SolidColorBrush x:Key="OnCloseBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DownloadBrush" Color="#65D4F0" />
+    <SolidColorBrush x:Key="UploadBrush" Color="#FFA500" />
+    <SolidColorBrush x:Key="GaugeTrackBrush" Color="#252B39" />
+    <SolidColorBrush x:Key="SelectionBrush" Color="#B3F07C" />
+    <!-- Shadow of menus and drop-down lists. -->
+    <Color x:Key="ShadowColor">#000000</Color>
+    <system:Double x:Key="ShadowOpacity">0.6</system:Double>
+</ResourceDictionary>

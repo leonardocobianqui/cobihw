@@ -185,6 +185,27 @@
   <data name="Reason_Timeout" xml:space="preserve">
     <value>o servidor demorou demais para responder</value>
   </data>
+  <data name="SpeedTest_Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="SpeedTest_Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="Unit_Megabits" xml:space="preserve">
+    <value>Mbps</value>
+  </data>
+  <data name="Unit_Gigabits" xml:space="preserve">
+    <value>Gbps</value>
+  </data>
+  <data name="Unit_Milliseconds" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="Format_GaugeUnit" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Format_Jitter" xml:space="preserve">
+    <value>jitter {0}</value>
+  </data>
   <data name="Tray_AlwaysOnTop" xml:space="preserve">
     <value>Sempre por cima</value>
   </data>
@@ -762,13 +783,13 @@ O recurso "Travar posição e tamanho" (menu do ícone) impede mudanças.</value
     <value>0 deixa as barras de uso retas; 3 deixa as pontas totalmente redondas.</value>
   </data>
   <data name="Format_TrayLine" xml:space="preserve">
-    <value>{0} {1} · {2}</value>
+    <value>{0} {1} {2}</value>
   </data>
   <data name="Format_TrayValue" xml:space="preserve">
     <value>{0} {1}</value>
   </data>
   <data name="Format_TrayNetwork" xml:space="preserve">
-    <value>{0} ↓{1} ↑{2} Mbps · ping {3}</value>
+    <value>{0} ↓{1} ↑{2} Mbps · {3}</value>
   </data>
   <data name="Format_Gigabytes" xml:space="preserve">
     <value>{0:0.0} GB</value>
@@ -919,9 +940,6 @@ O recurso "Travar posição e tamanho" (menu do ícone) impede mudanças.</value
   </data>
   <data name="Format_GpuTemperature" xml:space="preserve">
     <value>Temperatura {0}</value>
-  </data>
-  <data name="Format_TrayLineExtra" xml:space="preserve">
-    <value>{0} {1} · {2} · {3}</value>
   </data>
   <data name="Format_NetworkRateGigabits" xml:space="preserve">
     <value>{0} Gbps</value>

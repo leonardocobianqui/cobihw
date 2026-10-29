@@ -12,15 +12,11 @@ public partial class AboutWindow : Window
     /// <param name="iconResource">App icon inside the resources.</param>
     public AboutWindow(AppTheme theme, Uri iconResource)
     {
-        ApplyTheme(theme);
+        WindowTheme.Apply(this, theme);
         InitializeComponent();
         // The .ico holds several sizes; the largest stays sharp when scaled down.
         AppIcon.Source = BitmapDecoder.Create(iconResource, BitmapCreateOptions.None, BitmapCacheOption.OnLoad).Frames.MaxBy(frame => frame.PixelWidth);
     }
-
-    /// <summary>Changes the theme while the window is open.</summary>
-    /// <param name="theme">New theme.</param>
-    public void ApplyTheme(AppTheme theme) => WindowTheme.Apply(this, theme);
 
     private void OnCloseClick(object sender, RoutedEventArgs e) => Close();
 }
