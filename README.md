@@ -1,6 +1,6 @@
 # cobihw
 
-A small, customizable hardware monitor widget for Windows. It shows CPU, GPU, RAM, disk, network, battery and FPS in a borderless window that stays on top of your apps or sits on the desktop.
+A small, customizable hardware monitor widget for Windows. CPU, GPU, RAM, disk, network, battery and FPS in a borderless window that floats above your apps or sits on the desktop.
 
 Free and open source under the [MIT License](LICENSE). Website: [cobihw.com](https://cobihw.com).
 
@@ -8,66 +8,66 @@ Free and open source under the [MIT License](LICENSE). Website: [cobihw.com](htt
 
 | Item | Values | Source |
 | --- | --- | --- |
-| CPU | Usage and current clock speed | Same counters as Task Manager |
-| GPU | Usage, memory and, optionally, temperature | Every GPU in the PC; pick one or let Windows' high-performance choice decide |
+| CPU | Usage and current clock | The same counters as Task Manager |
+| GPU | Usage, memory and optional temperature | Any GPU in the system; pick one or follow Windows' high-performance choice |
 | RAM | Usage and used / total | |
-| Disk | Active time and, optionally, read / write speed | The Windows disk or one you choose |
-| Network | Download / upload speed, data used in the session, ping (optional) | The sum of the physical adapters or one device |
-| Battery | Charge, charging state and time left | Only on PCs with a battery |
-| FPS | Frames per second of the app in the foreground | Optional; needs administrator permission once |
+| Disk | Active time and optional read / write speed | The Windows disk or one you choose |
+| Network | Download / upload speed, session data, optional ping | All physical adapters combined, or a single device |
+| Battery | Charge, charging state and time left | PCs with a battery |
+| FPS | Frame rate of the foreground app | Optional; asks for administrator permission once |
 
-Hover over the widget to see the details of every item, including the hidden ones. The tray icon tooltip shows a summary.
+Hover over the widget for details on every item, hidden ones included. The tray icon tooltip shows a summary.
 
 ## Features
 
-- Three layouts: full, compact horizontal and compact vertical (double-click the widget to switch).
-- Always on top or on the desktop, under other windows.
-- Snap to screen edges, lock the position, and let clicks pass through the widget (hold a key to interact again).
-- Resize by dragging the edges; the content zooms instead of cropping.
-- Choose and reorder the items; colors change with usage (normal, warning, critical) at thresholds you set.
-- Appearance: background color and transparency, text color and weight, rounded corners, bar rounding, and a border.
-- Network devices window: IP addresses, gateway, DNS, MAC, link speed and Wi-Fi details for each adapter.
-- Internet speed test (Cloudflare) in its own window, with a gauge and the ping, download and upload one at a time; the last result is kept in the details.
-- Languages: English, Português (Brasil), Español and Русский. Light, dark or automatic theme for the windows and the tray menu.
-- Portable: no installer; the settings file lives next to the executable.
+- Three layouts: full, compact horizontal and compact vertical. Double-click the widget to switch.
+- Always on top, or on the desktop below other windows.
+- Edge snapping, position lock, and click-through (hold a key to interact again).
+- Drag the edges to resize; the content scales instead of getting cropped.
+- Pick and reorder items, with usage colors (normal, warning, critical) at thresholds you set.
+- Appearance: background color and transparency, text color and weight, corner and bar rounding, border.
+- Network devices window: IP addresses, gateway, DNS, MAC, link speed and Wi-Fi details per adapter.
+- Internet speed test (Cloudflare) with a gauge, measuring ping, download and upload in turn. The last result stays in the details.
+- English, Português (Brasil), Español and Русский. Light, dark or automatic theme for the windows and the tray menu.
+- Portable: no installer, and the settings file lives next to the executable.
 
 ## Download
 
-Get the latest version from [Releases](https://github.com/leonardocobianqui/cobihw/releases). There are two packages for each kind of Windows:
+Grab the latest version from [Releases](https://github.com/leonardocobianqui/cobihw/releases). Each architecture has two packages:
 
-| Package | Windows | Size | Needs |
+| Package | Windows | Size | Requires |
 | --- | --- | --- | --- |
-| `cobihw-<version>-portable-win-x64.zip` | 64-bit | Larger | Nothing; .NET is included |
+| `cobihw-<version>-portable-win-x64.zip` | 64-bit | Larger | Nothing; .NET is bundled |
 | `cobihw-<version>-framework-dependent-win-x64.zip` | 64-bit | Smaller | [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x64) |
-| `cobihw-<version>-portable-win-x86.zip` | 32-bit | Larger | Nothing; .NET is included |
+| `cobihw-<version>-portable-win-x86.zip` | 32-bit | Larger | Nothing; .NET is bundled |
 | `cobihw-<version>-framework-dependent-win-x86.zip` | 32-bit | Smaller | [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x86) |
 
-Not sure which one you have? **Settings → System → About → System type** shows it. Each release also has a `SHA256SUMS.txt` file to check the download.
+Not sure which Windows you have? Check **Settings → System → About → System type**. Every release includes a `SHA256SUMS.txt` to verify the download.
 
 **Requirements:** Windows 11, or Windows 10 22H2 (64-bit or 32-bit).
 
 ## Getting started
 
-1. Extract the zip to a folder you can write to, for example `Documents\cobihw`. The settings are saved in that folder.
-2. Run `cobihw.exe`. The app isn't signed yet, so Windows SmartScreen may warn you: choose **More info** and then **Run anyway**.
+1. Extract the zip to a folder you can write to, such as `Documents\cobihw`. Settings are saved there.
+2. Run `cobihw.exe`. The app isn't code-signed yet, so SmartScreen may warn you: choose **More info**, then **Run anyway**.
 3. Use the tray icon:
    - **Left click** shows or hides the widget.
-   - **Right click** opens the menu: layout, position options, network tools, settings, about and exit.
-4. Drag the widget to move it, drag its edges to resize it, and double-click it to change the layout.
+   - **Right click** opens the menu: layout, positioning, network tools, settings, about and exit.
+4. Drag the widget to move it, drag its edges to resize it, double-click it to change the layout.
 
 ### Notes
 
-- **FPS** reads Windows graphics events, which needs administrator permission. The first time you turn it on, Windows asks once; cobihw then creates a scheduled task so it can start with that permission without asking again. **Settings → General → Remove cobihw from Windows** deletes the task and the startup entry.
-- **Wi-Fi details** (network name, signal, channel) need the Location permission on recent Windows versions. The network devices window has a button that opens that setting.
-- **GPU temperature** appears only when the graphics driver reports it.
+- **FPS** relies on Windows graphics events, which require administrator rights. The first time you enable it, Windows asks once; cobihw then registers a scheduled task so later starts don't prompt again. **Settings → General → Remove cobihw from Windows** removes the task and the startup entry.
+- **Wi-Fi details** (network name, signal, channel) need the Location permission on recent Windows versions. The network devices window links straight to that setting.
+- **GPU temperature** shows up only when the graphics driver reports it.
 
 ## Privacy
 
-cobihw has no telemetry and doesn't collect data. It only goes online when you ask: speed test, public IP, update check, and ping (off by default). See [PRIVACY.md](PRIVACY.md).
+No telemetry, no data collection. cobihw only goes online when you ask it to: speed test, public IP, update check, and ping (off by default). Details in [PRIVACY.md](PRIVACY.md).
 
 ## Building from source
 
-Needs Windows and the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Visual Studio is optional.
+Requires Windows and the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Visual Studio is optional.
 
 ```powershell
 git clone https://github.com/leonardocobianqui/cobihw.git
@@ -76,19 +76,19 @@ dotnet build cobihw.slnx
 dotnet run --project src/CobiHw.App
 ```
 
-Run the tests:
+Tests:
 
 ```powershell
 dotnet test --project tests/CobiHw.Tests/CobiHw.Tests.csproj
 ```
 
-Create the release packages with PowerShell 7 (zips for x64 and x86, and their checksums, in `publish/<version>`):
+Release packages (PowerShell 7; x64 and x86 zips plus checksums in `publish/<version>`):
 
 ```powershell
 pwsh ./publish.ps1
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the project conventions and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how the code is organized.
+Conventions are in [CONTRIBUTING.md](CONTRIBUTING.md); the code layout is described in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## License
 

@@ -6,17 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-30
+
 ### Added
 
-- Speed test window with a gauge: ping, download and upload one at a time, with the jitter. Closing it doesn't stop the test, and a notification brings the result.
+- Speed test window with a live gauge: ping, download and upload run in turn, with jitter. Closing the window doesn't cancel the test; a notification reports the result.
 - Network label in the compact layouts.
-- Halo around the widget's texts and bars, so they stay readable on a transparent background.
+- Halo behind the widget's text and bars, keeping them readable over transparent backgrounds.
 
 ### Changed
 
-- The speed test works like Ookla's Speedtest: 4 connections for 10 seconds per phase, leaving out the first 2 seconds. The ping leaves out Cloudflare's server time the way Cloudflare's own test does.
-- The tray icon tooltip is a fixed summary: CPU, GPU, RAM, disk, network and battery.
-- New look for the app windows and the tray menu, the same on Windows 10 and 11, in light and dark.
+- Speed test methodology aligned with Ookla's: 4 connections, 10 s per phase, first 2 s discarded. Ping excludes Cloudflare's server time, as Cloudflare's own client does.
+- Tray tooltip is now a fixed summary: CPU, GPU, RAM, disk, network and battery.
+- Redesigned app windows and tray menu, identical on Windows 10 and 11 in light and dark: custom title bar with rounded corners and snap layouts, and a footer bar for actions.
+- Messages follow the app's theme and language; their buttons used to follow the Windows language.
+
+### Fixed
+
+- Exiting from the tray while the settings window was asking about unapplied changes crashed the app.
 
 ## [1.1.0] - 2026-10-24
 
@@ -53,6 +60,7 @@ First public release.
 - Start with Windows, and an option to remove everything the app registered in Windows.
 - Portable and framework-dependent packages for Windows x64.
 
-[Unreleased]: https://github.com/leonardocobianqui/cobihw/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/leonardocobianqui/cobihw/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/leonardocobianqui/cobihw/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/leonardocobianqui/cobihw/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/leonardocobianqui/cobihw/releases/tag/v1.0.0

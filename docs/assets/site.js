@@ -12,6 +12,8 @@ const TEXT = {
     disk: "Disco",
     network: "Rede",
     session: "Sessão",
+    read: "L",
+    write: "E",
     test: "Teste",
     pickOne: "Marque pelo menos um item.",
     files: ["atualizacao-do-jogo.pak", "aula-completa.mp4", "fotos-da-viagem.zip"],
@@ -37,6 +39,8 @@ const TEXT = {
     disk: "Disk",
     network: "Network",
     session: "Session",
+    read: "R",
+    write: "W",
     test: "Test",
     pickOne: "Turn on at least one item.",
     files: ["game-update.pak", "full-lecture.mp4", "trip-photos.zip"],
@@ -116,11 +120,11 @@ const navObserver = new IntersectionObserver(entries => {
 sections.forEach(section => navObserver.observe(section));
 
 const SCENARIOS = {
-  idle: { cpu: 5, gpu: 2, ram: 38, disk: 1, down: 0.05, up: 0.03, ping: 18, temp: 40 },
-  game: { cpu: 55, gpu: 96, ram: 64, disk: 5, down: 2.5, up: 1.2, ping: 32, temp: 71 },
-  render: { cpu: 98, gpu: 62, ram: 78, disk: 38, down: 0.1, up: 0.05, ping: 19, temp: 63 },
-  download: { cpu: 12, gpu: 3, ram: 42, disk: 74, down: 420, up: 4, ping: 55, temp: 42 },
-  speed: { cpu: 18, gpu: 4, ram: 40, disk: 3, down: 0.1, up: 0.05, ping: 24, temp: 41 },
+  idle: { cpu: 5, gpu: 2, ram: 38, disk: 1, read: 0.2, write: 0.4, down: 0.05, up: 0.03, ping: 18, temp: 40 },
+  game: { cpu: 55, gpu: 96, ram: 64, disk: 5, read: 45, write: 2, down: 2.5, up: 1.2, ping: 32, temp: 71 },
+  render: { cpu: 98, gpu: 62, ram: 78, disk: 38, read: 120, write: 85, down: 0.1, up: 0.05, ping: 19, temp: 63 },
+  download: { cpu: 12, gpu: 3, ram: 42, disk: 74, read: 1.5, write: 52, down: 420, up: 4, ping: 55, temp: 42 },
+  speed: { cpu: 18, gpu: 4, ram: 40, disk: 3, read: 0.1, write: 0.3, down: 0.1, up: 0.05, ping: 24, temp: 41 },
 };
 const S = { ...SCENARIOS.idle, ghz: 1.9, sessionDown: 1980, sessionUp: 258, fps: null };
 let scenario = "idle";
@@ -132,6 +136,7 @@ function tick() {
   toward("cpu", 5, 1, 100); toward("gpu", 6, 0, 100); toward("ram", 1, 20, 95); toward("disk", 4, 0, 100);
   toward("down", Math.max(0.02, t.down * 0.12), 0.01, 950); toward("up", Math.max(0.02, t.up * 0.15), 0.01, 90);
   toward("ping", 3, 8, 300); toward("temp", 1.2, 30, 90);
+  toward("read", Math.max(0.05, t.read * 0.12), 0.01, 3000); toward("write", Math.max(0.05, t.write * 0.12), 0.01, 3000);
   S.ghz = clamp(1.8 + S.cpu / 40, 1.8, 4.4);
   if (scenario === "speed") stepSpeedTest();
   S.sessionDown += S.down / 8; S.sessionUp += S.up / 8;
@@ -175,11 +180,17 @@ function liveTestText() {
   return null;
 }
 
+// Disk speed like the app: three significant digits, KB/s below 1 MB/s.
+const rate = mbPerSecond => mbPerSecond < 1
+  ? `${Math.round(mbPerSecond * 1024)} KB/s`
+  : `${fmt(mbPerSecond, mbPerSecond < 10 ? 2 : mbPerSecond < 100 ? 1 : 0)} MB/s`;
+
 function widgetHTML() {
   const m = O.metrics, live = scenario === "speed" ? liveTestText() : null, parts = [];
   const cpuPct = `${Math.round(S.cpu)}%`, ghz = `${fmt(S.ghz, 2)} GHz`;
   const gpuMem = `${fmt(0.8 + S.gpu / 9, 1)} / ${fmt(12, 1)} GB`, temp = `${Math.round(S.temp)} °C`;
   const ramAmt = `${fmt(S.ram * 0.16, 1)} / ${fmt(16, 1)} GB`;
+  const diskRates = `${T.read} ${rate(S.read)} · ${T.write} ${rate(S.write)}`;
   const down = `↓ ${fmt(S.down, 2)} Mbps`, up = `↑ ${fmt(S.up, 2)} Mbps`, ping = `Ping ${Math.round(S.ping)} ms`;
   if (O.layout === "full") {
     const sec = (label, name, p, details) => `<div><span class="w-label">${label}</span>${name}</div><div class="w-row ${level(p)}"><div class="w-bar"><div class="w-fill" style="width:${p.toFixed(1)}%"></div></div><span class="w-pct">${Math.round(p)}%</span>${details.map(d => `<span class="w-detail">${d}</span>`).join("")}</div>`;
@@ -187,7 +198,7 @@ function widgetHTML() {
     if (m.cpu) parts.push(sec("CPU", "Intel Core i5-12400F", S.cpu, [ghz]));
     if (m.gpu) parts.push(sec("GPU", "GeForce RTX 3060", S.gpu, [gpuMem, temp]));
     if (m.ram) parts.push(sec("RAM", "", S.ram, [ramAmt]));
-    if (m.disk) parts.push(sec(T.disk, "0 (C:)", S.disk, []));
+    if (m.disk) parts.push(sec(T.disk, "0 (C:)", S.disk, [diskRates]));
     if (m.net) parts.push(`<div class="w-label">${T.network}</div><div class="w-line">${live ? live : `${down}<span class="w-gap">${up}</span>`}<span class="w-gap">${ping}</span></div><div class="w-line" style="margin-top:4px">${T.session}&nbsp;&nbsp; ↓ ${size(S.sessionDown)}&nbsp;&nbsp; ↑ ${size(S.sessionUp)}</div>`);
     return parts.join('<div class="w-div"></div>') || `<span class="w-label">${T.pickOne}</span>`;
   }
@@ -197,8 +208,8 @@ function widgetHTML() {
     if (m.cpu) parts.push(item("CPU", S.cpu, [ghz]));
     if (m.gpu) parts.push(item("GPU", S.gpu, [gpuMem, temp]));
     if (m.ram) parts.push(item("RAM", S.ram, [ramAmt]));
-    if (m.disk) parts.push(item(T.disk, S.disk, []));
-    if (m.net) parts.push(`<div class="c-item">${live ? `<span>${live}</span>` : `<span>${down}</span><span>${up}</span>`}<span>${ping}</span></div>`);
+    if (m.disk) parts.push(item(T.disk, S.disk, [diskRates]));
+    if (m.net) parts.push(`<div class="c-item"><span class="c-label">${T.network}</span>${live ? `<span>${live}</span>` : `<span>${down}</span><span>${up}</span>`}<span>${ping}</span></div>`);
     return parts.join('<div class="c-sep"></div>') || `<span class="c-label">${T.pickOne}</span>`;
   }
   const vitem = (label, p, details) => `<div class="${level(p)}"><div class="c-head"><span class="c-label">${label}</span><span class="c-pct">${Math.round(p)}%</span></div>${details.map(d => `<div>${d}</div>`).join("")}</div>`;
@@ -206,8 +217,8 @@ function widgetHTML() {
   if (m.cpu) parts.push(vitem("CPU", S.cpu, [ghz]));
   if (m.gpu) parts.push(vitem("GPU", S.gpu, [gpuMem, temp]));
   if (m.ram) parts.push(vitem("RAM", S.ram, [ramAmt]));
-  if (m.disk) parts.push(vitem(T.disk, S.disk, []));
-  if (m.net) parts.push(live ? `<div>${T.test}</div><div>${live.replace(`${T.test} `, "")}</div><div>${ping}</div>` : `<div>${down}</div><div>${up}</div><div>${ping}</div>`);
+  if (m.disk) parts.push(vitem(T.disk, S.disk, [diskRates]));
+  if (m.net) parts.push(`<div class="c-label">${T.network}</div>` + (live ? `<div>${T.test}</div><div>${live.replace(`${T.test} `, "")}</div><div>${ping}</div>` : `<div>${down}</div><div>${up}</div><div>${ping}</div>`));
   return parts.join('<div class="c-sep"></div>') || `<span class="c-label">${T.pickOne}</span>`;
 }
 
@@ -222,10 +233,12 @@ function render() {
   widget.style.setProperty("--w-crit", th.crit);
   widget.style.setProperty("--w-opacity", String(1 - O.transparency / 100));
   widget.style.setProperty("--w-radius", O.radius + "px");
-  widget.style.transform = `scale(${O.scale / 100})`;
   widget.style.zIndex = O.mode === "top" ? 20 : 5;
   widget.className = "widget l-" + O.layout + (O.lock ? " locked" : "") + (dragging ? " dragging" : "");
   widget.innerHTML = widgetHTML();
+  // The demo desktop is narrower than a real screen, so a widget wider than it zooms out to fit on one line, as the app's zoom would.
+  widgetScale = Math.min(O.scale / 100, (screenEl.offsetWidth - 32) / widget.offsetWidth);
+  widget.style.transform = `scale(${widgetScale})`;
   keepInside();
 }
 
@@ -243,7 +256,9 @@ function fitScreen() {
 new ResizeObserver(fitScreen).observe(desk);
 
 let dragging = false;
-const widgetSize = () => ({ w: widget.offsetWidth * O.scale / 100, h: widget.offsetHeight * O.scale / 100 });
+// Zoom the widget is drawn at: the chosen size, or less when it doesn't fit on the demo desktop.
+let widgetScale = 1;
+const widgetSize = () => ({ w: widget.offsetWidth * widgetScale, h: widget.offsetHeight * widgetScale });
 function keepInside() {
   const { w, h } = widgetSize(), maxX = screenEl.offsetWidth - w, maxY = screenEl.offsetHeight - 40 - h;
   if (!userMoved) { widget.style.left = Math.max(0, maxX - 16) + "px"; widget.style.top = "16px"; return; }

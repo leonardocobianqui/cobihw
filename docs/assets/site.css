@@ -607,12 +607,6 @@ h3 {
   text-align: right;
 }
 
-.narrow .widget.l-h {
-  flex-wrap: wrap;
-  row-gap: 6px;
-  max-width: 448px;
-}
-
 .widget.l-v {
   min-width: 150px;
 }

@@ -1,142 +1,142 @@
 # Architecture
 
-How cobihw is organized, where each reading comes from and how the pieces fit together. For build and contribution steps, see [CONTRIBUTING.md](../CONTRIBUTING.md).
+An overview of how cobihw is put together: the projects, where each reading comes from, and the non-obvious decisions behind the UI. Build and contribution steps live in [CONTRIBUTING.md](../CONTRIBUTING.md).
 
 ## Projects
 
 | Project | Type | Role |
 | --- | --- | --- |
-| `src/CobiHw.Core` | Class library | Reads the hardware. No UI; talks to Windows through P/Invoke, PDH, WMI and ETW. |
-| `src/CobiHw.App` | WPF app (`cobihw.exe`) | The widget, tray icon, windows, settings and translations. MVVM with CommunityToolkit.Mvvm. |
-| `src/CobiHw.ConsoleTest` | Console app | Prints the Core readings once, to compare them with Task Manager. |
-| `tests/CobiHw.Tests` | xUnit v3 tests | Tests both projects; reaches internal types through `InternalsVisibleTo`. |
+| `src/CobiHw.Core` | Class library | Hardware readers. No UI; P/Invoke, PDH, WMI and ETW. |
+| `src/CobiHw.App` | WPF app (`cobihw.exe`) | Widget, tray icon, windows, settings and translations. MVVM via CommunityToolkit.Mvvm. |
+| `src/CobiHw.ConsoleTest` | Console app | Dumps one set of Core readings, handy for comparing against Task Manager. |
+| `tests/CobiHw.Tests` | xUnit v3 | Covers both projects; internals are exposed through `InternalsVisibleTo`. |
 
-The App depends on the Core; the Core knows nothing about the App.
+Dependencies point one way: App → Core.
 
-## Reading loop
+## Sampling
 
-`App` starts two background loops when the app opens:
+`App` runs two background loops:
 
-1. **Sampling, every second.** `HardwareMonitor.Sample()` runs on a thread-pool thread and returns a `HardwareSnapshot`. Back on the UI thread, `MainViewModel.Apply()` turns it into texts and colors, the network devices window gets the new traffic, and the FPS reading is added.
-2. **Ping, every 5 seconds**, only while ping is on. A result is dropped if the host changed meanwhile.
+1. **Hardware, every second.** `HardwareMonitor.Sample()` runs on the thread pool and returns a `HardwareSnapshot`; `MainViewModel.Apply()` formats it on the UI thread. The same tick feeds the network devices window and the FPS reading.
+2. **Ping, every 5 seconds**, only when enabled. Results for a host that changed in the meantime are discarded.
 
-`HardwareMonitor` takes one sample when it's created, so the first sample shown already has rates (rates are averaged since the previous sample).
+`HardwareMonitor` primes itself with one sample on construction, so the first snapshot already has rates.
 
 ## Data sources
 
-| Reading | Where it comes from | Code |
+| Reading | Source | Code |
 | --- | --- | --- |
-| CPU usage | PDH `\Processor Information(_Total)\% Processor Utility` (the counter Task Manager uses) | `CpuReader` |
-| CPU clock | Base clock from `CallNtPowerInformation` × PDH `% Processor Performance` | `CpuReader` |
+| CPU usage | PDH `\Processor Information(_Total)\% Processor Utility`, the counter Task Manager uses | `CpuReader` |
+| CPU clock | Base clock (`CallNtPowerInformation`) × PDH `% Processor Performance` | `CpuReader` |
 | RAM | `GlobalMemoryStatusEx` | `MemoryReader` |
-| GPU list and order | DXGI adapters, ranked with `IDXGIFactory6::EnumAdapterByGpuPreference` (high performance); Direct3D 12 tells integrated GPUs apart | `GpuAdapter` |
-| GPU usage | PDH `\GPU Engine(*)\Utilization Percentage`: processes are summed per engine and the busiest engine wins | `GpuReader` |
-| GPU memory | PDH `\GPU Adapter Memory(*)\Dedicated Usage` and `Shared Usage` | `GpuReader` |
-| GPU temperature | `D3DKMTQueryAdapterInfo` (performance data reported by the display driver) | `GpuSensor` |
-| Disk | PDH `\PhysicalDisk(*)\% Idle Time`, `Disk Read Bytes/sec`, `Disk Write Bytes/sec`; the Windows disk is the one that holds the system drive | `DiskReader` |
-| Network traffic | `GetIfTable2` (IP Helper) octet counters per interface | `NetworkReader` |
-| Network device details | `GetIfTable2` for the list and type, .NET `NetworkInterface` for addresses, gateway and DNS, WMI `MSFT_NetAdapter` for which adapters Windows hides | `NetworkDevices`, `NetAdapterQuery` |
-| Wi-Fi details | Native Wi-Fi API (`wlanapi.dll`) | `WifiReader` |
+| GPU list and order | DXGI, ranked by `IDXGIFactory6::EnumAdapterByGpuPreference` (high performance); Direct3D 12 flags integrated GPUs | `GpuAdapter` |
+| GPU usage | PDH `\GPU Engine(*)\Utilization Percentage`, summed per engine across processes; the busiest engine wins | `GpuReader` |
+| GPU memory | PDH `\GPU Adapter Memory(*)\Dedicated Usage` / `Shared Usage` | `GpuReader` |
+| GPU temperature | `D3DKMTQueryAdapterInfo`, when the driver reports it | `GpuSensor` |
+| Disk | PDH `\PhysicalDisk(*)\% Idle Time`, `Disk Read Bytes/sec`, `Disk Write Bytes/sec`; "the Windows disk" is the one holding the system drive | `DiskReader` |
+| Network traffic | `GetIfTable2` octet counters | `NetworkReader` |
+| Network device details | `GetIfTable2` (list and type), `NetworkInterface` (addresses, gateway, DNS), WMI `MSFT_NetAdapter` (adapters Windows hides) | `NetworkDevices`, `NetAdapterQuery` |
+| Wi-Fi | Native Wi-Fi API (`wlanapi.dll`) | `WifiReader` |
 | Battery | `GetSystemPowerStatus` | `BatteryReader` |
-| FPS | ETW "Present" events from `Microsoft-Windows-DXGI` and `Microsoft-Windows-D3D9`, like PresentMon | `FpsMonitor`, `FrameCounter` |
+| FPS | ETW present events from `Microsoft-Windows-DXGI` and `Microsoft-Windows-D3D9`, as PresentMon does | `FpsMonitor`, `FrameCounter` |
 | Ping | `System.Net.NetworkInformation.Ping` | `LatencyProbe` |
-| Speed test | Cloudflare's `speed.cloudflare.com` download and upload endpoints | `CloudflareSpeedTest` |
-| Public IP | Cloudflare's `/cdn-cgi/trace` | `PublicAddress` |
+| Speed test | `speed.cloudflare.com` download/upload endpoints | `CloudflareSpeedTest` |
+| Public IP | Cloudflare `/cdn-cgi/trace` | `PublicAddress` |
 
-All PDH counters live in one `PdhQuery` collected once per sample, so every reading in a snapshot covers the same second.
+All PDH counters share one `PdhQuery`, collected once per tick, so every value in a snapshot covers the same interval.
 
-## FPS and administrator permission
+## FPS and elevation
 
-Real-time ETW sessions for the graphics providers need administrator rights, but the widget runs without them (`asInvoker` in `app.manifest`). The bridge is a scheduled task (`ElevatedTask`):
+Real-time ETW sessions on the graphics providers require admin rights; the widget itself runs `asInvoker`. A scheduled task (`ElevatedTask`) bridges the two:
 
-1. When the user turns FPS on, the app starts a copy of itself through a UAC prompt with `--register-task`. That copy only creates the task and exits.
-2. The task runs `cobihw.exe --settings "<file>"` with the highest privileges, for the logged-on user. It's named after the user's SID, so accounts on the same PC don't overwrite each other's task.
-3. From then on, a normal start with FPS on runs the task (no prompt) and exits; the elevated copy takes over.
+1. Enabling FPS relaunches the app through UAC with `--register-task`. That instance creates the task and exits.
+2. The task runs `cobihw.exe --settings "<file>"` with highest privileges for the logged-on user. It's named after the user's SID, so multiple accounts on one PC don't collide.
+3. From then on, a normal start with FPS enabled triggers the task and exits; the elevated instance takes over. No further prompts.
 
-The task is tied to the `.exe` path and the settings file. If the app is moved, it's registered again. Turning FPS off, or **Remove cobihw from Windows**, deletes it.
+The task is bound to the executable path and settings file and is re-registered if the app moves. Disabling FPS or **Remove cobihw from Windows** deletes it.
 
 ## Settings
 
-Settings are saved in `cobihw.settings.json`, next to the executable (`SettingsStore`), so the app stays portable.
+`SettingsStore` keeps `cobihw.settings.json` next to the executable; the app stays portable.
 
-- **Profiles:** one file holds one profile per computer and Windows user. A new PC copies only the personal choices (look, items, language), not what depends on the hardware (position, disk, GPU, network devices).
-- **Safe writes:** a `.lock` file serializes writes between instances. Each write goes to a `.tmp` file that then replaces the real one, so a reader never sees half a file.
-- **Busy or broken files:** if another process holds the file, the app runs with defaults in read-only mode and relaunches once the file can be read. A corrupt file is kept as `.invalid`.
-- **Old files:** settings files from older versions are read and migrated.
+- **Profiles:** one profile per computer and Windows user. A new machine inherits the personal choices (look, items, language) but not the hardware-bound ones (position, disk, GPU, network devices).
+- **Atomic writes:** a `.lock` file serializes writers across instances; data goes to a `.tmp` file that then replaces the original.
+- **Contention and corruption:** if another process holds the file, the app starts read-only with defaults and relaunches once it can read it. A corrupt file is set aside as `.invalid`.
+- **Migration:** files from older versions are upgraded on load.
 
-The app also saves every minute and on exit; saving is skipped when nothing changed.
+Settings are also flushed every minute and on exit, skipping unchanged state.
 
 ## Widget window
 
-`MainWindow` is a borderless, transparent WPF window sized to its content.
+`MainWindow` is borderless, transparent and sized to content.
 
-- **Layouts:** the three layouts are `ItemsControl`s over the same item list; `MetricTemplateConverter` picks the template of each item.
-- **Zoom:** resizing by the edges changes a zoom factor (`LayoutTransform`), not the window size. `ResizeRule` does the math.
-- **Position:** stored in physical pixels, which stay exact across monitors with different DPI (the app is per-monitor DPI aware, v2). `WindowFit` keeps the window inside the work area, snaps it to edges, moves it between monitors and brings it back when a monitor is removed.
-- **Window messages:** hooks on `WM_WINDOWPOSCHANGING`, `WM_MOVING` and `WM_DISPLAYCHANGE` keep the window on screen, snap it and keep it under other windows in desktop mode.
-- **Click-through:** sets `WS_EX_TRANSPARENT`; holding the interaction key turns it off while held.
-- **Stable width:** the speed values reserve the width of their widest possible text, so the widget doesn't resize every second. Numbers use three significant digits (`DisplayFormat`).
+- **Layouts:** three `ItemsControl`s over one item list; `MetricTemplateConverter` picks the template per item.
+- **Zoom:** dragging the edges changes a `LayoutTransform` scale rather than the window size (`ResizeRule`).
+- **Position:** persisted in physical pixels, which survive mixed-DPI setups (per-monitor DPI aware v2). `WindowFit` handles work-area clamping, edge snapping, monitor moves and monitor removal.
+- **Window messages:** `WM_WINDOWPOSCHANGING`, `WM_MOVING` and `WM_DISPLAYCHANGE` hooks keep it on screen, snap it, and pin it to the bottom of the z-order in desktop mode.
+- **Click-through:** `WS_EX_TRANSPARENT`, lifted while the interaction key is held.
+- **Stable width:** speed fields reserve the width of their widest possible text, so the widget doesn't reflow every second. Values use three significant digits (`DisplayFormat`).
 
 ## Look
 
-The app windows and the tray menu follow the cobihw design system, the same on Windows 10 and 11; the widget doesn't, since its colors come from the Appearance tab.
+The app windows and the tray menu share one design system on Windows 10 and 11. The widget is excluded; its colors come from the Appearance tab.
 
-- `Themes/Dark.xaml` and `Themes/Light.xaml` hold the colors under the same keys; `Themes/Controls.xaml` holds the control styles, which read the colors with `DynamicResource`.
-- `WindowTheme.Apply` merges the colors and the styles into each window's resources, so the widget window is left alone. Changing the theme, or Windows switching light/dark in automatic mode, swaps only the color dictionary (`WindowTheme.ApplyAll`).
-- `WindowFrame` gives these windows our own frame: title bar, 12 px corners and shadow. The window is borderless and transparent (`AllowsTransparency`), so the frame answers `WM_NCHITTEST` itself: the empty part of the title bar is the caption (Windows drags, snaps and maximizes on a double click), a thin grip around the visible edge resizes, and the maximize button is `HTMAXBUTTON`, so Windows 11 shows the snap layouts over it. Its hover and clicks then arrive as non-client messages, which `WindowFrame` turns into the button's look and into maximize/restore. `WM_GETMINMAXINFO` keeps a maximized window inside the work area of its monitor.
-- `MessageWindow` replaces the Windows message box, with the same buttons and results, the app's theme and the app's language (the Windows one writes its buttons in the Windows language). It plays the Windows sound of the message kind, Esc and the X answer Cancel, otherwise No, otherwise OK, and Ctrl+C copies the text. Only the last resort of the error window still uses the Windows message box.
-- The shadow is drawn by the app in 16 px of transparent space around each window (`WindowFrame.ShadowSize`), so the sizes in XAML include it. It sits on a card of its own behind the content, and `RenderOptions.ClearTypeHint` keeps ClearType on in the transparent window.
+- `Themes/Dark.xaml` and `Themes/Light.xaml` define the same color keys; `Themes/Controls.xaml` holds the control styles and reads colors through `DynamicResource`.
+- `WindowTheme.Apply` merges both into each window's resources instead of `Application.Resources`, which keeps the widget out of it. A theme change (or Windows flipping light/dark in automatic mode) swaps only the color dictionary (`WindowTheme.ApplyAll`).
+- `WindowFrame` provides the title bar, 12 px corners and shadow. Windows are borderless and transparent (`AllowsTransparency`), so `WM_NCHITTEST` is answered by hand: the empty title bar is `HTCAPTION` (drag, snap, double-click to maximize), a thin band around the visible edge resizes, and the maximize button reports `HTMAXBUTTON` so Windows 11 shows snap layouts. Hover and clicks on that button then arrive as non-client messages, which `WindowFrame` maps back to the button state. `WM_GETMINMAXINFO` constrains the maximized window to the monitor's work area.
+- The shadow lives in a 16 px transparent margin (`WindowFrame.ShadowSize`), so XAML sizes include it. It's drawn on a separate layer behind the content; applying the effect to the content would turn off ClearType. `RenderOptions.ClearTypeHint` keeps ClearType on inside the layered window.
+- `MessageWindow` replaces `MessageBox` with the same buttons and results, but in the app's theme and language (`MessageBox` labels its buttons in the OS language). It keeps the expected behavior: default and cancel buttons, system sounds, Ctrl+C to copy. Ownerless messages are topmost so the widget can't cover them. `MessageBox` remains only as the error window's last-resort fallback.
 
 ## Tray icon
 
-The tray icon is a Windows Forms `NotifyIcon`; its menu is a WPF `ContextMenu` with the styles above. The menu's popup takes the foreground when it opens, otherwise it wouldn't close on a click elsewhere. The tooltip is a fixed summary (CPU, GPU, RAM, disk, network and battery), whatever the widget shows. Windows limits it to 127 characters: every line fits in every language, and `TrayTooltip` still drops whole lines from the end if a text ever grows.
+The icon is a WinForms `NotifyIcon`; the menu is a WPF `ContextMenu` using the styles above. The popup grabs the foreground when it opens, otherwise it wouldn't dismiss on an outside click. The tooltip is a fixed summary (CPU, GPU, RAM, disk, network, battery), independent of what the widget shows. Windows caps it at 127 characters; every line fits in every language, and `TrayTooltip` drops whole lines from the end as a safeguard.
 
 ## Speed test
 
-`CloudflareSpeedTest` runs against Cloudflare's speed test endpoints, one phase after the other:
+`CloudflareSpeedTest` runs the phases sequentially:
 
-- **Latency:** median time to first byte of 20 empty downloads on an open connection, minus the server time. The server time is read from `Server-Timing` as Cloudflare's own test reads it: `cfRequestDuration` when present, otherwise the sum of the `cfSpeed…` parts.
-- **Download and upload:** like Ookla's Speedtest, each phase runs 4 connections at once for 10 seconds, with back-to-back requests of up to 50 MB (the server refuses 100 MB or more). Bytes count as they move. When the phase ends, downloads are cut; uploads are sent in chunks (no `Content-Length`), so they just stop sending and finish as complete requests. The first 2 seconds, while TCP speeds up, are left out; the result is the average speed of the rest. The live speed is the traffic of the last second.
+- **Latency:** median time to first byte over 20 empty downloads on a warm connection, minus server time. Server time comes from `Server-Timing`, parsed the way Cloudflare's own client does: `cfRequestDuration` if present, otherwise the sum of the `cfSpeed…` entries.
+- **Download / upload:** Ookla-style, 4 parallel connections for 10 seconds, with back-to-back requests of up to 50 MB (the server rejects 100 MB and above). Bytes are counted as they move. At the end of a phase, downloads are aborted; uploads use chunked transfer (no `Content-Length`), so they simply stop sending and complete cleanly. The first 2 seconds are discarded as TCP ramp-up, and the result is the average over the rest. The live value is the last second of traffic.
 
-The last progress update of each phase is that phase's result, so the window fills each card as soon as its phase ends.
+Each phase's final progress report carries its result, so the window can fill in a card as soon as a phase ends.
 
-Starting a test anywhere (widget, tray or settings) opens `SpeedTestWindow`. Closing it doesn't stop the test: the tray item shows it again, "Cancel test" stops it, and a notification brings the result when the window is closed. `SpeedGauge` draws the needle on the `SpeedGaugeScale`, whose marks (0 to 1000 Mbps) are evenly spaced like Ookla's Speedtest.
+Starting a test from anywhere (widget, tray, settings) opens `SpeedTestWindow`. Closing the window doesn't cancel the test: the tray item reopens it, "Cancel test" stops it, and a notification reports the result if the window is closed. `SpeedGauge` draws on `SpeedGaugeScale`, whose 0–1000 Mbps marks are evenly spaced, as in Ookla's Speedtest.
 
-## 64-bit and 32-bit
+## x64 and x86
 
-The x64 and x86 packages come from the same code; `publish.ps1` only changes the runtime (`-r win-x86`).
+Both packages build from the same source; `publish.ps1` only switches the runtime identifier (`-r win-x86`).
 
-- Windows structures use `nint`/`nuint` where the SDK has pointers, handles or `SIZE_T`, so they shrink in a 32-bit process. `InteropLayoutTests` and `User32Tests` check each size against the SDK headers for both architectures, and the build workflow also runs the tests in a 32-bit process.
-- `User32.GetWindowLongPtr` and `SetWindowLongPtr` call `GetWindowLongW` and `SetWindowLongW` in x86, where the `...Ptr` entry points don't exist.
-- The update check only offers a release with a package for the architecture of the running app (`UpdateChecker.IsUpdate`).
+- Interop structs use `nint`/`nuint` wherever the SDK has pointers, handles or `SIZE_T`. `InteropLayoutTests` and `User32Tests` assert their sizes against the SDK headers for both architectures, and CI runs the suite in a 32-bit process as well.
+- `User32.GetWindowLongPtr` / `SetWindowLongPtr` fall back to `GetWindowLongW` / `SetWindowLongW` on x86, where the `…Ptr` exports don't exist.
+- The update check only offers releases that ship a package for the running architecture (`UpdateChecker.IsUpdate`).
 
 ## Localization
 
-- English texts are in `Resources/Strings.resx`; Portuguese, Spanish and Russian in `Strings.pt.resx`, `Strings.es.resx` and `Strings.ru.resx`. Each English entry has a comment for translators.
-- XAML uses `{loc:Text Key}` (`TextExtension`), which binds to `Localizer`. Changing the language in the settings updates every open window at once.
-- Code reads texts through the generated `Strings` class and formats numbers with `Localizer.Format`, so decimals follow the app language, not the Windows one.
-- Tests check that every language has the same keys and placeholders as English, and that every key used in XAML exists.
+- English lives in `Resources/Strings.resx`, with a translator comment per entry; Portuguese, Spanish and Russian in `Strings.pt.resx`, `Strings.es.resx` and `Strings.ru.resx`.
+- XAML uses `{loc:Text Key}` (`TextExtension`), bound to `Localizer`, so a language change updates every open window immediately.
+- Code goes through the generated `Strings` class and formats numbers with `Localizer.Format`, so decimal separators follow the app language rather than the OS.
+- Tests enforce matching keys and placeholders across languages and verify that every key referenced from XAML exists.
 
 ## Folder map
 
 ```
 src/CobiHw.Core/
-  Readers/      CPU, RAM, GPU, disk, network and battery readers
+  Readers/      CPU, RAM, GPU, disk, network and battery
   Network/      Network devices, Wi-Fi, ping, speed test, public IP
   Fps/          ETW session and frame counting
   Interop/      Windows API declarations
 src/CobiHw.App/
-  Settings/     Settings data, file store, settings and appearance windows
+  Settings/     Settings model, file store, settings and appearance windows
   Devices/      Network devices window
   About/        About window and update check
-  Themes/       Colors and control styles of the windows and the tray menu
+  Themes/       Colors and control styles
   Tray/         Tray icon, menu and tooltip
   Localization/ Language switching and the XAML text extension
   Resources/    Translations
   Converters/   XAML converters
-  Interop/      Windows API declarations used by the App
+  Interop/      App-side Windows API declarations
 tests/CobiHw.Tests/
   Core/, App/   Tests by area
   Fakes/        Simulated speed test server
-  Support/      Shared test data and helpers
+  Support/      Shared fixtures and helpers
 ```
