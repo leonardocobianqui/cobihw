@@ -341,11 +341,14 @@
   <data name="Settings_UnappliedTitle" xml:space="preserve">
     <value>Непримененные изменения</value>
   </data>
-  <data name="Format_UnappliedMessage" xml:space="preserve">
-    <value>Есть непримененные изменения: {0}. Применить их перед закрытием?</value>
+  <data name="Unapplied_Tabs" xml:space="preserve">
+    <value>Есть непримененные изменения:</value>
   </data>
-  <data name="Format_UnappliedInvalid" xml:space="preserve">
-    <value>Есть непримененные изменения: {0}, и некоторые содержат ошибки, поэтому их нельзя применить. Отменить их и закрыть?</value>
+  <data name="Unapplied_Apply" xml:space="preserve">
+    <value>Применить их перед закрытием?</value>
+  </data>
+  <data name="Unapplied_Invalid" xml:space="preserve">
+    <value>Некоторые содержат ошибки, поэтому их нельзя применить. Отменить их и закрыть?</value>
   </data>
   <data name="Tab_Display" xml:space="preserve">
     <value>Отображение</value>
@@ -784,6 +787,15 @@
   </data>
   <data name="Common_Cancel" xml:space="preserve">
     <value>Отмена</value>
+  </data>
+  <data name="Common_Yes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="Common_No" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="Common_Ok" xml:space="preserve">
+    <value>ОК</value>
   </data>
   <data name="Appearance_BarRadius" xml:space="preserve">
     <value>Скругление полос:</value>

@@ -269,14 +269,14 @@ public sealed partial class SettingsViewModel : ObservableObject, IDisposable
     /// <summary>Every pending tab is valid, so "apply before closing" is possible.</summary>
     public bool CanApplyAll => !HasDisplayError && !HasPingHostError && HasPendingChanges;
 
-    /// <summary>Names of the tabs with pending changes, for the close confirmation.</summary>
-    public string PendingTabNames => string.Join(", ", new (bool Pending, string Name)[]
+    /// <summary>Names of the tabs with pending changes, in tab order, listed in the close confirmation.</summary>
+    public IReadOnlyList<string> PendingTabs => [.. new (bool Pending, string Name)[]
     {
         (IsGeneralPending, Strings.Tab_General),
         (IsDisplayPending, Strings.Tab_Display),
         (IsAppearancePending, Strings.Tab_Appearance),
         (IsNetworkPending, Strings.Tab_Network),
-    }.Where(tab => tab.Pending).Select(tab => tab.Name));
+    }.Where(tab => tab.Pending).Select(tab => tab.Name)];
 
     private bool CanApply() => SelectedTab switch
     {

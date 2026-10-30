@@ -204,6 +204,11 @@ internal static partial class User32
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool TrackMouseEvent(ref TrackMouseEventInfo info);
 
+    /// <summary>Plays the Windows sound of a message kind (an MB_ICON flag), as the Windows message box does.</summary>
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool MessageBeep(uint type);
+
     /// <summary>Brings a window to the front; the tray menu needs it to close when the user clicks somewhere else.</summary>
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

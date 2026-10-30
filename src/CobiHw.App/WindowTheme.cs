@@ -17,6 +17,9 @@ internal static class WindowTheme
     private static ResourceDictionary? _light;
     private static ResourceDictionary? _controls;
 
+    /// <summary>Theme chosen in the app, as last given to <see cref="ApplyAll"/>; windows that the app doesn't create directly, such as messages, use it.</summary>
+    public static AppTheme Current { get; private set; } = AppTheme.System;
+
     /// <summary>Control styles, shared by every themed window and the tray menu.</summary>
     public static ResourceDictionary Controls => _controls ??= Load("Controls.xaml");
 
@@ -55,10 +58,11 @@ internal static class WindowTheme
         }
     }
 
-    /// <summary>Changes the theme of every open themed window; also called when Windows switches light/dark.</summary>
+    /// <summary>Changes the theme of every open themed window and of the ones opened later; also called when Windows switches light/dark.</summary>
     /// <param name="theme">Theme chosen in the app.</param>
     public static void ApplyAll(AppTheme theme)
     {
+        Current = theme;
         foreach (Window window in Application.Current.Windows)
         {
             if (window.Resources.MergedDictionaries.Contains(Controls))

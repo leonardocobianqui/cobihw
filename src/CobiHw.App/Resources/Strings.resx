@@ -441,13 +441,17 @@
     <value>Unapplied changes</value>
     <comment>Title of the warning shown on close</comment>
   </data>
-  <data name="Format_UnappliedMessage" xml:space="preserve">
-    <value>There are unapplied changes in: {0}. Apply them before closing?</value>
-    <comment>Warning on close (Yes/No/Cancel); {0} = tabs with changes</comment>
+  <data name="Unapplied_Tabs" xml:space="preserve">
+    <value>There are unapplied changes in:</value>
+    <comment>Close warning, first line; the tabs with changes are listed below it</comment>
   </data>
-  <data name="Format_UnappliedInvalid" xml:space="preserve">
-    <value>There are unapplied changes in: {0}, and some have errors, so they can't be applied. Discard them and close?</value>
-    <comment>Warning on close with errors (OK/Cancel); {0} = tabs with changes</comment>
+  <data name="Unapplied_Apply" xml:space="preserve">
+    <value>Apply them before closing?</value>
+    <comment>Close warning, last line (Yes/No/Cancel)</comment>
+  </data>
+  <data name="Unapplied_Invalid" xml:space="preserve">
+    <value>Some have errors, so they can't be applied. Discard them and close?</value>
+    <comment>Close warning when some changes have errors, last line (OK/Cancel)</comment>
   </data>
   <data name="Tab_Display" xml:space="preserve">
     <value>Display</value>
@@ -1031,6 +1035,18 @@
   <data name="Common_Cancel" xml:space="preserve">
     <value>Cancel</value>
     <comment>Button</comment>
+  </data>
+  <data name="Common_Yes" xml:space="preserve">
+    <value>Yes</value>
+    <comment>Message button, as in Windows</comment>
+  </data>
+  <data name="Common_No" xml:space="preserve">
+    <value>No</value>
+    <comment>Message button, as in Windows</comment>
+  </data>
+  <data name="Common_Ok" xml:space="preserve">
+    <value>OK</value>
+    <comment>Message button, as in Windows</comment>
   </data>
   <data name="Appearance_BarRadius" xml:space="preserve">
     <value>Usage bar rounding:</value>
