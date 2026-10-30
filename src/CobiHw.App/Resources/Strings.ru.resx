@@ -281,6 +281,15 @@
   <data name="Settings_Close" xml:space="preserve">
     <value>Закрыть</value>
   </data>
+  <data name="Window_Minimize" xml:space="preserve">
+    <value>Свернуть</value>
+  </data>
+  <data name="Window_Maximize" xml:space="preserve">
+    <value>Развернуть</value>
+  </data>
+  <data name="Window_Restore" xml:space="preserve">
+    <value>Восстановить</value>
+  </data>
   <data name="Settings_Apply" xml:space="preserve">
     <value>Применить</value>
   </data>

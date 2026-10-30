@@ -37,5 +37,10 @@ public sealed class User32Tests
         // Two window handles: 8 bytes each in x64, 4 in x86.
         NativeLayout.AssertSize<User32.WindowPos>(x64: 40, x86: 28);
         NativeLayout.AssertSize<User32.MonitorInfo>(x64: 40, x86: 40);
+        // Five POINTs, the same in both.
+        NativeLayout.AssertSize<User32.MinMaxInfo>(x64: 40, x86: 40);
+        // Three DWORDs and a window handle; x64 pads the handle to 8 bytes and the end to a multiple of 8.
+        NativeLayout.AssertSize<User32.TrackMouseEventInfo>(x64: 24, x86: 16);
+        NativeLayout.AssertOffset<User32.TrackMouseEventInfo>(nameof(User32.TrackMouseEventInfo.HoverTime), x64: 16, x86: 12);
     }
 }

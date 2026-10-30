@@ -83,7 +83,8 @@ The app windows and the tray menu follow the cobihw design system, the same on W
 
 - `Themes/Dark.xaml` and `Themes/Light.xaml` hold the colors under the same keys; `Themes/Controls.xaml` holds the control styles, which read the colors with `DynamicResource`.
 - `WindowTheme.Apply` merges the colors and the styles into each window's resources, so the widget window is left alone. Changing the theme, or Windows switching light/dark in automatic mode, swaps only the color dictionary (`WindowTheme.ApplyAll`).
-- Windows keep the system title bar for now, made dark with the dark theme (`DWMWA_USE_IMMERSIVE_DARK_MODE`).
+- `WindowFrame` gives these windows our own frame: title bar, 12 px corners and shadow. The window is borderless and transparent (`AllowsTransparency`), so the frame answers `WM_NCHITTEST` itself: the empty part of the title bar is the caption (Windows drags, snaps and maximizes on a double click), a thin grip around the visible edge resizes, and the maximize button is `HTMAXBUTTON`, so Windows 11 shows the snap layouts over it. Its hover and clicks then arrive as non-client messages, which `WindowFrame` turns into the button's look and into maximize/restore. `WM_GETMINMAXINFO` keeps a maximized window inside the work area of its monitor.
+- The shadow is drawn by the app in 16 px of transparent space around each window (`WindowFrame.ShadowSize`), so the sizes in XAML include it. It sits on a card of its own behind the content, and `RenderOptions.ClearTypeHint` keeps ClearType on in the transparent window.
 
 ## Tray icon
 

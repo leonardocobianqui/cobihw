@@ -1,8 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
-using CobiHw.App.Interop;
 using CobiHw.App.Settings;
 
 namespace CobiHw.App;
@@ -27,8 +25,9 @@ internal static class WindowTheme
     public static ResourceDictionary Tokens(bool dark) => dark ? _dark ??= Load("Dark.xaml") : _light ??= Load("Light.xaml");
 
     /// <summary>
-    /// Themes a window, before or after InitializeComponent: colors first and control styles after them, so the styles find the colors;
-    /// the window's own resources come from its XAML and stay on top.
+    /// Themes a window: colors first and control styles after them, so the styles find the colors; the window's own resources
+    /// come from its XAML and stay on top. The first call also gives the window our frame (<see cref="WindowFrame"/>),
+    /// so it must come before the window has a handle: in the constructor, before InitializeComponent.
     /// </summary>
     /// <param name="window">Window to theme.</param>
     /// <param name="theme">Theme chosen in the app.</param>
@@ -52,10 +51,8 @@ internal static class WindowTheme
             window.Template = (ControlTemplate)Controls[WindowTemplateKey];
             window.SetResourceReference(Control.BackgroundProperty, "WindowBgBrush");
             window.SetResourceReference(Control.ForegroundProperty, "InkBrush");
-            window.SourceInitialized += (_, _) => SetDarkTitleBar(window);
+            WindowFrame.Attach(window);
         }
-
-        SetDarkTitleBar(window);
     }
 
     /// <summary>Changes the theme of every open themed window; also called when Windows switches light/dark.</summary>
@@ -68,23 +65,6 @@ internal static class WindowTheme
             {
                 Apply(window, theme);
             }
-        }
-    }
-
-    // Stage 1 keeps the Windows title bar; this makes it dark with the dark theme. Before the window has a handle it waits for SourceInitialized.
-    private static void SetDarkTitleBar(Window window)
-    {
-        nint handle = new WindowInteropHelper(window).Handle;
-        if (handle == 0)
-        {
-            return;
-        }
-
-        int dark = window.Resources.MergedDictionaries[0] == Tokens(dark: true) ? 1 : 0;
-        if (Dwmapi.DwmSetWindowAttribute(handle, Dwmapi.UseImmersiveDarkMode, dark, sizeof(int)) != 0)
-        {
-            // Older Windows 10 builds know only the earlier number; versions without either keep the light bar.
-            _ = Dwmapi.DwmSetWindowAttribute(handle, Dwmapi.UseImmersiveDarkModeBefore20H1, dark, sizeof(int));
         }
     }
 

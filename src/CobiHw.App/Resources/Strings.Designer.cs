@@ -776,6 +776,33 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Minimize.
+        /// </summary>
+        internal static string Window_Minimize {
+            get {
+                return ResourceManager.GetString("Window_Minimize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Maximize.
+        /// </summary>
+        internal static string Window_Maximize {
+            get {
+                return ResourceManager.GetString("Window_Maximize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        internal static string Window_Restore {
+            get {
+                return ResourceManager.GetString("Window_Restore", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         internal static string Settings_Apply {

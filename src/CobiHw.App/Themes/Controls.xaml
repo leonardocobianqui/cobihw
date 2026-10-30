@@ -4,7 +4,9 @@
     so the widget keeps its own look.
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:app="clr-namespace:CobiHw.App"
+                    xmlns:loc="clr-namespace:CobiHw.App.Localization">
 
     <!-- Glyphs of Segoe MDL2 Assets, present on Windows 10 and 11. -->
     <FontFamily x:Key="GlyphFont">Segoe MDL2 Assets</FontFamily>
@@ -35,20 +37,139 @@
         </Setter>
     </Style>
 
-    <!-- Window: background with the two glows. Stage 2 adds our title bar and rounded corners here. -->
+    <!--
+        Caption buttons: 46 × 40, glyph in the text color, a hover fill; muted while the window is inactive.
+        The maximize button is non-client for Windows (snap layouts), so WindowFrame reports its hover and press through attached properties.
+    -->
+    <Style x:Key="CaptionButtonStyle" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="FontFamily" Value="{StaticResource GlyphFont}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{DynamicResource InkBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+            </DataTrigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ControlHoverBrush}" />
+            </Trigger>
+            <Trigger Property="app:WindowFrame.IsNonClientHover" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ControlHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ControlBorderBrush}" />
+            </Trigger>
+            <Trigger Property="app:WindowFrame.IsNonClientPressed" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ControlBorderBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Close: red with a white X under the mouse, as in Windows. -->
+    <Style x:Key="CloseCaptionButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource CloseHoverBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource OnCloseBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value="0.85" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+        Window: our title bar, 12 px corners and our own shadow, the same on Windows 10 and 11 (WindowFrame makes the window
+        borderless and transparent and handles dragging, resizing and maximizing).
+        "Frame" keeps 16 px around the window for the shadow (WindowFrame.ShadowSize); window sizes in XAML include it.
+        The shadow is a card of its own behind the window, so the text isn't drawn through the effect, and ClearTypeHint keeps
+        ClearType on in the transparent window, over the opaque card.
+    -->
     <ControlTemplate x:Key="ThemedWindowTemplate" TargetType="Window">
-        <Border Background="{TemplateBinding Background}" ClipToBounds="True">
-            <Grid>
-                <!-- A Canvas has no size of its own, so the glows never make a window grow. -->
-                <Canvas IsHitTestVisible="False">
-                    <Rectangle Canvas.Right="0" Canvas.Top="0" Width="420" Height="260" Fill="{DynamicResource GlowVioletBrush}" />
-                    <Rectangle Canvas.Left="0" Canvas.Top="-105" Width="360" Height="560" Fill="{DynamicResource GlowTealBrush}" />
-                </Canvas>
-                <AdornerDecorator>
-                    <ContentPresenter />
-                </AdornerDecorator>
-            </Grid>
-        </Border>
+        <Grid x:Name="Frame" Margin="16" UseLayoutRounding="True">
+            <Border x:Name="Shadow" CornerRadius="12" Background="{TemplateBinding Background}">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="4" Direction="270"
+                                      Color="{DynamicResource ShadowColor}" Opacity="{DynamicResource ShadowOpacity}" />
+                </Border.Effect>
+            </Border>
+            <Border x:Name="PART_Card" CornerRadius="12" BorderThickness="1" RenderOptions.ClearTypeHint="Enabled"
+                    Background="{TemplateBinding Background}" BorderBrush="{DynamicResource LineBrush}">
+                <!-- WindowFrame clips this to the rounded corners. -->
+                <Grid x:Name="PART_Content">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- A Canvas has no size of its own, so the glows never make a window grow. -->
+                    <Canvas Grid.RowSpan="2" IsHitTestVisible="False">
+                        <Rectangle Canvas.Right="0" Canvas.Top="0" Width="420" Height="260" Fill="{DynamicResource GlowVioletBrush}" />
+                        <Rectangle Canvas.Left="0" Canvas.Top="-105" Width="360" Height="560" Fill="{DynamicResource GlowTealBrush}" />
+                    </Canvas>
+
+                    <!-- Title bar: icon, title and the caption buttons. Its empty part drags the window (WindowFrame tells Windows). -->
+                    <Grid x:Name="PART_TitleBar" Height="40" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image x:Name="PART_Icon" Width="16" Height="16" Margin="14,0,10,0" VerticalAlignment="Center"
+                               RenderOptions.BitmapScalingMode="HighQuality" />
+                        <TextBlock x:Name="Caption" Grid.Column="1" VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource InkBrush}" Text="{TemplateBinding Title}" />
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button x:Name="PART_MinimizeButton" Style="{StaticResource CaptionButtonStyle}" Content="&#xE921;"
+                                    AutomationProperties.Name="{loc:Text Window_Minimize}" />
+                            <Button x:Name="PART_MaximizeButton" Style="{StaticResource CaptionButtonStyle}" Content="&#xE922;"
+                                    AutomationProperties.Name="{loc:Text Window_Maximize}" />
+                            <Button x:Name="PART_CloseButton" Style="{StaticResource CloseCaptionButtonStyle}" Content="&#xE8BB;"
+                                    AutomationProperties.Name="{loc:Text Settings_Close}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <AdornerDecorator Grid.Row="1">
+                        <ContentPresenter />
+                    </AdornerDecorator>
+                </Grid>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <!-- The buttons follow ResizeMode: fixed windows only close; CanMinimize also minimizes. -->
+            <Trigger Property="ResizeMode" Value="NoResize">
+                <Setter TargetName="PART_MinimizeButton" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="PART_MaximizeButton" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="ResizeMode" Value="CanMinimize">
+                <Setter TargetName="PART_MaximizeButton" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="IsActive" Value="False">
+                <Setter TargetName="Caption" Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+            </Trigger>
+            <!-- Maximized: fills the work area, with no shadow, corners or border; maximize turns into restore. -->
+            <Trigger Property="WindowState" Value="Maximized">
+                <Setter TargetName="Frame" Property="Margin" Value="0" />
+                <Setter TargetName="Shadow" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="PART_Card" Property="CornerRadius" Value="0" />
+                <Setter TargetName="PART_Card" Property="BorderThickness" Value="0" />
+                <Setter TargetName="PART_MaximizeButton" Property="Content" Value="&#xE923;" />
+                <Setter TargetName="PART_MaximizeButton" Property="AutomationProperties.Name" Value="{loc:Text Window_Restore}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
     </ControlTemplate>
 
     <!--
