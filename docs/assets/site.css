@@ -1207,6 +1207,46 @@ h3 {
   margin: 6px 0;
 }
 
+.release-notes a {
+  color: var(--accent);
+}
+
+.release-notes code, .release-notes tt {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.85em;
+  color: var(--ink);
+  background: var(--chip);
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+}
+
+/* Tables (the Downloads section) with GitHub's structure: header row and cell borders.
+   Scrolls sideways on narrow screens instead of squeezing the file names. */
+.release-notes table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 8px 0 12px;
+  font-size: 0.875rem;
+}
+
+.release-notes th, .release-notes td {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+}
+
+.release-notes th {
+  color: var(--ink);
+  font-weight: 600;
+  background: var(--chip);
+}
+
+.release-notes td code {
+  white-space: nowrap;
+}
+
 .releases-empty {
   color: var(--muted);
 }

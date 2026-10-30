@@ -90,7 +90,38 @@ To add a language: create `Strings.<culture>.resx` with every key, add the cultu
    - `SHA256SUMS.txt`, with the checksums of every zip.
    - `-Architecture x64` (or `x86`) publishes only one architecture.
 4. Run the x64 packages on 64-bit Windows and the x86 packages on 32-bit Windows 10.
-5. Create a GitHub release with the tag `v<version>` and attach the four zips and `SHA256SUMS.txt`.
+5. Create a GitHub release titled `cobihw <version>` with the tag `v<version>`, the notes below, and the four zips plus `SHA256SUMS.txt` attached.
+
+### Release notes
+
+The website lists the latest releases with their notes, so every release uses the same structure. The sections come straight from the version's `CHANGELOG.md` entry, in the same order and with the same names; leave out the ones that don't apply.
+
+```markdown
+<One sentence on what the release is about.>
+
+### Added
+- ...
+
+### Changed
+- ...
+
+### Fixed
+- ...
+
+### Downloads
+| File | Windows | Requires |
+| --- | --- | --- |
+| `cobihw-<version>-portable-win-x64.zip` | 64-bit | Nothing; .NET included |
+| `cobihw-<version>-framework-dependent-win-x64.zip` | 64-bit | [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x64) |
+| `cobihw-<version>-portable-win-x86.zip` | 32-bit | Nothing; .NET included |
+| `cobihw-<version>-framework-dependent-win-x86.zip` | 32-bit | [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x86) |
+
+Not sure which one? **Settings → System → About → System type**. `SHA256SUMS.txt` has the checksum of every zip.
+
+**Full changelog:** https://github.com/leonardocobianqui/cobihw/compare/v<previous>...v<version>
+```
+
+Upgrade steps or known issues, when there are any, go in a `### Notes` section right before `### Downloads`.
 
 The update check in **About** reads the latest GitHub release, compares its tag with the app version and only offers it when it has a zip for the architecture of the running app (`-win-x64.zip` or `-win-x86.zip`). Keep those package names.
 
