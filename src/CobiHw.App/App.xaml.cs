@@ -37,7 +37,8 @@ public partial class App : Application
     private static readonly TimeSpan PingTimeout = TimeSpan.FromSeconds(2);
     // Long enough for the speed test transfers.
     private static readonly TimeSpan HttpRequestTimeout = TimeSpan.FromSeconds(60);
-    private static readonly Uri IconResource = new("pack://application:,,,/Assets/app.ico");
+    /// <summary>App icon inside the resources: tray, About and the title bar of the windows.</summary>
+    internal static readonly Uri IconResource = new("pack://application:,,,/Assets/app.ico");
     // ERROR_CANCELLED: the user declined the UAC prompt.
     private const int ErrorCancelled = 1223;
 

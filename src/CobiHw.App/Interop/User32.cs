@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace CobiHw.App.Interop;
 
-/// <summary>user32.dll declarations for window position, monitors and keyboard state.</summary>
+/// <summary>user32.dll declarations for window position, monitors, keyboard state and the frame of the themed windows.</summary>
 internal static partial class User32
 {
     /// <summary>WM_WINDOWPOSCHANGING: the window is about to move or resize.</summary>
@@ -33,6 +33,50 @@ internal static partial class User32
     public const uint MonitorDefaultToNull = 0x0000;
     /// <summary>MONITOR_DEFAULTTONEAREST.</summary>
     public const uint MonitorDefaultToNearest = 0x0002;
+    /// <summary>WM_GETMINMAXINFO: asks for the size and position of the maximized window and the resize limits.</summary>
+    public const int WmGetMinMaxInfo = 0x0024;
+    /// <summary>WM_NCHITTEST: asks which part of the window is under the mouse.</summary>
+    public const int WmNcHitTest = 0x0084;
+    /// <summary>WM_NCMOUSEMOVE: the mouse moved over a non-client part, such as a caption button.</summary>
+    public const int WmNcMouseMove = 0x00A0;
+    /// <summary>WM_NCLBUTTONDOWN.</summary>
+    public const int WmNcLButtonDown = 0x00A1;
+    /// <summary>WM_NCLBUTTONUP.</summary>
+    public const int WmNcLButtonUp = 0x00A2;
+    /// <summary>WM_NCLBUTTONDBLCLK.</summary>
+    public const int WmNcLButtonDoubleClick = 0x00A3;
+    /// <summary>WM_NCRBUTTONUP.</summary>
+    public const int WmNcRButtonUp = 0x00A5;
+    /// <summary>WM_NCMOUSELEAVE: the mouse left the non-client part watched with TrackMouseEvent.</summary>
+    public const int WmNcMouseLeave = 0x02A2;
+    /// <summary>HTNOWHERE: nothing there (the shadow around the window).</summary>
+    public const int HtNowhere = 0;
+    /// <summary>HTCLIENT: the window content.</summary>
+    public const int HtClient = 1;
+    /// <summary>HTCAPTION: the title bar; Windows drags, snaps and maximizes with a double click.</summary>
+    public const int HtCaption = 2;
+    /// <summary>HTMAXBUTTON: the maximize button; Windows 11 shows the snap layouts over it.</summary>
+    public const int HtMaxButton = 9;
+    /// <summary>HTLEFT: the left border, for resizing; the other borders and corners follow, 11 to 17.</summary>
+    public const int HtLeft = 10;
+    /// <summary>HTRIGHT.</summary>
+    public const int HtRight = 11;
+    /// <summary>HTTOP.</summary>
+    public const int HtTop = 12;
+    /// <summary>HTTOPLEFT.</summary>
+    public const int HtTopLeft = 13;
+    /// <summary>HTTOPRIGHT.</summary>
+    public const int HtTopRight = 14;
+    /// <summary>HTBOTTOM.</summary>
+    public const int HtBottom = 15;
+    /// <summary>HTBOTTOMLEFT.</summary>
+    public const int HtBottomLeft = 16;
+    /// <summary>HTBOTTOMRIGHT.</summary>
+    public const int HtBottomRight = 17;
+    /// <summary>TME_LEAVE: send a leave message when the mouse leaves.</summary>
+    public const uint TmeLeave = 0x00000002;
+    /// <summary>TME_NONCLIENT: watch the non-client part (WM_NCMOUSELEAVE).</summary>
+    public const uint TmeNonClient = 0x00000010;
 
     /// <summary>Mirrors WINDOWPOS.</summary>
     [StructLayout(LayoutKind.Sequential)]
@@ -63,6 +107,27 @@ internal static partial class User32
     {
         public int X;
         public int Y;
+    }
+
+    /// <summary>Mirrors MINMAXINFO, in physical pixels; the maximized position is relative to the monitor.</summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MinMaxInfo
+    {
+        public Point Reserved;
+        public Point MaxSize;
+        public Point MaxPosition;
+        public Point MinTrackSize;
+        public Point MaxTrackSize;
+    }
+
+    /// <summary>Mirrors TRACKMOUSEEVENT. <see cref="Size"/> must be set before the call.</summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TrackMouseEventInfo
+    {
+        public uint Size;
+        public uint Flags;
+        public nint Window;
+        public uint HoverTime;
     }
 
     /// <summary>Mirrors MONITORINFO. <see cref="Size"/> must be set before the call.</summary>
@@ -133,6 +198,11 @@ internal static partial class User32
     /// <summary>Key state right now; the high bit is set while the key is down.</summary>
     [LibraryImport("user32.dll")]
     public static partial short GetAsyncKeyState(int key);
+
+    /// <summary>Asks Windows for a leave message (WM_NCMOUSELEAVE with <see cref="TmeNonClient"/>) when the mouse leaves the window part.</summary>
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool TrackMouseEvent(ref TrackMouseEventInfo info);
 
     /// <summary>Brings a window to the front; the tray menu needs it to close when the user clicks somewhere else.</summary>
     [LibraryImport("user32.dll")]

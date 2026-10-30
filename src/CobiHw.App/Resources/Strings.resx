@@ -361,6 +361,18 @@
     <value>Close</value>
     <comment>Button</comment>
   </data>
+  <data name="Window_Minimize" xml:space="preserve">
+    <value>Minimize</value>
+    <comment>Title bar button, read by screen readers</comment>
+  </data>
+  <data name="Window_Maximize" xml:space="preserve">
+    <value>Maximize</value>
+    <comment>Title bar button, read by screen readers</comment>
+  </data>
+  <data name="Window_Restore" xml:space="preserve">
+    <value>Restore</value>
+    <comment>Title bar button of a maximized window (back to its size), read by screen readers</comment>
+  </data>
   <data name="Settings_Apply" xml:space="preserve">
     <value>Apply</value>
     <comment>Button</comment>
