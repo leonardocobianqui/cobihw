@@ -341,11 +341,14 @@
   <data name="Settings_UnappliedTitle" xml:space="preserve">
     <value>Mudanças não aplicadas</value>
   </data>
-  <data name="Format_UnappliedMessage" xml:space="preserve">
-    <value>Há mudanças não aplicadas em: {0}. Aplicar antes de fechar?</value>
+  <data name="Unapplied_Tabs" xml:space="preserve">
+    <value>Há mudanças não aplicadas em:</value>
   </data>
-  <data name="Format_UnappliedInvalid" xml:space="preserve">
-    <value>Há mudanças não aplicadas em: {0}, e algumas têm erro, por isso não podem ser aplicadas. Descartar e fechar?</value>
+  <data name="Unapplied_Apply" xml:space="preserve">
+    <value>Aplicar antes de fechar?</value>
+  </data>
+  <data name="Unapplied_Invalid" xml:space="preserve">
+    <value>Algumas têm erro, por isso não podem ser aplicadas. Descartar e fechar?</value>
   </data>
   <data name="Tab_Display" xml:space="preserve">
     <value>Exibição</value>
@@ -784,6 +787,15 @@ O recurso "Travar posição e tamanho" (menu do ícone) impede mudanças.</value
   </data>
   <data name="Common_Cancel" xml:space="preserve">
     <value>Cancelar</value>
+  </data>
+  <data name="Common_Yes" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="Common_No" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="Common_Ok" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="Appearance_BarRadius" xml:space="preserve">
     <value>Arredondamento das barras:</value>

@@ -71,7 +71,7 @@ public sealed class SettingsAppearanceTabTests : LocalizedTest
         Assert.Null(applied);
         Assert.True(settings.ApplyCommand.CanExecute(null));
         Assert.True(settings.HasPendingChanges);
-        Assert.Equal("Aparência", settings.PendingTabNames);
+        Assert.Equal(new[] { "Aparência" }, settings.PendingTabs);
         Assert.True(settings.CanApplyAll);
 
         // Resizing the widget meanwhile becomes part of the pending appearance.

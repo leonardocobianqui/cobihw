@@ -956,24 +956,6 @@ namespace CobiHw.App.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to There are unapplied changes in: {0}. Apply them before closing?.
-        /// </summary>
-        internal static string Format_UnappliedMessage {
-            get {
-                return ResourceManager.GetString("Format_UnappliedMessage", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to There are unapplied changes in: {0}, and some have errors, so they can't be applied. Discard them and close?.
-        /// </summary>
-        internal static string Format_UnappliedInvalid {
-            get {
-                return ResourceManager.GetString("Format_UnappliedInvalid", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Display.
         /// </summary>
         internal static string Tab_Display {
@@ -2275,6 +2257,60 @@ namespace CobiHw.App.Resources {
         internal static string Common_Cancel {
             get {
                 return ResourceManager.GetString("Common_Cancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        internal static string Common_Yes {
+            get {
+                return ResourceManager.GetString("Common_Yes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        internal static string Common_No {
+            get {
+                return ResourceManager.GetString("Common_No", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string Common_Ok {
+            get {
+                return ResourceManager.GetString("Common_Ok", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to There are unapplied changes in:.
+        /// </summary>
+        internal static string Unapplied_Tabs {
+            get {
+                return ResourceManager.GetString("Unapplied_Tabs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Apply them before closing?.
+        /// </summary>
+        internal static string Unapplied_Apply {
+            get {
+                return ResourceManager.GetString("Unapplied_Apply", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Some have errors, so they can&apos;t be applied. Discard them and close?.
+        /// </summary>
+        internal static string Unapplied_Invalid {
+            get {
+                return ResourceManager.GetString("Unapplied_Invalid", resourceCulture);
             }
         }
 

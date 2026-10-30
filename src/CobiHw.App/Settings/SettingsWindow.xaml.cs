@@ -39,15 +39,12 @@ public partial class SettingsWindow : Window
 
         if (!ViewModel.CanApplyAll)
         {
-            string invalid = Localizer.Format(Strings.Format_UnappliedInvalid, ViewModel.PendingTabNames);
-            MessageBoxResult discard = MessageBox.Show(this, invalid, Strings.Settings_UnappliedTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            MessageBoxResult discard = MessageWindow.Show(this, Strings.Settings_UnappliedTitle, UnappliedMessage(Strings.Unapplied_Invalid), MessageBoxButton.OKCancel, MessageBoxImage.Warning);
             e.Cancel = discard != MessageBoxResult.OK;
             return;
         }
 
-        string message = Localizer.Format(Strings.Format_UnappliedMessage, ViewModel.PendingTabNames);
-
-        switch (MessageBox.Show(this, message, Strings.Settings_UnappliedTitle, MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
+        switch (MessageWindow.Show(this, Strings.Settings_UnappliedTitle, UnappliedMessage(Strings.Unapplied_Apply), MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
         {
             case MessageBoxResult.Yes:
                 ViewModel.ApplyAll();
@@ -58,6 +55,13 @@ public partial class SettingsWindow : Window
                 e.Cancel = true;
                 break;
         }
+    }
+
+    // "There are unapplied changes in:", the tabs as a list, and the question.
+    private string UnappliedMessage(string question)
+    {
+        string tabs = string.Join(Environment.NewLine, ViewModel.PendingTabs.Select(tab => Localizer.Format(Strings.Format_ListItem, tab)));
+        return string.Join(Environment.NewLine + Environment.NewLine, Strings.Unapplied_Tabs, tabs, question);
     }
 
     private void OnMetricPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

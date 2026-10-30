@@ -112,6 +112,7 @@ public partial class App : Application
         }
 
         Localizer.Instance.SetLanguage(_settings.Language);
+        WindowTheme.ApplyAll(_settings.Theme);
         Localizer.Instance.CultureChanged += (_, _) => _trayIcon?.ApplyTexts();
         StartupRegistration.RepairIfMoved();
 
@@ -181,7 +182,7 @@ public partial class App : Application
 
         if (_settingsStore.Access == SettingsAccess.FolderNotWritable)
         {
-            MessageBox.Show(Strings.Settings_FolderReadOnly, TrayTooltip.Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageWindow.Show(null, TrayTooltip.Title, Strings.Settings_FolderReadOnly, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -290,8 +291,16 @@ public partial class App : Application
     private void ShowWindow() => _window?.Show();
 
     // Closes the other windows first; if the settings window cancels its close (pending changes), the app keeps running.
+    // While a message waits for an answer, such as the pending-changes question of a settings window that is closing, exiting would
+    // close that window in the middle of its own close, which WPF refuses: the message comes to the front instead, to be answered first.
     private void RequestExit()
     {
+        if (Windows.OfType<MessageWindow>().FirstOrDefault() is MessageWindow question)
+        {
+            question.Activate();
+            return;
+        }
+
         _networkDevicesWindow?.Close();
         _aboutWindow?.Close();
         _speedTestWindow?.Close();
@@ -628,7 +637,9 @@ public partial class App : Application
         }
         catch (Win32Exception)
         {
-            MessageBox.Show(Localizer.Format(Strings.Format_OpenFailed, target), AppInfo.Name, MessageBoxButton.OK, MessageBoxImage.Warning);
+            // Over the window whose link was clicked (About, Settings).
+            Window? owner = Windows.OfType<Window>().FirstOrDefault(window => window.IsActive);
+            MessageWindow.Show(owner, AppInfo.Name, Localizer.Format(Strings.Format_OpenFailed, target), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -1054,9 +1065,9 @@ public partial class App : Application
         {
             string list = string.Join(Environment.NewLine, others.Select(profile =>
                 Localizer.Format(Strings.Format_StoredProfile, profile.Computer, profile.UserName, profile.LastUsed?.LocalDateTime.ToString("d", Localizer.Instance.Culture) ?? DisplayFormat.Unavailable)));
-            string question = string.Join(Environment.NewLine + Environment.NewLine, Strings.RemoveProfiles_Question, list, Strings.RemoveProfiles_Keep);
+            string question = string.Join(Environment.NewLine + Environment.NewLine, Strings.RemoveProfiles_Question, list);
 
-            if (MessageBox.Show(_settingsWindow!, question, Strings.Settings_Title, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageWindow.Show(_settingsWindow!, Strings.Settings_Title, question, MessageBoxButton.YesNo, MessageBoxImage.Question, Strings.RemoveProfiles_Keep) != MessageBoxResult.Yes)
             {
                 return;
             }
@@ -1065,7 +1076,7 @@ public partial class App : Application
 
             if (!_settingsStore.RemoveOtherProfiles(_settings))
             {
-                MessageBox.Show(_settingsWindow!, Strings.RemoveProfiles_Failed, Strings.Settings_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageWindow.Show(_settingsWindow!, Strings.Settings_Title, Strings.RemoveProfiles_Failed, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -1085,16 +1096,16 @@ public partial class App : Application
 
         if (!startup && !task)
         {
-            MessageBox.Show(_settingsWindow, Strings.RemoveFromWindows_Nothing, Strings.Settings_Title, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageWindow.Show(_settingsWindow, Strings.Settings_Title, Strings.RemoveFromWindows_Nothing, MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
         IEnumerable<string> items = new[] { (startup, Strings.RemoveFromWindows_Startup), (task, Strings.RemoveFromWindows_FpsTask) }
             .Where(item => item.Item1)
             .Select(item => Localizer.Format(Strings.Format_ListItem, item.Item2));
-        string question = string.Join(Environment.NewLine + Environment.NewLine, Strings.RemoveFromWindows_Question, string.Join(Environment.NewLine, items), Strings.RemoveFromWindows_Note);
+        string question = string.Join(Environment.NewLine + Environment.NewLine, Strings.RemoveFromWindows_Question, string.Join(Environment.NewLine, items));
 
-        if (MessageBox.Show(_settingsWindow, question, Strings.Settings_Title, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+        if (MessageWindow.Show(_settingsWindow, Strings.Settings_Title, question, MessageBoxButton.YesNo, MessageBoxImage.Question, Strings.RemoveFromWindows_Note) != MessageBoxResult.Yes)
         {
             return;
         }
@@ -1112,10 +1123,10 @@ public partial class App : Application
 
         bool removed = !ElevatedTask.Exists() || ElevatedTask.Delete();
         SaveSettings();
-        MessageBox.Show(
+        MessageWindow.Show(
             _settingsWindow,
-            removed ? Strings.RemoveFromWindows_Done : Strings.RemoveFromWindows_Failed,
             Strings.Settings_Title,
+            removed ? Strings.RemoveFromWindows_Done : Strings.RemoveFromWindows_Failed,
             MessageBoxButton.OK,
             removed ? MessageBoxImage.Information : MessageBoxImage.Warning);
     }

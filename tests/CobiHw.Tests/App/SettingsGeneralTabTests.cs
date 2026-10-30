@@ -15,7 +15,7 @@ public sealed class SettingsGeneralTabTests : LocalizedTest
 
         Assert.Equal(SettingsTab.General, settings.SelectedTab);
         Assert.False(settings.HasPendingChanges);
-        Assert.Equal("", settings.PendingTabNames);
+        Assert.Empty(settings.PendingTabs);
         Assert.False(settings.ApplyCommand.CanExecute(null));
     }
 
@@ -42,7 +42,7 @@ public sealed class SettingsGeneralTabTests : LocalizedTest
         Assert.True(settings.IsDisplayPending);
         Assert.False(settings.IsGeneralPending);
         Assert.False(settings.IsNetworkPending);
-        Assert.Equal("Exibição", settings.PendingTabNames);
+        Assert.Equal(new[] { "Exibição" }, settings.PendingTabs);
     }
 
     [Fact]
@@ -145,7 +145,7 @@ public sealed class SettingsGeneralTabTests : LocalizedTest
         Assert.False(settings.StartWithWindows);
         Assert.Equal(@"\\.\DISPLAY1", settings.Monitor);
         Assert.True(settings.IsGeneralPending);
-        Assert.Equal("Geral", settings.PendingTabNames);
+        Assert.Equal(new[] { "Geral" }, settings.PendingTabs);
 
         SetLanguage("en-US");
         Assert.Equal("Monitor 1 — 1920 × 1080 (main)", settings.MonitorOptions[0].Label);

@@ -1,0 +1,41 @@
+<!-- Message window: our version of the Windows message box, with the app's look and language. Built by MessageWindow.Show. -->
+<!-- Window sizes include the 16 px of shadow on each side (WindowFrame.ShadowSize): 492 wide shows a 460 px window. -->
+<Window x:Class="CobiHw.App.MessageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+        Width="492"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        FontFamily="Segoe UI"
+        FontSize="13"
+        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
+
+    <Window.Resources>
+        <!-- One paragraph of the message; lines inside it (a list) stay together. -->
+        <Style x:Key="Paragraph" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="LineHeight" Value="19" />
+        </Style>
+
+        <!-- Extra information under the question, in the hint style. -->
+        <Style x:Key="Note" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,12,0,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="LineHeight" Value="17" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{DynamicResource InkMutedBrush}" />
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <!-- Buttons in the footer band; the first one is the primary. -->
+        <Border DockPanel.Dock="Bottom" Style="{DynamicResource FooterBand}">
+            <StackPanel x:Name="ButtonPanel" HorizontalAlignment="Right" Orientation="Horizontal" />
+        </Border>
+
+        <!-- Paragraphs of the message and the note. -->
+        <StackPanel x:Name="Body" Margin="20,8,20,20" />
+    </DockPanel>
+</Window>
