@@ -80,6 +80,7 @@ Tests:
 
 ```powershell
 dotnet test --project tests/CobiHw.Tests/CobiHw.Tests.csproj
+dotnet test --project tests/CobiHw.Core.Tests/CobiHw.Core.Tests.csproj
 ```
 
 Release packages (PowerShell 7; x64 and x86 zips plus checksums in `publish/<version>`):

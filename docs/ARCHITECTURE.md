@@ -8,12 +8,14 @@ An overview of how cobihw is put together: the projects, where each reading come
 | --- | --- | --- |
 | `src/CobiHw.Core` | Class library (`net10.0`) | What every platform shares: the snapshot types, network session, speed test, ping and public IP. No OS calls. |
 | `src/CobiHw.Core.Windows` | Class library (`net10.0-windows`) | Windows hardware readers: P/Invoke, PDH, WMI and ETW. |
+| `src/CobiHw.Core.Linux` | Class library (`net10.0`) | Linux hardware readers: /proc and /sys only, no native libraries. |
 | `src/CobiHw.Presentation` | Class library (`net10.0`) | What every UI shares: view models (CommunityToolkit.Mvvm), settings and their file store, translations, text formatting and the widget's position and resize rules. No UI framework and no OS calls. |
 | `src/CobiHw.App` | WPF app (`cobihw.exe`) | Windows UI: widget, tray icon, windows, themes, and the Windows-only parts (startup entry, elevation, scheduled task). |
 | `src/CobiHw.ConsoleTest` | Console app | Dumps one set of Core readings, handy for comparing against Task Manager. |
-| `tests/CobiHw.Tests` | xUnit v3 | Covers every project; internals are exposed through `InternalsVisibleTo`. |
+| `tests/CobiHw.Tests` | xUnit v3 | Covers the Windows projects and Presentation; internals are exposed through `InternalsVisibleTo`. |
+| `tests/CobiHw.Core.Tests` | xUnit v3 | Covers Core and Core.Linux. No Windows dependency, so it runs on Linux too. |
 
-Dependencies point one way: App → Presentation and Core.Windows, both → Core. Code that calls an OS API or a UI framework never goes in Core or Presentation, so both can be shared with a Linux build later.
+Dependencies point one way: App → Presentation and Core.Windows, both → Core; Core.Linux → Core. Each platform implements `IHardwareMonitor`. Code that calls an OS API or a UI framework never goes in Core or Presentation, so both can be shared with a Linux build later.
 
 ## Sampling
 
@@ -25,6 +27,8 @@ Dependencies point one way: App → Presentation and Core.Windows, both → Core
 `HardwareMonitor` primes itself with one sample on construction, so the first snapshot already has rates.
 
 ## Data sources
+
+### Windows
 
 | Reading | Source | Code |
 | --- | --- | --- |
@@ -46,6 +50,20 @@ Dependencies point one way: App → Presentation and Core.Windows, both → Core
 | Public IP | Cloudflare `/cdn-cgi/trace` | `PublicAddress` |
 
 All PDH counters share one `PdhQuery`, collected once per tick, so every value in a snapshot covers the same interval.
+
+### Linux
+
+| Reading | Source | Code |
+| --- | --- | --- |
+| CPU usage | `/proc/stat`, busy share of the interval with iowait counted as idle, as `top` does | `CpuReader` |
+| CPU clock | Average of `scaling_cur_freq` (cpufreq) over the cores; `cpu MHz` in `/proc/cpuinfo` when cpufreq is missing | `CpuReader` |
+| CPU name | `model name` in `/proc/cpuinfo`; on ARM, `Hardware` or the device tree model | `CpuReader` |
+| RAM | `MemTotal − MemAvailable` from `/proc/meminfo`, as `free` reports it | `MemoryReader` |
+| Disk | `/proc/diskstats`: active time from `io_ticks` (`%util` in `iostat`), speeds from sectors of 512 bytes. Disks are the entries of `/sys/block` with a `device` link; mount points come from `/proc/self/mountinfo`, followed through LUKS, LVM and RAID down to the disk; "the system disk" holds `/` | `DiskReader`, `BlockDevices` |
+| Network traffic | `/sys/class/net/*/statistics`; only interfaces with a `device` link (hardware) count in the total. Ids are name-based UUIDs | `NetworkReader`, `InterfaceId` |
+| Battery | `uevent` of each `/sys/class/power_supply` battery; device batteries (mice, gamepads) left out | `BatteryReader` |
+
+The Linux readers take a root folder, `/` in production, so tests run them against a fake one (`FakeSystem`). The network session uses the boot time from `btime` in `/proc/stat`: Linux's uptime stops while suspended, so deriving the boot from it, as on Windows, would start a new session after every suspend. Speed and session math is shared by both platforms in `NetworkTraffic`.
 
 ## FPS and elevation
 
@@ -130,6 +148,8 @@ src/CobiHw.Core.Windows/
   Network/      Network devices, Wi-Fi, adapter visibility (WMI)
   Fps/          ETW session and frame counting
   Interop/      Windows API declarations
+src/CobiHw.Core.Linux/
+  Readers/      CPU, RAM, disk, network and battery from /proc and /sys
 src/CobiHw.Presentation/
   Settings/     Settings model, file store and the settings view models
   Devices/      Network devices view models
@@ -146,6 +166,9 @@ src/CobiHw.App/
   Localization/ The XAML text extension
   Converters/   XAML converters
   Interop/      App-side Windows API declarations
+tests/CobiHw.Core.Tests/
+  Core/, Linux/ Tests by project
+  Support/      Fake /proc and /sys
 tests/CobiHw.Tests/
   Core/, Core.Windows/, App/
                 Tests by project

@@ -1,6 +1,6 @@
 using CobiHw.Core.Network;
 
-namespace CobiHw.Tests.Core;
+namespace CobiHw.Core.Tests.Core;
 
 /// <summary>Band and channel from the Wi-Fi center frequency.</summary>
 public sealed class WifiMathTests

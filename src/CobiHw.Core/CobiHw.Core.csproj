@@ -11,6 +11,7 @@
   <ItemGroup>
     <!-- Lets the test project reach internal types without making them public. -->
     <InternalsVisibleTo Include="CobiHw.Tests" />
+    <InternalsVisibleTo Include="CobiHw.Core.Tests" />
   </ItemGroup>
 
 </Project>

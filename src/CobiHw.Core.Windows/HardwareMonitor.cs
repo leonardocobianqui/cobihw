@@ -3,10 +3,10 @@ using CobiHw.Core.Windows.Readers;
 namespace CobiHw.Core.Windows;
 
 /// <summary>
-/// Entry point of the Core library: owns the readers and returns one <see cref="HardwareSnapshot"/> per call.
+/// Windows implementation of <see cref="IHardwareMonitor"/>: owns the readers and returns one <see cref="HardwareSnapshot"/> per call.
 /// </summary>
 /// <remarks>Thread-safe: sampling, session reset and export are serialized by a lock.</remarks>
-public sealed class HardwareMonitor : IDisposable
+public sealed class HardwareMonitor : IHardwareMonitor
 {
     private readonly Lock _lock = new();
     private readonly PdhQuery _query;
