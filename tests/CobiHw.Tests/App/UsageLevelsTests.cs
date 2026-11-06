@@ -1,6 +1,6 @@
 using System.Globalization;
-using CobiHw.App;
-using CobiHw.App.Settings;
+using CobiHw.Presentation;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.Tests.App;
 

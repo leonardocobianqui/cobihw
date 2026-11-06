@@ -1,5 +1,5 @@
 using System.Windows;
-using CobiHw.App.Settings;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.App;
 

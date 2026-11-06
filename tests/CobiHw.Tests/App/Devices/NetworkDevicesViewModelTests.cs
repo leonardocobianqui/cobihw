@@ -1,7 +1,7 @@
-using CobiHw.App.Devices;
-using CobiHw.App.Settings;
 using CobiHw.Core;
 using CobiHw.Core.Network;
+using CobiHw.Presentation.Devices;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.Tests.App.Devices;
 

@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
-using CobiHw.App.Settings;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.App.About;
 

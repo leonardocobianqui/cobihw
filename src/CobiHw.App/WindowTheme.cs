@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using CobiHw.App.Settings;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.App;
 

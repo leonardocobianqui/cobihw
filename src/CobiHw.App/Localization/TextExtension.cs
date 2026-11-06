@@ -1,5 +1,6 @@
 using System.Windows.Data;
 using System.Windows.Markup;
+using CobiHw.Presentation.Localization;
 
 namespace CobiHw.App.Localization;
 

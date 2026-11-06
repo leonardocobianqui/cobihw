@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using CobiHw.App.Settings;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.App.Converters;
 

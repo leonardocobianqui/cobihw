@@ -5,6 +5,7 @@
     <Project Path="src/CobiHw.ConsoleTest/CobiHw.ConsoleTest.csproj" />
     <Project Path="src/CobiHw.Core/CobiHw.Core.csproj" />
     <Project Path="src/CobiHw.Core.Windows/CobiHw.Core.Windows.csproj" />
+    <Project Path="src/CobiHw.Presentation/CobiHw.Presentation.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/CobiHw.Tests/CobiHw.Tests.csproj" />

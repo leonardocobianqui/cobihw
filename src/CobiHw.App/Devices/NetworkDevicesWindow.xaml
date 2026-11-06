@@ -4,8 +4,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:devices="clr-namespace:CobiHw.App.Devices"
+        xmlns:devices="clr-namespace:CobiHw.Presentation.Devices;assembly=CobiHw.Presentation"
         xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:l10n="clr-namespace:CobiHw.Presentation.Localization;assembly=CobiHw.Presentation"
         xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=devices:NetworkDevicesViewModel}"
@@ -18,7 +19,7 @@
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
         FontSize="13"
-        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
+        Language="{Binding Culture, Source={x:Static l10n:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />

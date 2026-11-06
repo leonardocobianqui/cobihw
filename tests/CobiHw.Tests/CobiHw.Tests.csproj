@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\src\CobiHw.App\CobiHw.App.csproj" />
     <ProjectReference Include="..\..\src\CobiHw.Core\CobiHw.Core.csproj" />
     <ProjectReference Include="..\..\src\CobiHw.Core.Windows\CobiHw.Core.Windows.csproj" />
+    <ProjectReference Include="..\..\src\CobiHw.Presentation\CobiHw.Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

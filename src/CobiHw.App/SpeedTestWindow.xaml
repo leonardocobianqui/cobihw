@@ -7,9 +7,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:app="clr-namespace:CobiHw.App"
         xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:l10n="clr-namespace:CobiHw.Presentation.Localization;assembly=CobiHw.Presentation"
+        xmlns:pres="clr-namespace:CobiHw.Presentation;assembly=CobiHw.Presentation"
         xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=app:SpeedTestViewModel}"
+        d:DataContext="{d:DesignInstance Type=pres:SpeedTestViewModel}"
         Title="{loc:Text SpeedTest_Title}"
         Width="452"
         SizeToContent="Height"
@@ -17,7 +19,7 @@
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
         FontSize="13"
-        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
+        Language="{Binding Culture, Source={x:Static l10n:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
@@ -41,7 +43,7 @@
         <!-- Steps: Ping, Download, Upload; the running one has the phase color, finished ones a check mark. -->
         <ItemsControl HorizontalAlignment="Center" Focusable="False" ItemsSource="{Binding Phases}" ItemsPanel="{StaticResource Row}">
             <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type app:SpeedTestPhase}">
+                <DataTemplate DataType="{x:Type pres:SpeedTestPhase}">
                     <Border x:Name="Pill" Height="28" Margin="4,0" Padding="12,0" CornerRadius="14" BorderThickness="1"
                             BorderBrush="{DynamicResource LineBrush}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -102,7 +104,7 @@
         <!-- Cards: each phase's result once it's done; the running one has the phase color. -->
         <ItemsControl Margin="-4,16,-4,0" Focusable="False" ItemsSource="{Binding Phases}" ItemsPanel="{StaticResource Columns}">
             <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type app:SpeedTestPhase}">
+                <DataTemplate DataType="{x:Type pres:SpeedTestPhase}">
                     <Border x:Name="Card" Margin="4,0" Padding="12,10" CornerRadius="8" BorderThickness="1"
                             Background="{DynamicResource SurfaceBrush}"
                             BorderBrush="{DynamicResource LineBrush}">

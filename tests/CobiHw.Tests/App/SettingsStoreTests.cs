@@ -1,9 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using CobiHw.App;
-using CobiHw.App.Settings;
 using CobiHw.Core.Network;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.Tests.App;
 

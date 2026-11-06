@@ -1,7 +1,7 @@
-using CobiHw.App;
-using CobiHw.App.Settings;
 using CobiHw.Core;
 using CobiHw.Core.Network;
+using CobiHw.Presentation;
+using CobiHw.Presentation.Settings;
 using CobiHw.Tests.Fakes;
 
 namespace CobiHw.Tests;
