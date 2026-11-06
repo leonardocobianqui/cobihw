@@ -1,4 +1,4 @@
-using CobiHw.App.Settings;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.Tests.App;
 

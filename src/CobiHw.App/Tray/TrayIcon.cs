@@ -4,8 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using CobiHw.App.Interop;
-using CobiHw.App.Resources;
-using CobiHw.App.Settings;
+using CobiHw.Presentation.Resources;
+using CobiHw.Presentation.Settings;
+using CobiHw.Presentation.Tray;
 using Drawing = System.Drawing;
 using Forms = System.Windows.Forms;
 

@@ -6,10 +6,7 @@ using System.Windows;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using CobiHw.App.About;
-using Microsoft.Win32;
 using CobiHw.App.Devices;
-using CobiHw.App.Localization;
-using CobiHw.App.Resources;
 using CobiHw.App.Settings;
 using CobiHw.App.Tray;
 using CobiHw.Core;
@@ -17,6 +14,14 @@ using CobiHw.Core.Network;
 using CobiHw.Core.Windows;
 using CobiHw.Core.Windows.Fps;
 using CobiHw.Core.Windows.Network;
+using CobiHw.Presentation;
+using CobiHw.Presentation.About;
+using CobiHw.Presentation.Devices;
+using CobiHw.Presentation.Localization;
+using CobiHw.Presentation.Resources;
+using CobiHw.Presentation.Settings;
+using CobiHw.Presentation.Tray;
+using Microsoft.Win32;
 using Forms = System.Windows.Forms;
 
 namespace CobiHw.App;
@@ -94,7 +99,7 @@ public partial class App : Application
             return;
         }
 
-        ProfileIdentity identity = ProfileIdentity.Current();
+        ProfileIdentity identity = WindowsProfile.Current();
         _settingsStore = settingsPath is null ? SettingsStore.CreateBesideExecutable(identity) : SettingsStore.At(settingsPath, identity);
         _settings = _settingsStore.Load(SettingsLoadPatience);
 
@@ -220,7 +225,7 @@ public partial class App : Application
     // Runs in the elevated helper; the language is loaded so the task description is translated.
     private static bool RegisterTask(string settingsPath)
     {
-        Localizer.Instance.SetLanguage(SettingsStore.At(settingsPath, ProfileIdentity.Current()).Load().Language);
+        Localizer.Instance.SetLanguage(SettingsStore.At(settingsPath, WindowsProfile.Current()).Load().Language);
         return ElevatedTask.Register(ExecutablePath, settingsPath);
     }
 

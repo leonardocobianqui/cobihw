@@ -1,7 +1,8 @@
 using System.Runtime.InteropServices;
 using System.Windows;
-using CobiHw.App.Resources;
-using CobiHw.App.Settings;
+using CobiHw.Presentation;
+using CobiHw.Presentation.Resources;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.App;
 

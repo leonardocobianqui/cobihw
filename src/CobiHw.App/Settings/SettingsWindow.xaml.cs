@@ -3,8 +3,9 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using CobiHw.App.Localization;
-using CobiHw.App.Resources;
+using CobiHw.Presentation.Localization;
+using CobiHw.Presentation.Resources;
+using CobiHw.Presentation.Settings;
 
 namespace CobiHw.App.Settings;
 

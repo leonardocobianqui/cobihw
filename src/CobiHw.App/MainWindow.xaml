@@ -6,9 +6,11 @@
         xmlns:local="clr-namespace:CobiHw.App"
         xmlns:converters="clr-namespace:CobiHw.App.Converters"
         xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:l10n="clr-namespace:CobiHw.Presentation.Localization;assembly=CobiHw.Presentation"
+        xmlns:pres="clr-namespace:CobiHw.Presentation;assembly=CobiHw.Presentation"
         xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=local:MainViewModel}"
+        d:DataContext="{d:DesignInstance Type=pres:MainViewModel}"
         Title="cobihw"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -20,7 +22,7 @@
         FontFamily="Segoe UI"
         FontSize="13"
         FontWeight="{Binding FontWeightName}"
-        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}"
+        Language="{Binding Culture, Source={x:Static l10n:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}"
         MouseLeftButtonDown="OnMouseLeftButtonDown">
 
     <!-- Borderless, transparent window sized to its content. Background #01000000 keeps it clickable: fully transparent pixels ignore the mouse. -->
@@ -37,7 +39,7 @@
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="{Binding FontWeightName}" />
             <Setter Property="LayoutTransform" Value="{Binding Scale, Converter={x:Static converters:ScaleTransformConverter.Instance}}" />
-            <Setter Property="Language" Value="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}" />
+            <Setter Property="Language" Value="{Binding Culture, Source={x:Static l10n:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToolTip">
@@ -205,7 +207,7 @@
         </Style>
 
         <!-- Full layout: one template per item. -->
-        <DataTemplate x:Key="FullCpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="FullCpu" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Cpu}" />
@@ -224,7 +226,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="FullGpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="FullGpu" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Gpu}" />
@@ -246,7 +248,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="FullMemory" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="FullMemory" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Memory}" />
                 <Grid Style="{StaticResource MetricRow}">
@@ -262,7 +264,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="FullDisk" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="FullDisk" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Disk}" />
@@ -285,7 +287,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="FullNetwork" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="FullNetwork" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Network}" />
@@ -311,7 +313,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="FullBattery" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="FullBattery" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Battery}" />
@@ -332,7 +334,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="FullFps" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="FullFps" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource SectionTitle}" Text="{loc:Text Metric_Fps}" />
                 <TextBlock Style="{StaticResource MetricValue}" Text="{Binding FpsText}" />
@@ -359,7 +361,7 @@
         </DataTemplate>
 
         <!-- Compact horizontal layout: items side by side. -->
-        <DataTemplate x:Key="HorizontalCpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="HorizontalCpu" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Cpu}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding CpuTextColor}" Text="{Binding CpuUsageText}" />
@@ -367,7 +369,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="HorizontalGpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="HorizontalGpu" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Gpu}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding GpuTextColor}" Text="{Binding GpuUsageText}" />
@@ -377,7 +379,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="HorizontalMemory" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="HorizontalMemory" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Memory}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding MemoryTextColor}" Text="{Binding MemoryUsageText}" />
@@ -385,7 +387,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="HorizontalDisk" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="HorizontalDisk" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Disk}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
@@ -396,7 +398,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="HorizontalNetwork" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="HorizontalNetwork" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="0,0,8,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Network}" />
                 <StackPanel Orientation="Horizontal" Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
@@ -416,7 +418,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="HorizontalBattery" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="HorizontalBattery" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Battery}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Foreground="{Binding BatteryTextColor}" Text="{Binding BatteryText}" />
@@ -425,7 +427,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="HorizontalFps" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="HorizontalFps" DataType="{x:Type pres:MainViewModel}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Fps}" />
                 <TextBlock Style="{StaticResource CompactPercent}" Text="{Binding FpsText}" />
@@ -451,7 +453,7 @@
         </DataTemplate>
 
         <!-- Compact vertical layout: items stacked, details below the title. -->
-        <DataTemplate x:Key="VerticalCpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="VerticalCpu" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding CpuTextColor}" Text="{Binding CpuUsageText}" />
@@ -461,7 +463,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="VerticalGpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="VerticalGpu" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding GpuTextColor}" Text="{Binding GpuUsageText}" />
@@ -473,7 +475,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="VerticalMemory" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="VerticalMemory" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding MemoryTextColor}" Text="{Binding MemoryUsageText}" />
@@ -483,7 +485,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="VerticalDisk" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="VerticalDisk" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding DiskTextColor}" Text="{Binding DiskActiveText}" />
@@ -496,7 +498,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="VerticalNetwork" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="VerticalNetwork" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <TextBlock Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Network}" />
                 <StackPanel Visibility="{Binding SpeedTest.IsIdle, Converter={StaticResource BooleanToVisibility}}">
@@ -518,7 +520,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="VerticalBattery" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="VerticalBattery" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Foreground="{Binding BatteryTextColor}" Text="{Binding BatteryText}" />
@@ -528,7 +530,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="VerticalFps" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="VerticalFps" DataType="{x:Type pres:MainViewModel}">
             <DockPanel>
                 <TextBlock DockPanel.Dock="Right" Style="{StaticResource CompactPercent}" Text="{Binding FpsText}" />
                 <TextBlock Margin="0,0,12,0" Style="{StaticResource CompactTitle}" Text="{loc:Text Metric_Fps}" />
@@ -553,7 +555,7 @@
         </DataTemplate>
 
         <!-- Details tooltip: every item, including hidden ones, with full names. -->
-        <DataTemplate x:Key="DetailCpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="DetailCpu" DataType="{x:Type pres:MainViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
@@ -571,7 +573,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="DetailGpu" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="DetailGpu" DataType="{x:Type pres:MainViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
@@ -590,7 +592,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="DetailMemory" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="DetailMemory" DataType="{x:Type pres:MainViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
@@ -605,7 +607,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="DetailDisk" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="DetailDisk" DataType="{x:Type pres:MainViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
@@ -614,7 +616,7 @@
                 <TextBlock Style="{StaticResource DetailLabel}" Text="{loc:Text Widget_Disks}" />
                 <ItemsControl Grid.Column="1" ItemsSource="{Binding DiskDetails}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:DiskDetail}">
+                        <DataTemplate DataType="{x:Type pres:DiskDetail}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DiskName" />
@@ -631,7 +633,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="DetailNetwork" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="DetailNetwork" DataType="{x:Type pres:MainViewModel}">
             <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -667,7 +669,7 @@
             </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="DetailBattery" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="DetailBattery" DataType="{x:Type pres:MainViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
@@ -682,7 +684,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="DetailFps" DataType="{x:Type local:MainViewModel}">
+        <DataTemplate x:Key="DetailFps" DataType="{x:Type pres:MainViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />

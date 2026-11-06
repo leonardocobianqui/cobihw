@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Xml.Linq;
-using CobiHw.App.Resources;
+using CobiHw.Presentation.Resources;
 
 namespace CobiHw.App;
 

@@ -10,6 +10,10 @@ internal static class RepoFiles
     /// <param name="relativePath">Path relative to the App project folder, with forward slashes.</param>
     public static string App(string relativePath) => Path.Combine(Root, "src", "CobiHw.App", relativePath);
 
+    /// <summary>Path of a file inside src/CobiHw.Presentation.</summary>
+    /// <param name="relativePath">Path relative to the Presentation project folder, with forward slashes.</param>
+    public static string Presentation(string relativePath) => Path.Combine(Root, "src", "CobiHw.Presentation", relativePath);
+
     private static string FindRoot()
     {
         for (DirectoryInfo? folder = new(AppContext.BaseDirectory); folder is not null; folder = folder.Parent)

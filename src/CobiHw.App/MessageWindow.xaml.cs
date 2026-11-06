@@ -4,7 +4,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CobiHw.App.Interop;
-using CobiHw.App.Resources;
+using CobiHw.Presentation.Resources;
 
 namespace CobiHw.App;
 

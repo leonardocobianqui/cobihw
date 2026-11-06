@@ -61,7 +61,7 @@ Add or update tests for every change in behavior.
 
 ## Texts and translations
 
-All user-visible texts live in `src/CobiHw.App/Resources`:
+All user-visible texts live in `src/CobiHw.Presentation/Resources`:
 
 | File | Language |
 | --- | --- |

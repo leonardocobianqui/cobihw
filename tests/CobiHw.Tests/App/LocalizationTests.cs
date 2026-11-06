@@ -1,8 +1,8 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using CobiHw.App.Localization;
-using CobiHw.App.Resources;
+using CobiHw.Presentation.Localization;
+using CobiHw.Presentation.Resources;
 
 namespace CobiHw.Tests.App;
 
@@ -11,7 +11,7 @@ namespace CobiHw.Tests.App;
 public sealed partial class LocalizationTests : LocalizedTest
 {
     private static Dictionary<string, string> Resx(string file) =>
-        XDocument.Load(RepoFiles.App(Path.Combine("Resources", file))).Root!
+        XDocument.Load(RepoFiles.Presentation(Path.Combine("Resources", file))).Root!
             .Elements("data")
             .ToDictionary(data => data.Attribute("name")!.Value, data => data.Element("value")!.Value);
 

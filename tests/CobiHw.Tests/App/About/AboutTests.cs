@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
-using CobiHw.App;
-using CobiHw.App.About;
+using CobiHw.Presentation;
+using CobiHw.Presentation.About;
 
 namespace CobiHw.Tests.App.About;
 

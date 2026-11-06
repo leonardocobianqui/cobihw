@@ -1,4 +1,4 @@
-using CobiHw.App.Localization;
+using CobiHw.Presentation.Localization;
 
 namespace CobiHw.Tests;
 

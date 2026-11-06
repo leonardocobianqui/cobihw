@@ -1,6 +1,8 @@
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using CobiHw.Presentation;
+using CobiHw.Presentation.Settings;
 using Forms = System.Windows.Forms;
 
 namespace CobiHw.App.Settings;

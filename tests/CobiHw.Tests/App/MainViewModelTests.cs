@@ -1,8 +1,8 @@
-using CobiHw.App;
-using CobiHw.App.Settings;
-using CobiHw.App.Tray;
 using CobiHw.Core;
 using CobiHw.Core.Fps;
+using CobiHw.Presentation;
+using CobiHw.Presentation.Settings;
+using CobiHw.Presentation.Tray;
 using static CobiHw.Tests.TestData;
 
 namespace CobiHw.Tests.App;

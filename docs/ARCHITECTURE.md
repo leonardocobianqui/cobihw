@@ -8,11 +8,12 @@ An overview of how cobihw is put together: the projects, where each reading come
 | --- | --- | --- |
 | `src/CobiHw.Core` | Class library (`net10.0`) | What every platform shares: the snapshot types, network session, speed test, ping and public IP. No OS calls. |
 | `src/CobiHw.Core.Windows` | Class library (`net10.0-windows`) | Windows hardware readers: P/Invoke, PDH, WMI and ETW. |
-| `src/CobiHw.App` | WPF app (`cobihw.exe`) | Widget, tray icon, windows, settings and translations. MVVM via CommunityToolkit.Mvvm. |
+| `src/CobiHw.Presentation` | Class library (`net10.0`) | What every UI shares: view models (CommunityToolkit.Mvvm), settings and their file store, translations, text formatting and the widget's position and resize rules. No UI framework and no OS calls. |
+| `src/CobiHw.App` | WPF app (`cobihw.exe`) | Windows UI: widget, tray icon, windows, themes, and the Windows-only parts (startup entry, elevation, scheduled task). |
 | `src/CobiHw.ConsoleTest` | Console app | Dumps one set of Core readings, handy for comparing against Task Manager. |
 | `tests/CobiHw.Tests` | xUnit v3 | Covers every project; internals are exposed through `InternalsVisibleTo`. |
 
-Dependencies point one way: App → Core.Windows → Core. Code that calls an OS API never goes in Core, so it can be shared with a Linux build later.
+Dependencies point one way: App → Presentation and Core.Windows, both → Core. Code that calls an OS API or a UI framework never goes in Core or Presentation, so both can be shared with a Linux build later.
 
 ## Sampling
 
@@ -129,14 +130,20 @@ src/CobiHw.Core.Windows/
   Network/      Network devices, Wi-Fi, adapter visibility (WMI)
   Fps/          ETW session and frame counting
   Interop/      Windows API declarations
-src/CobiHw.App/
-  Settings/     Settings model, file store, settings and appearance windows
-  Devices/      Network devices window
-  About/        About window and update check
-  Themes/       Colors and control styles
-  Tray/         Tray icon, menu and tooltip
-  Localization/ Language switching and the XAML text extension
+src/CobiHw.Presentation/
+  Settings/     Settings model, file store and the settings view models
+  Devices/      Network devices view models
+  About/        About view model and update check
+  Tray/         Tray tooltip
+  Localization/ Language switching
   Resources/    Translations
+src/CobiHw.App/
+  Settings/     Settings and appearance windows, Windows user profile
+  Devices/      Network devices window
+  About/        About window
+  Themes/       Colors and control styles
+  Tray/         Tray icon and menu
+  Localization/ The XAML text extension
   Converters/   XAML converters
   Interop/      App-side Windows API declarations
 tests/CobiHw.Tests/

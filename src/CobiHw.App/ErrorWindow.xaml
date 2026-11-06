@@ -3,6 +3,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:loc="clr-namespace:CobiHw.App.Localization"
+        xmlns:l10n="clr-namespace:CobiHw.Presentation.Localization;assembly=CobiHw.Presentation"
         xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
         Title="{loc:Text App_UnexpectedError}"
         Width="512"
@@ -13,7 +14,7 @@
         FontFamily="Segoe UI"
         FontSize="13"
         FocusManager.FocusedElement="{Binding ElementName=CloseButton}"
-        Language="{Binding Culture, Source={x:Static loc:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
+        Language="{Binding Culture, Source={x:Static l10n:Localizer.Instance}, Converter={x:Static loc:CultureToLanguageConverter.Instance}, ConverterCulture={x:Static glob:CultureInfo.InvariantCulture}}">
 
     <!-- Message and expandable details, with the buttons in the footer band; Close has the focus and Esc closes. -->
     <DockPanel>

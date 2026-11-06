@@ -1,0 +1,26 @@
+namespace CobiHw.Presentation.Tray;
+
+/// <summary>Builds the tray tooltip text.</summary>
+public static class TrayTooltip
+{
+    /// <summary>Tooltip before the first reading.</summary>
+    public const string Title = "cobihw";
+    /// <summary>Windows limit: 128 characters including the terminating null.</summary>
+    public const int MaximumLength = 127;
+
+    /// <summary>Joins the lines, dropping lines from the end until the text fits.</summary>
+    /// <param name="lines">One line per item.</param>
+    public static string Build(IReadOnlyList<string> lines)
+    {
+        int count = lines.Count;
+        string text = string.Join('\n', lines);
+
+        while (text.Length > MaximumLength && count > 1)
+        {
+            count--;
+            text = string.Join('\n', lines.Take(count));
+        }
+
+        return text;
+    }
+}

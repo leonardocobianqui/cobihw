@@ -5,7 +5,8 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using CobiHw.App.Interop;
-using CobiHw.App.Settings;
+using CobiHw.Presentation;
+using CobiHw.Presentation.Settings;
 using Forms = System.Windows.Forms;
 
 namespace CobiHw.App;
