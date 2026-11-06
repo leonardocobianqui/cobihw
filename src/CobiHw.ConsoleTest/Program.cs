@@ -134,7 +134,7 @@ internal static class Report
 
     /// <summary>"Disco 0 (C:)", or just the number when the disk has no drive letters.</summary>
     private static string DiskName(DiskActivity disk) =>
-        disk.Letters.Length == 0 ? $"Disco {disk.Number}" : $"Disco {disk.Number} ({disk.Letters})";
+        disk.Volumes.Length == 0 ? $"Disco {disk.Number}" : $"Disco {disk.Number} ({disk.Volumes})";
 
     private static string Ghz(double? value) => value is null ? "—" : $"{value:0.00} GHz";
 

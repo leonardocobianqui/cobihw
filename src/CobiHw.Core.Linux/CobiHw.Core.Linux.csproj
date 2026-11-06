@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Linux readers: /proc and /sys only, no native libraries. Builds and tests on any OS; reads real data only on Linux. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CobiHw.Core\CobiHw.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Lets the test project reach internal types without making them public. -->
+    <InternalsVisibleTo Include="CobiHw.Core.Tests" />
+  </ItemGroup>
+
+</Project>

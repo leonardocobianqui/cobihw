@@ -31,16 +31,20 @@ dotnet run --project src/CobiHw.ConsoleTest
 
 ```powershell
 dotnet test --project tests/CobiHw.Tests/CobiHw.Tests.csproj
+dotnet test --project tests/CobiHw.Core.Tests/CobiHw.Core.Tests.csproj
 ```
+
+`CobiHw.Tests` needs Windows. `CobiHw.Core.Tests` (Core and the Linux readers) runs anywhere.
 
 Or, in Visual Studio: **Test → Test Explorer → Run All**.
 
 - Tests use [xUnit v3](https://xunit.net/) on Microsoft Testing Platform; `global.json` sets `dotnet test` to use it.
-- Every test class joins the same collection (`[Collection(AppState.Name)]`), so tests run one at a time: the app language is global.
+- Every test class in `CobiHw.Tests` joins the same collection (`[Collection(AppState.Name)]`), so tests run one at a time: the app language is global.
 - Classes that check texts derive from `LocalizedTest`, which starts each test in Brazilian Portuguese. Use `SetLanguage` to test another language.
 - Tests that touch files use `TempSettingsFile`, which works in its own temporary folder.
 - The speed test runs against `FakeCloudflare`, a simulated server; no test uses the internet.
-- The [build workflow](.github/workflows/build.yml) builds and runs the tests on every push to `main` and on every pull request, in a 64-bit and in a 32-bit process.
+- The Linux readers run against `FakeSystem`, a temporary folder laid out like `/proc` and `/sys`; `Notebook` holds real readings from a laptop.
+- The [build workflow](.github/workflows/build.yml) builds and runs the tests on every push to `main` and on every pull request: on Windows in a 64-bit and in a 32-bit process, and `CobiHw.Core.Tests` on Linux too.
 
 Add or update tests for every change in behavior.
 

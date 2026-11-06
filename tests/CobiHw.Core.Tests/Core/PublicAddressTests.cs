@@ -1,6 +1,6 @@
 using CobiHw.Core.Network;
 
-namespace CobiHw.Tests.Core;
+namespace CobiHw.Core.Tests.Core;
 
 /// <summary>The public IP from Cloudflare's trace endpoint.</summary>
 public sealed class PublicAddressTests

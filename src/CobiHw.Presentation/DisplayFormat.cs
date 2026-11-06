@@ -218,11 +218,11 @@ public static class DisplayFormat
             ? Localizer.Format(Strings.Format_Size, bytes / 1_000_000, Strings.Unit_Megabytes)
             : Localizer.Format(Strings.Format_Size, bytes / 1_000, Strings.Unit_Kilobytes);
 
-    /// <summary>Disk number followed by its drive letters, when it has any.</summary>
+    /// <summary>Disk number followed by its volumes (drive letters or mount points), when it has any.</summary>
     public static string DiskLabel(DiskActivity disk) =>
-        disk.Letters.Length == 0
+        disk.Volumes.Length == 0
             ? Localizer.Format("{0}", disk.Number)
-            : Localizer.Format("{0} ({1})", disk.Number, disk.Letters);
+            : Localizer.Format("{0} ({1})", disk.Number, disk.Volumes);
 
     /// <summary>Shortens a CPU or GPU name for the widget by dropping the clock suffix, trademarks and generic words such as "Processor".</summary>
     public static string ShortName(string? fullName)

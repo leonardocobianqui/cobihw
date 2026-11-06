@@ -79,7 +79,7 @@ public sealed record GpuActivity(
 /// <param name="Disks">One entry per disk, sorted by disk number.</param>
 public sealed record DiskSnapshot(IReadOnlyList<DiskActivity> Disks)
 {
-    /// <summary>The disk that holds Windows, if it was identified.</summary>
+    /// <summary>The disk that holds the operating system, if it was identified.</summary>
     public DiskActivity? System => Disks.FirstOrDefault(disk => disk.IsSystem);
 
     /// <summary>The disk with this number, or null if it's gone.</summary>
@@ -87,15 +87,15 @@ public sealed record DiskSnapshot(IReadOnlyList<DiskActivity> Disks)
 }
 
 /// <summary>One physical disk's reading.</summary>
-/// <param name="Number">Disk number in Disk Management (0, 1…).</param>
-/// <param name="Letters">Drive letters on this disk, e.g. "C: D:"; empty when none.</param>
+/// <param name="Number">Disk number (0, 1…): as in Disk Management on Windows, by kernel name order on Linux.</param>
+/// <param name="Volumes">What the user sees on this disk: drive letters on Windows ("C: D:"), mount points on Linux ("/ /home"); empty when none.</param>
 /// <param name="ActivePercent">Active time, 0 to 100.</param>
-/// <param name="IsSystem">True for the disk that holds Windows.</param>
+/// <param name="IsSystem">True for the disk that holds the operating system.</param>
 /// <param name="ReadBytesPerSecond">Read speed, or null if the counter is missing.</param>
 /// <param name="WriteBytesPerSecond">Write speed, or null if the counter is missing.</param>
 public sealed record DiskActivity(
     int Number,
-    string Letters,
+    string Volumes,
     double ActivePercent,
     bool IsSystem,
     double? ReadBytesPerSecond = null,
