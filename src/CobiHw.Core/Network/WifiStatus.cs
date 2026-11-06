@@ -38,20 +38,10 @@ public sealed record WifiStatus(
 }
 
 /// <summary>
-/// Converts raw WLAN values into band, channel and standard names.
+/// Band and channel from a Wi-Fi center frequency; the same on every platform.
 /// </summary>
 public static class WifiMath
 {
-    /// <summary>DOT11_PHY_TYPE values.</summary>
-    public const int PhyOfdm = 4;
-    public const int PhyHrDsss = 5;
-    public const int PhyErp = 6;
-    public const int PhyHt = 7;
-    public const int PhyVht = 8;
-    public const int PhyDmg = 9;
-    public const int PhyHe = 10;
-    public const int PhyEht = 11;
-
     /// <summary>Band from the center frequency.</summary>
     public static double BandGhz(double frequencyMhz) => frequencyMhz switch
     {
@@ -68,20 +58,5 @@ public static class WifiMath
         5 => (int)Math.Round((frequencyMhz - 5000) / 5),
         _ when frequencyMhz < 5950 => 2,
         _ => (int)Math.Round((frequencyMhz - 5950) / 5),
-    };
-
-    /// <summary>Marketing name of the PHY type; 802.11ax on 6 GHz is Wi-Fi 6E.</summary>
-    public static string? Standard(int phyType, double? bandGhz) => phyType switch
-    {
-        PhyHrDsss => "802.11b",
-        PhyErp => "802.11g",
-        PhyOfdm => "802.11a",
-        PhyHt => "Wi-Fi 4 (802.11n)",
-        PhyVht => "Wi-Fi 5 (802.11ac)",
-        PhyHe when bandGhz == 6 => "Wi-Fi 6E (802.11ax)",
-        PhyHe => "Wi-Fi 6 (802.11ax)",
-        PhyEht => "Wi-Fi 7 (802.11be)",
-        PhyDmg => "802.11ad",
-        _ => null,
     };
 }

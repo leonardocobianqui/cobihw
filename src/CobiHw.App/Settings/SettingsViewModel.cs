@@ -6,6 +6,7 @@ using CobiHw.App.Localization;
 using CobiHw.App.Resources;
 using CobiHw.Core;
 using CobiHw.Core.Network;
+using CobiHw.Core.Windows.Network;
 
 namespace CobiHw.App.Settings;
 

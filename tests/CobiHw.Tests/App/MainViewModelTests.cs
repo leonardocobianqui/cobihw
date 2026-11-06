@@ -3,7 +3,6 @@ using CobiHw.App.Settings;
 using CobiHw.App.Tray;
 using CobiHw.Core;
 using CobiHw.Core.Fps;
-using CobiHw.Tests.Core;
 using static CobiHw.Tests.TestData;
 
 namespace CobiHw.Tests.App;
@@ -401,13 +400,13 @@ public sealed class MainViewModelTests : LocalizedTest
     [Fact]
     public void Gpu_AutomaticChosenAndMissing()
     {
-        MainViewModel widget = Showing(Snapshot with { Gpu = new GpuSnapshot([GpuTests.Intel, GpuTests.Nvidia]) });
+        MainViewModel widget = Showing(Snapshot with { Gpu = new GpuSnapshot([IntelGpu, NvidiaGpu]) });
         Assert.Equal("NVIDIA GeForce RTX 3060 Laptop GPU", widget.GpuFullName);
         Assert.Equal("40%", widget.GpuUsageText);
         Assert.Equal("2,3 / 6,0 GB", widget.GpuMemoryText);
         Assert.Equal("VRAM 2,3 / 6,0 GB", widget.GpuMemoryDetailText);
 
-        widget.UpdateSettings(Settings(new DisplaySettings { Gpu = GpuChoice.Of(GpuTests.Intel) }));
+        widget.UpdateSettings(Settings(new DisplaySettings { Gpu = GpuChoice.Of(IntelGpu) }));
         Assert.Equal("Intel(R) UHD Graphics 620", widget.GpuFullName);
         Assert.Equal("12%", widget.GpuUsageText);
         Assert.Equal("1,2 GB", widget.GpuMemoryText);
@@ -425,7 +424,7 @@ public sealed class MainViewModelTests : LocalizedTest
     [Fact]
     public void GpuTemperature_OffByDefault_AlwaysInTheDetails_HiddenWithoutAReading()
     {
-        MainViewModel widget = Showing(Snapshot with { Gpu = new GpuSnapshot([GpuTests.Nvidia with { TemperatureCelsius = 46.9 }]) });
+        MainViewModel widget = Showing(Snapshot with { Gpu = new GpuSnapshot([NvidiaGpu with { TemperatureCelsius = 46.9 }]) });
         Assert.False(widget.ShowGpuTemperature);
         Assert.Contains("\nGPU 40% 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
         Assert.Equal("Temperatura 47 °C", widget.GpuTemperatureDetailText);
@@ -437,7 +436,7 @@ public sealed class MainViewModelTests : LocalizedTest
         Assert.Contains("\nGPU 40% 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
 
         // On, but the driver reports no temperature.
-        widget.Apply(Snapshot with { Gpu = new GpuSnapshot([GpuTests.Nvidia]) });
+        widget.Apply(Snapshot with { Gpu = new GpuSnapshot([NvidiaGpu]) });
         Assert.False(widget.ShowGpuTemperature);
         Assert.Contains("\nGPU 40% 2,3 / 6,0 GB\n", widget.TrayText, StringComparison.Ordinal);
         Assert.Equal("Temperatura —", widget.GpuTemperatureDetailText);

@@ -1,6 +1,6 @@
 using CobiHw.App;
 using CobiHw.Core;
-using CobiHw.Tests.Core;
+using static CobiHw.Tests.TestData;
 
 namespace CobiHw.Tests.App;
 
@@ -145,17 +145,17 @@ public sealed class DisplayFormatTests : LocalizedTest
     [Fact]
     public void GpuMemory_IntegratedShowsUsage_DedicatedShowsUsedOfTotal()
     {
-        Assert.Equal("1,2 GB", DisplayFormat.GpuMemory(GpuTests.Intel));
-        Assert.Equal("2,3 / 6,0 GB", DisplayFormat.GpuMemory(GpuTests.Nvidia));
+        Assert.Equal("1,2 GB", DisplayFormat.GpuMemory(IntelGpu));
+        Assert.Equal("2,3 / 6,0 GB", DisplayFormat.GpuMemory(NvidiaGpu));
         Assert.Equal("—", DisplayFormat.GpuMemory(null));
     }
 
     [Fact]
     public void GpuMemoryDetail_SplitsReservedAndSharedOnIntegratedGpus()
     {
-        Assert.Equal("Dedicada 0,1 / 0,1 GB · Compartilhada 1,1 GB", DisplayFormat.GpuMemoryDetail(GpuTests.Intel));
-        Assert.Equal("Compartilhada 1,1 GB", DisplayFormat.GpuMemoryDetail(GpuTests.Intel with { DedicatedTotalBytes = 0, DedicatedUsedBytes = null }));
-        Assert.Equal("VRAM 2,3 / 6,0 GB", DisplayFormat.GpuMemoryDetail(GpuTests.Nvidia));
+        Assert.Equal("Dedicada 0,1 / 0,1 GB · Compartilhada 1,1 GB", DisplayFormat.GpuMemoryDetail(IntelGpu));
+        Assert.Equal("Compartilhada 1,1 GB", DisplayFormat.GpuMemoryDetail(IntelGpu with { DedicatedTotalBytes = 0, DedicatedUsedBytes = null }));
+        Assert.Equal("VRAM 2,3 / 6,0 GB", DisplayFormat.GpuMemoryDetail(NvidiaGpu));
         Assert.Equal("—", DisplayFormat.GpuMemoryDetail(null));
     }
 

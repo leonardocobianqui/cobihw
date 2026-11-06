@@ -1,4 +1,5 @@
 using CobiHw.Core;
+using CobiHw.Core.Windows;
 
 // Developer tool: prints every reading once a second to compare with Task Manager. Not shipped with the app.
 using var monitor = new HardwareMonitor();

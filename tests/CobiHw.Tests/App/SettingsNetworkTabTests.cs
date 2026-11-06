@@ -1,5 +1,6 @@
 using CobiHw.App.Settings;
 using CobiHw.Core.Network;
+using CobiHw.Core.Windows.Network;
 using static CobiHw.Tests.TestData;
 
 namespace CobiHw.Tests.App;

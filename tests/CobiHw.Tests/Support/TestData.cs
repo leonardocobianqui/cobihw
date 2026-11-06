@@ -9,6 +9,15 @@ namespace CobiHw.Tests;
 /// <summary>Builders for the settings, readings and view models shared by many tests.</summary>
 internal static class TestData
 {
+    private const ulong MiB = 1024UL * 1024;
+    private const ulong GiB = 1024UL * MiB;
+
+    /// <summary>Integrated GPU: 128 MB reserved, all of it in use, plus 1.1 GB of shared memory.</summary>
+    public static GpuActivity IntelGpu { get; } = new(new GpuId(0x8086, 0x5917, 0), "Intel(R) UHD Graphics 620", 1, true, 12, 128 * MiB, 128 * MiB, 1100 * MiB);
+
+    /// <summary>Dedicated GPU, first in the high-performance order: 2.3 GB of 6 GB of VRAM in use.</summary>
+    public static GpuActivity NvidiaGpu { get; } = new(new GpuId(0x10DE, 0x2520, 0), "NVIDIA GeForce RTX 3060 Laptop GPU", 0, false, 40, 2355 * MiB, 6 * GiB, null);
+
     /// <summary>Three disks: the Windows disk (0), a busy one with two letters (1) and one without letters (2).</summary>
     public static IReadOnlyList<DiskActivity> Disks { get; } =
     [

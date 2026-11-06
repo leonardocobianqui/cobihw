@@ -58,6 +58,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CobiHw.Core\CobiHw.Core.csproj" />
+    <ProjectReference Include="..\CobiHw.Core.Windows\CobiHw.Core.Windows.csproj" />
   </ItemGroup>
 
   <ItemGroup>

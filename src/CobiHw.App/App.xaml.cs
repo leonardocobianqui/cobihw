@@ -13,8 +13,10 @@ using CobiHw.App.Resources;
 using CobiHw.App.Settings;
 using CobiHw.App.Tray;
 using CobiHw.Core;
-using CobiHw.Core.Fps;
 using CobiHw.Core.Network;
+using CobiHw.Core.Windows;
+using CobiHw.Core.Windows.Fps;
+using CobiHw.Core.Windows.Network;
 using Forms = System.Windows.Forms;
 
 namespace CobiHw.App;
