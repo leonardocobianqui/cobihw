@@ -6,12 +6,13 @@ An overview of how cobihw is put together: the projects, where each reading come
 
 | Project | Type | Role |
 | --- | --- | --- |
-| `src/CobiHw.Core` | Class library | Hardware readers. No UI; P/Invoke, PDH, WMI and ETW. |
+| `src/CobiHw.Core` | Class library (`net10.0`) | What every platform shares: the snapshot types, network session, speed test, ping and public IP. No OS calls. |
+| `src/CobiHw.Core.Windows` | Class library (`net10.0-windows`) | Windows hardware readers: P/Invoke, PDH, WMI and ETW. |
 | `src/CobiHw.App` | WPF app (`cobihw.exe`) | Widget, tray icon, windows, settings and translations. MVVM via CommunityToolkit.Mvvm. |
 | `src/CobiHw.ConsoleTest` | Console app | Dumps one set of Core readings, handy for comparing against Task Manager. |
-| `tests/CobiHw.Tests` | xUnit v3 | Covers both projects; internals are exposed through `InternalsVisibleTo`. |
+| `tests/CobiHw.Tests` | xUnit v3 | Covers every project; internals are exposed through `InternalsVisibleTo`. |
 
-Dependencies point one way: App → Core.
+Dependencies point one way: App → Core.Windows → Core. Code that calls an OS API never goes in Core, so it can be shared with a Linux build later.
 
 ## Sampling
 
@@ -121,8 +122,11 @@ Both packages build from the same source; `publish.ps1` only switches the runtim
 
 ```
 src/CobiHw.Core/
+  Network/      Speed test, ping, public IP, device and Wi-Fi records
+  Fps/          FPS snapshot
+src/CobiHw.Core.Windows/
   Readers/      CPU, RAM, GPU, disk, network and battery
-  Network/      Network devices, Wi-Fi, ping, speed test, public IP
+  Network/      Network devices, Wi-Fi, adapter visibility (WMI)
   Fps/          ETW session and frame counting
   Interop/      Windows API declarations
 src/CobiHw.App/
@@ -136,7 +140,8 @@ src/CobiHw.App/
   Converters/   XAML converters
   Interop/      App-side Windows API declarations
 tests/CobiHw.Tests/
-  Core/, App/   Tests by area
+  Core/, Core.Windows/, App/
+                Tests by project
   Fakes/        Simulated speed test server
   Support/      Shared fixtures and helpers
 ```
