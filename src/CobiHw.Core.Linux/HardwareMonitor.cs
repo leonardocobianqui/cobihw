@@ -6,13 +6,14 @@ namespace CobiHw.Core.Linux;
 /// <summary>
 /// Linux implementation of <see cref="IHardwareMonitor"/>: reads /proc and /sys and returns one <see cref="HardwareSnapshot"/> per call.
 /// </summary>
-/// <remarks>Thread-safe: sampling, session reset and export are serialized by a lock. GPUs aren't read yet.</remarks>
+/// <remarks>Thread-safe: sampling, session reset and export are serialized by a lock.</remarks>
 public sealed class HardwareMonitor : IHardwareMonitor
 {
     private readonly Lock _lock = new();
     private readonly SystemFiles _files;
     private readonly CpuReader _cpu;
     private readonly DiskReader _disk;
+    private readonly GpuReader _gpu;
     private readonly NetworkReader _network;
 
     /// <summary>Creates the readers and takes a first sample, so the next one already has speeds and rates.</summary>
@@ -28,11 +29,13 @@ public sealed class HardwareMonitor : IHardwareMonitor
         _files = files;
         _cpu = new CpuReader(files);
         _disk = new DiskReader(files);
+        _gpu = new GpuReader(files);
         _network = new NetworkReader(files, savedNetworkSession);
 
         long timestamp = Stopwatch.GetTimestamp();
         _cpu.Read();
         _disk.Read(timestamp);
+        _gpu.Read(timestamp);
         _network.Read(timestamp);
     }
 
@@ -45,7 +48,7 @@ public sealed class HardwareMonitor : IHardwareMonitor
             return new HardwareSnapshot(
                 _cpu.Read(),
                 MemoryReader.Read(_files),
-                new GpuSnapshot([]),
+                _gpu.Read(timestamp),
                 _disk.Read(timestamp),
                 _network.Read(timestamp),
                 BatteryReader.Read(_files));

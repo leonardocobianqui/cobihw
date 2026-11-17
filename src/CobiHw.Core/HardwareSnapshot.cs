@@ -33,10 +33,10 @@ public sealed record MemorySnapshot(ulong UsedBytes, ulong TotalBytes)
 }
 
 /// <summary>All hardware GPUs read in one sample.</summary>
-/// <param name="Gpus">One entry per GPU, in DXGI enumeration order.</param>
+/// <param name="Gpus">One entry per GPU, in the system's order: DXGI enumeration on Windows, PCI address on Linux.</param>
 public sealed record GpuSnapshot(IReadOnlyList<GpuActivity> Gpus)
 {
-    /// <summary>The GPU Windows prefers for high performance; what "Automatic" shows.</summary>
+    /// <summary>The GPU the system prefers for high performance; what "Automatic" shows.</summary>
     public GpuActivity? Preferred => Gpus.MinBy(gpu => gpu.Rank);
 
     /// <summary>The GPU with this identity, or null if it's gone (e.g. eGPU unplugged).</summary>
@@ -52,7 +52,7 @@ public readonly record struct GpuId(uint VendorId, uint DeviceId, int Instance);
 /// <summary>One GPU's reading.</summary>
 /// <param name="Id">Stable identity, used to save the user's choice.</param>
 /// <param name="Name">Name reported by the driver.</param>
-/// <param name="Rank">Position in Windows' high-performance order (0 = preferred).</param>
+/// <param name="Rank">Position in the high-performance order (0 = preferred): Windows' own order; on Linux, dedicated GPUs before integrated ones.</param>
 /// <param name="IsIntegrated">True when the GPU shares system RAM.</param>
 /// <param name="UsagePercent">Busiest engine, 0 to 100.</param>
 /// <param name="DedicatedUsedBytes">Dedicated memory in use.</param>

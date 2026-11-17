@@ -3,8 +3,8 @@ using CobiHw.Core.Tests.Support;
 namespace CobiHw.Core.Tests.Linux;
 
 /// <summary>
-/// Real readings from a notebook: Zorin OS 18 (Ubuntu 24.04 base), AMD Ryzen 5 7520U, one NVMe disk with ext4, Wi-Fi,
-/// Tailscale and snaps. Trimmed to the lines the readers use, plus a few they must skip.
+/// Real readings from a notebook: Zorin OS 18 (Ubuntu 24.04 base), AMD Ryzen 5 7520U with its integrated Radeon 610M
+/// (Mendocino), one NVMe disk with ext4, Wi-Fi, Tailscale and snaps. Trimmed to the lines the readers use, plus a few they must skip.
 /// </summary>
 internal static class Notebook
 {
@@ -86,6 +86,41 @@ internal static class Notebook
         POWER_SUPPLY_ONLINE=1
         """;
 
+    /// <summary>The lines of pci.ids that name the notebook's GPU, plus neighbors the parser must skip.</summary>
+    /// <remarks>Written with \t escapes: the format indents with tabs, which a raw literal would mix with its own spaces.</remarks>
+    public const string PciIds =
+        "# List of PCI ID's\n" +
+        "1002  Advanced Micro Devices, Inc. [AMD/ATI]\n" +
+        "\t1505  Mendocino [Radeon 610M]\n" +
+        "\t1506  Mendocino\n" +
+        "\t\t1043 282d  Radeon 610M\n" +
+        "1022  Advanced Micro Devices, Inc. [AMD]\n" +
+        "\t1506  Not a GPU\n" +
+        "10de  NVIDIA Corporation\n" +
+        "\t2520  GA106M [GeForce RTX 3060 Mobile / Max-Q]\n" +
+        "8086  Intel Corporation\n" +
+        "\t46a6  Alder Lake-P GT2 [Iris Xe Graphics]\n" +
+        "C 03  Display controller\n" +
+        "\t00  VGA compatible controller\n";
+
+    /// <summary>One client of the GPU as /proc/&lt;pid&gt;/fdinfo shows it: a process holding it open (the desktop).</summary>
+    public const string GpuClient =
+        """
+        pos:	0
+        flags:	02104002
+        drm-driver:	amdgpu
+        drm-client-id:	7
+        drm-pdev:	0000:03:00.0
+        drm-total-gtt:	45860 KiB
+        drm-resident-gtt:	412936 KiB
+        drm-total-vram:	689312 KiB
+        drm-resident-vram:	322236 KiB
+        drm-memory-vram:	322236 KiB
+        drm-memory-gtt: 	412936 KiB
+        drm-engine-gfx:	302992942785 ns
+        drm-engine-compute:	687136348 ns
+        """;
+
     /// <summary>The notebook as a fake root: CPU, memory, the NVMe disk with its partitions and snap loops, and the three interfaces.</summary>
     public static FakeSystem Build()
     {
@@ -112,6 +147,25 @@ internal static class Notebook
         Interface(system, "lo", 1, "unknown", physical: false, 2448149, 2448149);
         Interface(system, "wlp2s0", 2, "up", physical: true, 2325411943, 426548643);
         Interface(system, "tailscale0", 3, "unknown", physical: false, 1990, 102051);
+
+        // card1: on recent kernels the boot framebuffer holds card0 until amdgpu takes over. card1-eDP-1 is the screen.
+        system.File("usr/share/hwdata/pci.ids", PciIds)
+            .File("sys/class/drm/card1/device/vendor", "0x1002\n")
+            .File("sys/class/drm/card1/device/device", "0x1506\n")
+            .File("sys/class/drm/card1/device/class", "0x030000\n")
+            .File("sys/class/drm/card1/device/boot_vga", "1\n")
+            .File("sys/class/drm/card1/device/uevent", "DRIVER=amdgpu\nPCI_CLASS=30000\nPCI_ID=1002:1506\nPCI_SUBSYS_ID=1043:282D\nPCI_SLOT_NAME=0000:03:00.0\n")
+            .File("sys/class/drm/card1/device/gpu_busy_percent", "0\n")
+            .File("sys/class/drm/card1/device/mem_info_vram_total", "536870912\n")
+            .File("sys/class/drm/card1/device/mem_info_vram_used", "504061952\n")
+            .File("sys/class/drm/card1/device/mem_info_gtt_total", "3778732032\n")
+            .File("sys/class/drm/card1/device/mem_info_gtt_used", "813862912\n")
+            .File("sys/class/drm/card1/device/power/runtime_status", "active\n")
+            .File("sys/class/drm/card1/device/hwmon/hwmon6/name", "amdgpu\n")
+            .File("sys/class/drm/card1/device/hwmon/hwmon6/temp1_input", "57000\n")
+            .File("sys/class/drm/card1/device/hwmon/hwmon6/temp1_label", "edge\n")
+            .Folder("sys/class/drm/card1-eDP-1")
+            .Folder("sys/class/drm/renderD128");
         return system;
     }
 

@@ -62,6 +62,13 @@ All PDH counters share one `PdhQuery`, collected once per tick, so every value i
 | Disk | `/proc/diskstats`: active time from `io_ticks` (`%util` in `iostat`), speeds from sectors of 512 bytes. Disks are the entries of `/sys/block` with a `device` link; mount points come from `/proc/self/mountinfo`, followed through LUKS, LVM and RAID down to the disk; "the system disk" holds `/` | `DiskReader`, `BlockDevices` |
 | Network traffic | `/sys/class/net/*/statistics`; only interfaces with a `device` link (hardware) count in the total. Ids are name-based UUIDs | `NetworkReader`, `InterfaceId` |
 | Battery | `uevent` of each `/sys/class/power_supply` battery; device batteries (mice, gamepads) left out | `BatteryReader` |
+| GPU list | `cardN` folders in `/sys/class/drm` with a PCI display device; identity is the PCI vendor and device, as on Windows. Non-PCI GPUs (most ARM boards) aren't listed | `GpuReader` |
+| GPU name | `pci.ids` (hwdata or pciutils), the bracketed marketing name when there is one; vendor and device id without it | `PciNames` |
+| GPU order | Dedicated before integrated, then PCI address. Integrated: Intel at `00:02.0`; amdgpu without `mem_info_vram_vendor` (an APU has no VRAM chips) | `GpuReader` |
+| GPU usage and memory | amdgpu: `gpu_busy_percent`, `mem_info_vram_*`, `mem_info_gtt_used` (shared, integrated only). Other drivers: DRM client stats in `/proc/*/fdinfo`, busiest engine, each client counted once. NVIDIA's proprietary driver has neither | `GpuReader`, `DrmClients` |
+| GPU temperature | The device's hwmon sensor, `edge` when there are several | `GpuReader` |
+
+fdinfo only shows processes of the same user. Desktops, browsers and games run as the user, so nearly all GPU work is counted; reading root's processes would take a privilege (ptrace or a root service) far beyond what a widget should hold. A GPU whose runtime power status is `suspended` is reported idle without reading its power attributes, which could wake it.
 
 The Linux readers take a root folder, `/` in production, so tests run them against a fake one (`FakeSystem`). The network session uses the boot time from `btime` in `/proc/stat`: Linux's uptime stops while suspended, so deriving the boot from it, as on Windows, would start a new session after every suspend. Speed and session math is shared by both platforms in `NetworkTraffic`.
 
@@ -149,7 +156,7 @@ src/CobiHw.Core.Windows/
   Fps/          ETW session and frame counting
   Interop/      Windows API declarations
 src/CobiHw.Core.Linux/
-  Readers/      CPU, RAM, disk, network and battery from /proc and /sys
+  Readers/      CPU, RAM, GPU, disk, network and battery from /proc and /sys
 src/CobiHw.Presentation/
   Settings/     Settings model, file store and the settings view models
   Devices/      Network devices view models

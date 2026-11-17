@@ -7,7 +7,7 @@ namespace CobiHw.Core.Tests.Linux;
 public sealed class HardwareMonitorTests
 {
     [Fact]
-    public void Notebook_EveryReadingIsThere_ExceptTheGpuForNow()
+    public void Notebook_EveryReadingIsThere()
     {
         using FakeSystem system = Notebook.Build();
         using var monitor = new HardwareMonitor(system.Files, null);
@@ -19,7 +19,7 @@ public sealed class HardwareMonitorTests
         Assert.Equal("/", snapshot.Disk.System!.Volumes);
         Assert.NotNull(snapshot.Network.DownloadBytesPerSecond);
         Assert.Equal(100, snapshot.Battery!.Percent);
-        Assert.Empty(snapshot.Gpu.Gpus);
+        Assert.Equal("AMD Mendocino", snapshot.Gpu.Preferred!.Name);
     }
 
     [Fact]
