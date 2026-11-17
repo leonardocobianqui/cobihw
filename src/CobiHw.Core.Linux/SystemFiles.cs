@@ -45,6 +45,19 @@ internal sealed class SystemFiles(string root)
         }
     }
 
+    /// <summary>Where a symbolic link points, as written in the link (e.g. "/dev/dri/renderD128" for a /proc fd); null when it isn't a link.</summary>
+    public string? LinkTarget(string path)
+    {
+        try
+        {
+            return new FileInfo(Full(path)).LinkTarget;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
     /// <summary>True when the file, folder or link exists.</summary>
     public bool Exists(string path) => Path.Exists(Full(path));
 
