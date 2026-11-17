@@ -1,5 +1,5 @@
 # Builds the solution and runs the tests on every push to main and on every pull request: on Windows in a 64-bit and a
-# 32-bit process, and the platform-neutral tests (Core and the Linux readers) on Linux too.
+# 32-bit process, and the platform-neutral tests (Core and the Linux readers) and the Linux app on Linux too.
 name: build
 
 on:
@@ -54,8 +54,8 @@ jobs:
       - name: Test (x86)
         run: ./artifacts/tests-x86/CobiHw.Tests.exe
 
-  # Core and the Linux readers on Linux, where they run for real. The WPF projects don't build here, so only this
-  # test project (and what it references) is built.
+  # Core and the Linux readers on Linux, where they run for real, and the Linux app. The WPF projects don't build
+  # here, so the solution isn't built as a whole.
   test-linux:
     runs-on: ubuntu-latest
 
@@ -68,3 +68,7 @@ jobs:
 
       - name: Test
         run: dotnet test --project tests/CobiHw.Core.Tests/CobiHw.Core.Tests.csproj -c Release
+
+      # The widget has no automated UI tests yet; building it on Linux at least catches Avalonia and XAML errors.
+      - name: Build Linux app
+        run: dotnet build src/CobiHw.App.Linux/CobiHw.App.Linux.csproj -c Release

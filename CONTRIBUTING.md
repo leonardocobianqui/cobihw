@@ -27,6 +27,20 @@ dotnet run --project src/CobiHw.App
 dotnet run --project src/CobiHw.ConsoleTest
 ```
 
+### Linux
+
+The Linux app (`src/CobiHw.App.Linux`) builds and runs on any distribution with the .NET 10 SDK and an X11 or Wayland desktop; on Wayland it runs through XWayland. The tray icon needs a StatusNotifierItem host: KDE, Cinnamon and Xfce have one, and on GNOME it comes from the AppIndicator extension, which Ubuntu and Zorin enable by default.
+
+```bash
+dotnet run --project src/CobiHw.App.Linux
+```
+
+The WPF projects only build on Windows. To build the whole solution on Linux, for example to check that a shared change still compiles, let the SDK reference the Windows targeting packs:
+
+```bash
+dotnet build cobihw.slnx -p:EnableWindowsTargeting=true
+```
+
 ## Tests
 
 ```powershell
@@ -44,7 +58,7 @@ Or, in Visual Studio: **Test → Test Explorer → Run All**.
 - Tests that touch files use `TempSettingsFile`, which works in its own temporary folder.
 - The speed test runs against `FakeCloudflare`, a simulated server; no test uses the internet.
 - The Linux readers run against `FakeSystem`, a temporary folder laid out like `/proc` and `/sys`; `Notebook` holds real readings from a laptop.
-- The [build workflow](.github/workflows/build.yml) builds and runs the tests on every push to `main` and on every pull request: on Windows in a 64-bit and in a 32-bit process, and `CobiHw.Core.Tests` on Linux too.
+- The [build workflow](.github/workflows/build.yml) builds and runs the tests on every push to `main` and on every pull request: on Windows in a 64-bit and in a 32-bit process, and on Linux it runs `CobiHw.Core.Tests` and builds the Linux app.
 
 Add or update tests for every change in behavior.
 

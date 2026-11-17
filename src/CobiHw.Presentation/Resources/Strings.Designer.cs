@@ -677,6 +677,15 @@ namespace CobiHw.Presentation.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Show widget.
+        /// </summary>
+        public static string Tray_ShowWidget {
+            get {
+                return ResourceManager.GetString("Tray_ShowWidget", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Exit.
         /// </summary>
         public static string Tray_Exit {

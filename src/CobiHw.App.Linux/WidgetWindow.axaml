@@ -1,0 +1,626 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:CobiHw.App.Linux"
+        xmlns:loc="using:CobiHw.App.Linux.Localization"
+        xmlns:pres="using:CobiHw.Presentation"
+        x:Class="CobiHw.App.Linux.WidgetWindow"
+        x:DataType="pres:MainViewModel"
+        Title="cobihw"
+        WindowDecorations="None"
+        Background="Transparent"
+        CanResize="False"
+        ShowInTaskbar="False"
+        SizeToContent="WidthAndHeight"
+        FontSize="13"
+        Foreground="{Binding TextColor, Converter={x:Static local:Converters.ToBrush}}"
+        FontWeight="{Binding FontWeightName, Converter={x:Static local:Converters.ToWeight}}">
+
+    <!-- The same widget as WPF's MainWindow.xaml: three layouts over one item list, the details tooltip and the halo.
+         Texts and colors come from the shared MainViewModel; anything WPF-specific has an Avalonia equivalent noted inline. -->
+    <Window.Styles>
+        <!-- Details tooltip: same colors, font and corners as the widget. -->
+        <Style Selector="ToolTip" x:DataType="pres:MainViewModel">
+            <Setter Property="Background" Value="{Binding SolidBackgroundColor, Converter={x:Static local:Converters.ToBrush}}" />
+            <Setter Property="Foreground" Value="{Binding TextColor, Converter={x:Static local:Converters.ToBrush}}" />
+            <Setter Property="BorderBrush" Value="{Binding DividerColor, Converter={x:Static local:Converters.ToBrush}}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{Binding CornerRadius, Converter={x:Static local:Converters.ToCorners}}" />
+            <Setter Property="Padding" Value="{x:Static local:WidgetThickness.Details}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="{Binding FontWeightName, Converter={x:Static local:Converters.ToWeight}}" />
+            <!-- Fluent caps tooltips at 320 px; the details list is wider. -->
+            <Setter Property="MaxWidth" Value="Infinity" />
+        </Style>
+
+        <!-- Border: hover mode keeps it transparent until the pointer is over the widget. -->
+        <Style Selector="Border#Body" x:DataType="pres:MainViewModel">
+            <Setter Property="BorderBrush" Value="{Binding BorderColor, Converter={x:Static local:Converters.ToBrush}}" />
+        </Style>
+        <Style Selector="Border#Body.hoverOnly:not(:pointerover)">
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <!-- Full layout: item title, row spacing and usage bar. -->
+        <Style Selector="TextBlock.title" x:DataType="pres:MainViewModel">
+            <Setter Property="Foreground" Value="{Binding LabelColor, Converter={x:Static local:Converters.ToBrush}}" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+        </Style>
+        <Style Selector="Grid.row">
+            <Setter Property="Margin" Value="0,6,0,0" />
+        </Style>
+        <Style Selector="local|UsageBar" x:DataType="pres:MainViewModel">
+            <Setter Property="Width" Value="130" />
+            <Setter Property="Height" Value="6" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Track" Value="{Binding DividerColor, Converter={x:Static local:Converters.ToBrush}}" />
+            <Setter Property="Radius" Value="{Binding BarRadius}" />
+        </Style>
+        <Style Selector="TextBlock.value">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.percent">
+            <Setter Property="MinWidth" Value="38" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="TextAlignment" Value="Right" />
+        </Style>
+        <Style Selector="TextBlock.detail">
+            <Setter Property="Margin" Value="14,0,0,0" />
+        </Style>
+        <!-- Invisible widest text that reserves width, so the widget doesn't resize as speeds change (WPF's Visibility.Hidden). -->
+        <Style Selector="TextBlock.reserve">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+
+        <!-- Compact layouts. -->
+        <!-- The gap before the value is a margin of its own: the value's MinWidth only leaves slack while the text is short,
+             so "100%" would touch the title. Layouts that need another gap set Margin on the title. -->
+        <Style Selector="TextBlock.compactTitle" x:DataType="pres:MainViewModel">
+            <Setter Property="Foreground" Value="{Binding LabelColor, Converter={x:Static local:Converters.ToBrush}}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,6,0" />
+        </Style>
+        <Style Selector="TextBlock.compactPercent">
+            <Setter Property="MinWidth" Value="34" />
+            <Setter Property="TextAlignment" Value="Right" />
+        </Style>
+        <Style Selector="TextBlock.compactDetail">
+            <Setter Property="Margin" Value="8,0,0,0" />
+        </Style>
+        <Style Selector="TextBlock.compactPing">
+            <Setter Property="MinWidth" Value="64" />
+        </Style>
+        <Style Selector="TextBlock.liveTest">
+            <Setter Property="Foreground" Value="#FF4FB0EA" />
+        </Style>
+
+        <!-- Dividers between items; MetricTemplates hides the one before the first item. -->
+        <Style Selector="Border.divider" x:DataType="pres:MainViewModel">
+            <Setter Property="Height" Value="{Binding DividerThickness}" />
+            <Setter Property="Margin" Value="0,10" />
+            <Setter Property="Background" Value="{Binding DividerColor, Converter={x:Static local:Converters.ToBrush}}" />
+        </Style>
+        <Style Selector="Border.compactDivider" x:DataType="pres:MainViewModel">
+            <Setter Property="Width" Value="{Binding DividerThickness}" />
+            <Setter Property="Margin" Value="12,0" />
+            <Setter Property="Background" Value="{Binding DividerColor, Converter={x:Static local:Converters.ToBrush}}" />
+        </Style>
+        <Style Selector="Border.verticalDivider" x:DataType="pres:MainViewModel">
+            <Setter Property="Height" Value="{Binding DividerThickness}" />
+            <Setter Property="Margin" Value="0,6" />
+            <Setter Property="Background" Value="{Binding DividerColor, Converter={x:Static local:Converters.ToBrush}}" />
+        </Style>
+        <Style Selector="Border.detailDivider" x:DataType="pres:MainViewModel">
+            <Setter Property="Height" Value="{Binding DividerThickness}" />
+            <Setter Property="Margin" Value="0,6" />
+            <Setter Property="Background" Value="{Binding DividerColor, Converter={x:Static local:Converters.ToBrush}}" />
+        </Style>
+        <Style Selector="TextBlock.detailLabel" x:DataType="pres:MainViewModel">
+            <Setter Property="Margin" Value="0,0,16,0" />
+            <Setter Property="Foreground" Value="{Binding LabelColor, Converter={x:Static local:Converters.ToBrush}}" />
+        </Style>
+
+        <!-- Charging mark, drawn instead of WPF's Segoe MDL2 glyph, which Linux doesn't have. -->
+        <Style Selector="Path.charging" x:DataType="pres:MainViewModel">
+            <Setter Property="Data" Value="M6,0 L0,9 H4.5 L3.5,16 L10,6 H5.5 L7,0 Z" />
+            <Setter Property="Width" Value="7" />
+            <Setter Property="Height" Value="11" />
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Fill" Value="{Binding TextColor, Converter={x:Static local:Converters.ToBrush}}" />
+        </Style>
+    </Window.Styles>
+
+    <Window.Resources>
+        <!-- Full layout: one template per item. -->
+        <DataTemplate x:Key="FullCpu" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Classes="title" Text="{loc:Text Metric_Cpu}" />
+                    <TextBlock Text="{Binding CpuName}" />
+                </StackPanel>
+                <Grid Classes="row">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:UsageBar Grid.Column="0" Value="{Binding CpuUsage}" Fill="{Binding CpuBarColor, Converter={x:Static local:Converters.ToBrush}}" />
+                    <TextBlock Grid.Column="1" Classes="value percent" Foreground="{Binding CpuTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding CpuUsageText}" />
+                    <TextBlock Grid.Column="2" Classes="value detail" Text="{Binding CpuFrequencyText}" />
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullGpu" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Classes="title" Text="{loc:Text Metric_Gpu}" />
+                    <TextBlock Text="{Binding GpuName}" />
+                </StackPanel>
+                <Grid Classes="row">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:UsageBar Grid.Column="0" Value="{Binding GpuUsage}" Fill="{Binding GpuBarColor, Converter={x:Static local:Converters.ToBrush}}" />
+                    <TextBlock Grid.Column="1" Classes="value percent" Foreground="{Binding GpuTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding GpuUsageText}" />
+                    <TextBlock Grid.Column="2" Classes="value detail" Text="{Binding GpuMemoryText}" />
+                    <TextBlock Grid.Column="3" Classes="value detail" Text="{Binding GpuTemperatureText}" IsVisible="{Binding ShowGpuTemperature}" />
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullMemory" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <TextBlock Classes="title" Text="{loc:Text Metric_Memory}" />
+                <Grid Classes="row">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:UsageBar Grid.Column="0" Value="{Binding MemoryUsage}" Fill="{Binding MemoryBarColor, Converter={x:Static local:Converters.ToBrush}}" />
+                    <TextBlock Grid.Column="1" Classes="value percent" Foreground="{Binding MemoryTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding MemoryUsageText}" />
+                    <TextBlock Grid.Column="2" Classes="value detail" Text="{Binding MemoryAmountText}" />
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullDisk" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Classes="title" Text="{loc:Text Metric_Disk}" />
+                    <TextBlock Text="{Binding DiskName}" />
+                </StackPanel>
+                <Grid Classes="row">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:UsageBar Grid.Column="0" Value="{Binding DiskActive}" Fill="{Binding DiskBarColor, Converter={x:Static local:Converters.ToBrush}}" />
+                    <TextBlock Grid.Column="1" Classes="value percent" Foreground="{Binding DiskTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding DiskActiveText}" />
+                    <Panel Grid.Column="2" IsVisible="{Binding ShowDiskSpeed}">
+                        <TextBlock Classes="value detail reserve" Text="{Binding DiskSpeedWidestText}" />
+                        <TextBlock Classes="value detail" Text="{Binding DiskSpeedText}" />
+                    </Panel>
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullNetwork" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Classes="title" Text="{loc:Text Metric_Network}" />
+                    <TextBlock Text="{Binding NetworkDeviceName}" />
+                </StackPanel>
+                <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" IsVisible="{Binding SpeedTest.IsIdle}">
+                        <Panel>
+                            <TextBlock Classes="value reserve" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" />
+                            <TextBlock Classes="value" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                        </Panel>
+                        <Panel Margin="20,0,0,0">
+                            <TextBlock Classes="value reserve" Text="{Binding NetworkSpeedWidestText, StringFormat='↑ {0}'}" />
+                            <TextBlock Classes="value" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                        </Panel>
+                    </StackPanel>
+                    <TextBlock Classes="value liveTest" Text="{Binding SpeedTest.LiveLabelText}" IsVisible="{Binding SpeedTest.IsTesting}" />
+                    <TextBlock Margin="20,0,0,0" Classes="value" Text="{Binding PingLabelText}" IsVisible="{Binding PingEnabled}" />
+                </StackPanel>
+                <TextBlock Margin="0,4,0,0" Classes="value" Text="{Binding NetworkSessionText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullBattery" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Classes="title" Text="{loc:Text Metric_Battery}" />
+                    <TextBlock Text="{Binding BatteryStateText}" />
+                </StackPanel>
+                <Grid Classes="row">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Percent" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:UsageBar Grid.Column="0" Value="{Binding BatteryCharge}" Fill="{Binding BatteryBarColor, Converter={x:Static local:Converters.ToBrush}}" />
+                    <TextBlock Grid.Column="1" Classes="value percent" Foreground="{Binding BatteryTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding BatteryText}" />
+                    <Path Grid.Column="2" Classes="charging" Margin="14,0,0,0" IsVisible="{Binding IsBatteryCharging}" />
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FullFps" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="title" Text="{loc:Text Metric_Fps}" />
+                <TextBlock Classes="value" Text="{Binding FpsText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <local:MetricTemplates x:Key="FullTemplates" Divider="divider"
+                               Cpu="{StaticResource FullCpu}" Gpu="{StaticResource FullGpu}" Memory="{StaticResource FullMemory}"
+                               Disk="{StaticResource FullDisk}" Network="{StaticResource FullNetwork}" Battery="{StaticResource FullBattery}"
+                               Fps="{StaticResource FullFps}" />
+
+        <!-- Compact horizontal layout: items side by side. -->
+        <DataTemplate x:Key="HorizontalCpu" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="compactTitle" Text="{loc:Text Metric_Cpu}" />
+                <TextBlock Classes="value compactPercent" Foreground="{Binding CpuTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding CpuUsageText}" />
+                <TextBlock Classes="value compactDetail" Text="{Binding CpuFrequencyText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalGpu" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="compactTitle" Text="{loc:Text Metric_Gpu}" />
+                <TextBlock Classes="value compactPercent" Foreground="{Binding GpuTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding GpuUsageText}" />
+                <TextBlock Classes="value compactDetail" Text="{Binding GpuMemoryText}" />
+                <TextBlock Classes="value compactDetail" Text="{Binding GpuTemperatureText}" IsVisible="{Binding ShowGpuTemperature}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalMemory" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="compactTitle" Text="{loc:Text Metric_Memory}" />
+                <TextBlock Classes="value compactPercent" Foreground="{Binding MemoryTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding MemoryUsageText}" />
+                <TextBlock Classes="value compactDetail" Text="{Binding MemoryAmountText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalDisk" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="compactTitle" Text="{loc:Text Metric_Disk}" />
+                <TextBlock Classes="value compactPercent" Foreground="{Binding DiskTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding DiskActiveText}" />
+                <Panel IsVisible="{Binding ShowDiskSpeed}">
+                    <TextBlock Classes="value compactDetail reserve" Text="{Binding DiskSpeedWidestText}" />
+                    <TextBlock Classes="value compactDetail" Text="{Binding DiskSpeedText}" />
+                </Panel>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalNetwork" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="0,0,8,0" Classes="compactTitle" Text="{loc:Text Metric_Network}" />
+                <StackPanel Orientation="Horizontal" IsVisible="{Binding SpeedTest.IsIdle}">
+                    <Panel>
+                        <TextBlock Classes="value reserve" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" />
+                        <TextBlock Classes="value" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                    </Panel>
+                    <Panel Margin="10,0,0,0">
+                        <TextBlock Classes="value reserve" Text="{Binding NetworkSpeedWidestText, StringFormat='↑ {0}'}" />
+                        <TextBlock Classes="value" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                    </Panel>
+                </StackPanel>
+                <TextBlock MinWidth="162" Classes="value liveTest" Text="{Binding SpeedTest.LiveLabelText}" IsVisible="{Binding SpeedTest.IsTesting}" />
+                <TextBlock Margin="10,0,0,0" Classes="value compactPing" Text="{Binding PingLabelText}" IsVisible="{Binding PingEnabled}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalBattery" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="compactTitle" Text="{loc:Text Metric_Battery}" />
+                <TextBlock Classes="value compactPercent" Foreground="{Binding BatteryTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding BatteryText}" />
+                <Path Classes="charging" Margin="8,0,0,0" IsVisible="{Binding IsBatteryCharging}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HorizontalFps" x:DataType="pres:MainViewModel">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Classes="compactTitle" Text="{loc:Text Metric_Fps}" />
+                <TextBlock Classes="value compactPercent" Text="{Binding FpsText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <local:MetricTemplates x:Key="HorizontalTemplates" Divider="compactDivider" Horizontal="True"
+                               Cpu="{StaticResource HorizontalCpu}" Gpu="{StaticResource HorizontalGpu}" Memory="{StaticResource HorizontalMemory}"
+                               Disk="{StaticResource HorizontalDisk}" Network="{StaticResource HorizontalNetwork}" Battery="{StaticResource HorizontalBattery}"
+                               Fps="{StaticResource HorizontalFps}" />
+
+        <!-- Compact vertical layout: items stacked, details below the title. -->
+        <DataTemplate x:Key="VerticalCpu" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Classes="value compactPercent" Foreground="{Binding CpuTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding CpuUsageText}" />
+                    <TextBlock Margin="0,0,12,0" Classes="compactTitle" Text="{loc:Text Metric_Cpu}" />
+                </DockPanel>
+                <TextBlock Classes="value" Text="{Binding CpuFrequencyText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalGpu" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Classes="value compactPercent" Foreground="{Binding GpuTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding GpuUsageText}" />
+                    <TextBlock Margin="0,0,12,0" Classes="compactTitle" Text="{loc:Text Metric_Gpu}" />
+                </DockPanel>
+                <TextBlock Classes="value" Text="{Binding GpuMemoryText}" />
+                <TextBlock Classes="value" Text="{Binding GpuTemperatureText}" IsVisible="{Binding ShowGpuTemperature}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalMemory" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Classes="value compactPercent" Foreground="{Binding MemoryTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding MemoryUsageText}" />
+                    <TextBlock Margin="0,0,12,0" Classes="compactTitle" Text="{loc:Text Metric_Memory}" />
+                </DockPanel>
+                <TextBlock Classes="value" Text="{Binding MemoryAmountText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalDisk" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Classes="value compactPercent" Foreground="{Binding DiskTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding DiskActiveText}" />
+                    <TextBlock Margin="0,0,12,0" Classes="compactTitle" Text="{loc:Text Metric_Disk}" />
+                </DockPanel>
+                <Panel IsVisible="{Binding ShowDiskSpeed}">
+                    <TextBlock Classes="value reserve" Text="{Binding DiskSpeedWidestText}" />
+                    <TextBlock Classes="value" Text="{Binding DiskSpeedText}" />
+                </Panel>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalNetwork" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <TextBlock Classes="compactTitle" Text="{loc:Text Metric_Network}" />
+                <StackPanel IsVisible="{Binding SpeedTest.IsIdle}">
+                    <Panel>
+                        <TextBlock Classes="value reserve" Text="{Binding NetworkSpeedWidestText, StringFormat='↓ {0}'}" />
+                        <TextBlock Classes="value" Text="{Binding DownloadSpeedText, StringFormat='↓ {0}'}" />
+                    </Panel>
+                    <Panel>
+                        <TextBlock Classes="value reserve" Text="{Binding NetworkSpeedWidestText, StringFormat='↑ {0}'}" />
+                        <TextBlock Classes="value" Text="{Binding UploadSpeedText, StringFormat='↑ {0}'}" />
+                    </Panel>
+                </StackPanel>
+                <StackPanel IsVisible="{Binding SpeedTest.IsTesting}">
+                    <TextBlock Classes="value liveTest" Text="{loc:Text Widget_Test}" />
+                    <TextBlock Classes="value liveTest" Text="{Binding SpeedTest.LiveText}" />
+                </StackPanel>
+                <TextBlock Classes="value" Text="{Binding PingLabelText}" IsVisible="{Binding PingEnabled}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalBattery" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Classes="value compactPercent" Foreground="{Binding BatteryTextColor, Converter={x:Static local:Converters.ToBrush}}" Text="{Binding BatteryText}" />
+                    <TextBlock Margin="0,0,12,0" Classes="compactTitle" Text="{loc:Text Metric_Battery}" />
+                </DockPanel>
+                <TextBlock Classes="value" Text="{Binding BatteryStateText}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VerticalFps" x:DataType="pres:MainViewModel">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Right" Classes="value compactPercent" Text="{Binding FpsText}" />
+                <TextBlock Margin="0,0,12,0" Classes="compactTitle" Text="{loc:Text Metric_Fps}" />
+            </DockPanel>
+        </DataTemplate>
+
+        <local:MetricTemplates x:Key="VerticalTemplates" Divider="verticalDivider"
+                               Cpu="{StaticResource VerticalCpu}" Gpu="{StaticResource VerticalGpu}" Memory="{StaticResource VerticalMemory}"
+                               Disk="{StaticResource VerticalDisk}" Network="{StaticResource VerticalNetwork}" Battery="{StaticResource VerticalBattery}"
+                               Fps="{StaticResource VerticalFps}" />
+
+        <!-- Details tooltip: every item, including hidden ones, with full names.
+             Run.Text binds two-way by default, as in WPF, so every Run here is OneWay: two-way, it would write the text
+             back to the view model, and with a StringFormat the "↓ " would be added again on every round, without end. -->
+        <DataTemplate x:Key="DetailCpu" x:DataType="pres:MainViewModel">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Classes="detailLabel" Text="{loc:Text Metric_Cpu}" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding CpuFullName}" />
+                    <TextBlock>
+                        <Run Text="{Binding CpuUsageText, Mode=OneWay}" />
+                        <Run Text="·" />
+                        <Run Text="{Binding CpuFrequencyText, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailGpu" x:DataType="pres:MainViewModel">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Classes="detailLabel" Text="{loc:Text Metric_Gpu}" />
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding GpuFullName}" />
+                    <TextBlock>
+                        <Run Text="{Binding GpuUsageText, Mode=OneWay}" />
+                        <Run Text="·" />
+                        <Run Text="{Binding GpuMemoryDetailText, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Text="{Binding GpuTemperatureDetailText}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailMemory" x:DataType="pres:MainViewModel">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Classes="detailLabel" Text="{loc:Text Metric_Memory}" />
+                <TextBlock Grid.Column="1">
+                    <Run Text="{Binding MemoryUsageText, Mode=OneWay}" />
+                    <Run Text="·" />
+                    <Run Text="{Binding MemoryAmountText, Mode=OneWay}" />
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailDisk" x:DataType="pres:MainViewModel">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Classes="detailLabel" Text="{loc:Text Widget_Disks}" />
+                <ItemsControl Grid.Column="1" ItemsSource="{Binding DiskDetails}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="pres:DiskDetail">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DiskName" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DiskActive" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="0,0,12,0" Text="{Binding Name}" />
+                                <TextBlock Grid.Column="1" Margin="0,0,12,0" Text="{Binding ActiveText}" />
+                                <TextBlock Grid.Column="2" Text="{Binding SpeedText}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailNetwork" x:DataType="pres:MainViewModel">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Classes="detailLabel" Text="{loc:Text Metric_Network}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding NetworkDeviceName}" IsVisible="{Binding HasNetworkDeviceName}" />
+                        <TextBlock>
+                            <Run Text="{Binding DownloadSpeedText, StringFormat='↓ {0}', Mode=OneWay}" />
+                            <Run Text="·" />
+                            <Run Text="{Binding UploadSpeedText, StringFormat='↑ {0}', Mode=OneWay}" />
+                        </TextBlock>
+                        <TextBlock Text="{Binding NetworkSessionText}" />
+                        <TextBlock Text="{Binding PingDetailText}" IsVisible="{Binding PingEnabled}" />
+                    </StackPanel>
+                </Grid>
+
+                <Border Classes="detailDivider" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Classes="detailLabel" Text="{loc:Text Widget_Speed}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding SpeedTest.ResultText}" />
+                        <TextBlock Text="{Binding SpeedTest.LatencyText}" IsVisible="{Binding SpeedTest.HasResult}" />
+                        <TextBlock Text="{Binding SpeedTest.MeasuredAtText}" />
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailBattery" x:DataType="pres:MainViewModel">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Classes="detailLabel" Text="{loc:Text Metric_Battery}" />
+                <TextBlock Grid.Column="1">
+                    <Run Text="{Binding BatteryText, Mode=OneWay}" />
+                    <Run Text="·" />
+                    <Run Text="{Binding BatteryStateText, Mode=OneWay}" />
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DetailFps" x:DataType="pres:MainViewModel">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="DetailLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Classes="detailLabel" Text="{loc:Text Metric_Fps}" />
+                <TextBlock Grid.Column="1">
+                    <Run Text="{Binding FpsText, Mode=OneWay}" />
+                    <Run Text="·" />
+                    <Run Text="{Binding FpsProcessText, Mode=OneWay}" />
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+
+        <local:MetricTemplates x:Key="DetailTemplates" Divider="detailDivider"
+                               Cpu="{StaticResource DetailCpu}" Gpu="{StaticResource DetailGpu}" Memory="{StaticResource DetailMemory}"
+                               Disk="{StaticResource DetailDisk}" Network="{StaticResource DetailNetwork}" Battery="{StaticResource DetailBattery}"
+                               Fps="{StaticResource DetailFps}" />
+    </Window.Resources>
+
+    <!-- Widget body: background, border and corners. -->
+    <Border x:Name="Body"
+            Background="{Binding BackgroundColor, Converter={x:Static local:Converters.ToBrush}}"
+            BorderThickness="{Binding BorderWidth, Converter={x:Static local:Converters.ToSides}}"
+            CornerRadius="{Binding WidgetCornerRadius, Converter={x:Static local:Converters.ToCorners}}"
+            Classes.hoverOnly="{Binding BorderOnHover}">
+
+        <!-- Zoomed content (WPF's LayoutTransform). The transparent panel takes the pointer over the gaps between texts,
+             so the details tooltip and the drag work anywhere on the widget; code-behind turns the tooltip on and off. -->
+        <LayoutTransformControl LayoutTransform="{Binding Scale, Converter={x:Static local:Converters.ToScale}}">
+            <Panel x:Name="Surface" Background="Transparent">
+                <ToolTip.Tip>
+                    <ItemsControl Grid.IsSharedSizeScope="True" ItemsSource="{Binding DetailItems}" ItemTemplate="{StaticResource DetailTemplates}" />
+                </ToolTip.Tip>
+
+                <!-- Halo around texts and bars, so they stay readable on a transparent background. Two passes make the edge
+                     stronger than one blur. The effects are set from code: an effect isn't in the tree, so it can't bind. -->
+                <Panel x:Name="HaloOuter">
+                    <Panel x:Name="HaloInner">
+                        <!-- The three layouts share the item list; only the current one is visible. -->
+                        <ItemsControl Margin="{x:Static local:WidgetThickness.Full}" Grid.IsSharedSizeScope="True"
+                                      IsVisible="{Binding Layout, Converter={x:Static local:LayoutIs.Instance}, ConverterParameter=Full}"
+                                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource FullTemplates}" />
+
+                        <ItemsControl Margin="{x:Static local:WidgetThickness.CompactHorizontal}"
+                                      IsVisible="{Binding Layout, Converter={x:Static local:LayoutIs.Instance}, ConverterParameter=CompactHorizontal}"
+                                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource HorizontalTemplates}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                        <ItemsControl Margin="{x:Static local:WidgetThickness.CompactVertical}"
+                                      IsVisible="{Binding Layout, Converter={x:Static local:LayoutIs.Instance}, ConverterParameter=CompactVertical}"
+                                      ItemsSource="{Binding VisibleItems}" ItemTemplate="{StaticResource VerticalTemplates}" />
+                    </Panel>
+                </Panel>
+            </Panel>
+        </LayoutTransformControl>
+    </Border>
+</Window>

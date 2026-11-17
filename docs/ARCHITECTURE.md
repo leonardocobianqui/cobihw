@@ -11,11 +11,12 @@ An overview of how cobihw is put together: the projects, where each reading come
 | `src/CobiHw.Core.Linux` | Class library (`net10.0`) | Linux hardware readers: /proc and /sys only, no native libraries. |
 | `src/CobiHw.Presentation` | Class library (`net10.0`) | What every UI shares: view models (CommunityToolkit.Mvvm), settings and their file store, translations, text formatting and the widget's position and resize rules. No UI framework and no OS calls. |
 | `src/CobiHw.App` | WPF app (`cobihw.exe`) | Windows UI: widget, tray icon, windows, themes, and the Windows-only parts (startup entry, elevation, scheduled task). |
+| `src/CobiHw.App.Linux` | Avalonia app (`cobihw`) | Linux UI: widget and tray icon, plus the X11 calls Avalonia lacks (keep below, lower, click-through). |
 | `src/CobiHw.ConsoleTest` | Console app | Dumps one set of Core readings, handy for comparing against Task Manager. |
 | `tests/CobiHw.Tests` | xUnit v3 | Covers the Windows projects and Presentation; internals are exposed through `InternalsVisibleTo`. |
 | `tests/CobiHw.Core.Tests` | xUnit v3 | Covers Core and Core.Linux. No Windows dependency, so it runs on Linux too. |
 
-Dependencies point one way: App → Presentation and Core.Windows, both → Core; Core.Linux → Core. Each platform implements `IHardwareMonitor`. Code that calls an OS API or a UI framework never goes in Core or Presentation, so both can be shared with a Linux build later.
+Dependencies point one way: App → Presentation and Core.Windows; App.Linux → Presentation and Core.Linux; all of them → Core. Each platform implements `IHardwareMonitor`. Code that calls an OS API or a UI framework never goes in Core or Presentation, which is what lets both apps share them.
 
 ## Sampling
 
@@ -104,6 +105,20 @@ Settings are also flushed every minute and on exit, skipping unchanged state.
 - **Click-through:** `WS_EX_TRANSPARENT`, lifted while the interaction key is held.
 - **Stable width:** speed fields reserve the width of their widest possible text, so the widget doesn't reflow every second. Values use three significant digits (`DisplayFormat`).
 
+## Linux app
+
+`CobiHw.App.Linux` runs the same view models as the Windows app on Avalonia 12, so the widget reads, formats and colors everything the same way; what differs is the window plumbing.
+
+- **Display server:** Avalonia runs on X11, through XWayland on a Wayland session. That's deliberate: Wayland doesn't let a client place its own window, keep it below others or pass clicks through, and a widget needs all three.
+- **Keep below and click-through:** Avalonia's `Topmost` covers "always on top"; desktop mode sends `_NET_WM_STATE_BELOW` to the window manager, and click-through sets an empty XShape input region (`Interop/X11`). The window manager forgets window states when a window is hidden, so both are sent again on every show.
+- **Desktop mode on GNOME:** GNOME has no layer for desktop icons. Its icon extensions (DING and the forks Ubuntu and Zorin ship) draw a transparent full-screen window in the below layer, the one `_NET_WM_STATE_BELOW` uses, so the icons can cover the widget and take its clicks while it still shows through. On GNOME (`XDG_CURRENT_DESKTOP`, `DesktopEnvironment`) the widget stays in the normal layer instead and asks to go to its bottom (`XLowerWindow`) after every click, resize and move. Mutter accepts that only while the widget's app has the focus, which it has right after the user touched it. Unlike Windows, the widget comes to the front while it's being clicked or dragged, and when desktop mode is picked from the tray it may only go behind on the next click on any window. KDE, Xfce, Cinnamon and MATE keep their icons in a lower, desktop-type layer, so there the below state is used. There's no interaction key: X11 gives a window that takes no input no way to watch the keyboard, so the tray menu is how click-through is turned off.
+- **Moving and snapping:** the move is the window manager's (`BeginMoveDrag`), which the app can't follow or correct while it runs. Snapping and the keep-on-screen rule run once `PositionChanged` has been quiet for 300 ms, through the same `WindowFit` rules as Windows. A press starts a move only after 4 px of travel, so a double-click still switches the layout.
+- **Zoom:** edge drags change the scale, as on Windows; on `SizeChanged`, `ResizeRule.Anchor` keeps the opposite edge fixed and `WindowFit.Place` keeps the widget inside the work area.
+- **Templates:** each layout's item template is a `MetricTemplates`, the counterpart of `MetricTemplateConverter`; it also hides the divider before the first item. Colors stay hex strings in the view models and go through `Converters`. The halo's `DropShadowEffect` is set from code: effects aren't in the logical tree, so a binding inside one never sees the DataContext.
+- **Settings:** `~/.config/cobihw` (`$XDG_CONFIG_HOME` when set) instead of the executable's folder, since a Linux install puts binaries where users can't write. The profile is machine, user id and user name (`LinuxProfile`).
+- **Single instance:** a Unix socket in `$XDG_RUNTIME_DIR`. A second launch connects, asks the first to show its widget, and exits; a socket left by a crash is detected (nobody answers) and replaced.
+- **Tray:** Avalonia's `TrayIcon` exports a StatusNotifierItem over D-Bus, so the desktop draws the menu in its own style. GNOME needs the AppIndicator extension (Ubuntu and Zorin ship it on); its click on the icon always opens the menu, which is why "Show widget" is the first item.
+
 ## Look
 
 The app windows and the tray menu share one design system on Windows 10 and 11. The widget is excluded; its colors come from the Appearance tab.
@@ -173,6 +188,10 @@ src/CobiHw.App/
   Localization/ The XAML text extension
   Converters/   XAML converters
   Interop/      App-side Windows API declarations
+src/CobiHw.App.Linux/
+  Tray/         Tray icon and menu
+  Localization/ The AXAML text extension
+  Interop/      X11 and libc declarations
 tests/CobiHw.Core.Tests/
   Core/, Linux/ Tests by project
   Support/      Fake /proc and /sys

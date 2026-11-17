@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Linux app: the widget and the tray icon on Avalonia, over the shared view models and the Linux readers. -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Required by the LibraryImport source generator (libX11, libXext, libc). -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Same executable name as on Windows. -->
+    <AssemblyName>cobihw</AssemblyName>
+    <RootNamespace>CobiHw.App.Linux</RootNamespace>
+    <!-- Bindings are checked at build time; every view declares its x:DataType. -->
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.5" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.5" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CobiHw.Core\CobiHw.Core.csproj" />
+    <ProjectReference Include="..\CobiHw.Core.Linux\CobiHw.Core.Linux.csproj" />
+    <ProjectReference Include="..\CobiHw.Presentation\CobiHw.Presentation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The site's icon, so the repository keeps a single copy of the artwork. -->
+    <AvaloniaResource Include="..\..\docs\icon-64.png" Link="Assets\icon.png" />
+  </ItemGroup>
+
+</Project>

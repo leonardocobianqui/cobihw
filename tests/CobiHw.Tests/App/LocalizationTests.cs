@@ -46,6 +46,7 @@ public sealed partial class LocalizationTests : LocalizedTest
         string[] keys =
         [
             .. Directory.EnumerateFiles(RepoFiles.App(""), "*.xaml", SearchOption.AllDirectories)
+                .Concat(Directory.EnumerateFiles(RepoFiles.LinuxApp(""), "*.axaml", SearchOption.AllDirectories))
                 .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
                 .SelectMany(path => XamlKeyPattern().Matches(File.ReadAllText(path)).Select(match => match.Groups[1].Value))
                 .Distinct(),

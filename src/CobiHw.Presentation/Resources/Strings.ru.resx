@@ -248,6 +248,9 @@
   <data name="Tray_ResetNetwork" xml:space="preserve">
     <value>Сбросить счётчик сети</value>
   </data>
+  <data name="Tray_ShowWidget" xml:space="preserve">
+    <value>Показывать виджет</value>
+  </data>
   <data name="Tray_Exit" xml:space="preserve">
     <value>Выход</value>
   </data>
