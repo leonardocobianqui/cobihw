@@ -317,6 +317,10 @@
     <value>Reset network counter</value>
     <comment>Tray icon menu</comment>
   </data>
+  <data name="Tray_ShowWidget" xml:space="preserve">
+    <value>Show widget</value>
+    <comment>Tray icon menu on Linux, a check item: the widget is shown while it's checked</comment>
+  </data>
   <data name="Tray_Exit" xml:space="preserve">
     <value>Exit</value>
     <comment>Tray icon menu</comment>

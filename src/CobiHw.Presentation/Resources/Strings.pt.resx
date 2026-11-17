@@ -248,6 +248,9 @@
   <data name="Tray_ResetNetwork" xml:space="preserve">
     <value>Zerar contador de rede</value>
   </data>
+  <data name="Tray_ShowWidget" xml:space="preserve">
+    <value>Mostrar widget</value>
+  </data>
   <data name="Tray_Exit" xml:space="preserve">
     <value>Sair</value>
   </data>

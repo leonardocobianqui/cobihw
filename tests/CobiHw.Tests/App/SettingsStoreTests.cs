@@ -30,6 +30,18 @@ public sealed class SettingsStoreTests : LocalizedTest, IDisposable
     }
 
     [Fact]
+    public void InFolder_CreatesTheMissingFolder_AndSavesThere()
+    {
+        string folder = Path.Combine(Path.GetDirectoryName(_file.FilePath)!, "config", "cobihw");
+        SettingsStore store = SettingsStore.InFolder(folder, TempSettingsFile.Profile);
+
+        Assert.Equal(SettingsAccess.Writable, store.Access);
+        Assert.True(store.Save(new AppSettings { Layout = ViewLayout.CompactHorizontal }));
+        Assert.Equal(Path.Combine(folder, "cobihw.settings.json"), store.FilePath);
+        Assert.Equal(ViewLayout.CompactHorizontal, SettingsStore.InFolder(folder, TempSettingsFile.Profile).Load().Layout);
+    }
+
+    [Fact]
     public void OldFile_WithCompactView_OpensAndFillsTheDefaults()
     {
         _file.Write("{ \"Mode\": \"Desktop\", \"CompactView\": true, \"PositionLocked\": true }");

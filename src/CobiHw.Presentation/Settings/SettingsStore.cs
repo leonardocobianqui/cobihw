@@ -60,6 +60,24 @@ public sealed class SettingsStore
         return new SettingsStore(Path.Combine(executableDirectory, FileName), identity, IsWritable(executableDirectory));
     }
 
+    /// <summary>Store in a per-user settings folder, created when missing (on Linux, ~/.config/cobihw).</summary>
+    /// <param name="folder">Folder for the settings file.</param>
+    /// <param name="identity">Profile of this computer and user.</param>
+    public static SettingsStore InFolder(string folder, ProfileIdentity identity)
+    {
+        try
+        {
+            Directory.CreateDirectory(folder);
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            // IsWritable reports the folder as read-only below.
+        }
+
+        string path = Path.GetFullPath(folder);
+        return new SettingsStore(Path.Combine(path, FileName), identity, IsWritable(path));
+    }
+
     /// <summary>Loads this profile without waiting for a busy file.</summary>
     public AppSettings Load() => Load(TimeSpan.Zero);
 
